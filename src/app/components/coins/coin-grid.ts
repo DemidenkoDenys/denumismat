@@ -32,6 +32,8 @@ function sampleCoins(): Coin[] {
           <app-coin-card
             [coin]="c"
             [selected]="selectedIds().includes(c.id)"
+            [conversionRate]="conversionRate()"
+            [currencyFormat]="currencyFormat()"
             (selectedChange)="onSelect(c.id, $event)">
           </app-coin-card>
         }
@@ -47,6 +49,8 @@ export class CoinGridComponent implements OnInit {
   priceBoundsChange = output<[number, number]>();
   resetTrigger = signal<number>(0);
   filters = input<any>(null);
+  conversionRate = input<number>(1);
+  currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   visibleCoins = computed(() => {
     const f = this.filters();
@@ -133,7 +137,8 @@ export class CoinGridComponent implements OnInit {
   private emitSummary(ids: string[]) {
     const selected = this.coins().filter(c => ids.includes(c.id));
     const totalWeight = selected.reduce((sum, c) => sum + (c.weight || 0), 0);
-    const totalPrice = selected.reduce((sum, c) => sum + (c.price || 0), 0);
+    const rate = this.conversionRate();
+    const totalPrice = selected.reduce((sum, c) => sum + (c.price || 0) * rate, 0);
     this.selectedSummary.emit({ ids, totalWeight, totalPrice });
   }
 

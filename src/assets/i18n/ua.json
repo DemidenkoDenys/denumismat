@@ -3,13 +3,16 @@
     "brand": "Denumismat",
     "searchPlaceholder": "Пошук монет...",
     "language": "Мова",
+    "currency": "Валюта",
+    "currencyMore": "Бiльше країн",
+    "languageMore": "Бiльше країн",
     "themeToggle": "Перемкнути темну тему"
   },
   "coin": {
     "details": "Деталі",
     "hide": "Приховати",
     "select": "Вибрати монету",
-    "price": "$ {{price}}",
+    "price": "{{price}}",
     "weight": "{{weight}} g",
     "booked": "Заброньовано"
   },

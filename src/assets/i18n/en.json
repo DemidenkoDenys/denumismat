@@ -3,13 +3,16 @@
     "brand": "Denumismat",
     "searchPlaceholder": "Search coins...",
     "language": "Language",
+    "currency": "Currency",
+    "currencyMore": "More countries",
+    "languageMore": "More countries",
     "themeToggle": "Toggle dark theme"
   },
   "coin": {
     "details": "Details",
     "hide": "Hide",
     "select": "Select coin",
-    "price": "$ {{price}}",
+    "price": "{{price}}",
     "weight": "{{weight}} g",
     "booked": "Booked"
   },

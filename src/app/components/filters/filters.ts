@@ -28,7 +28,7 @@ export interface Filters {
 
         <div class="filters__group filters__group--range">
           <div class="filters__range-values">
-            <span class="filters__value">{{ priceMin() | currency:'USD':'symbol':'1.2-2' }} - {{ priceMax() | currency:'USD':'symbol':'1.2-2' }}</span>
+            <span class="filters__value">{{ formattedMinPrice() }} - {{ formattedMaxPrice() }}</span>
           </div>
           <div class="filters__range-slider">
             <div class="filters__range-track"></div>
@@ -110,6 +110,7 @@ export class FiltersComponent {
   priceRange = input<[number, number]>([0, 10000]);
   priceBounds = input<[number, number]>([0, 10000]);
   tagsInput = input<string[]>([]);
+  currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   selectedCount = input<number>(0);
 
@@ -118,6 +119,28 @@ export class FiltersComponent {
   // local signals for interactive control
   countrySignal = signal<string | null>(this.country());
   priceMin = signal<number>(this.priceRange()[0]);
+
+  formattedMinPrice = computed(() => {
+    const price = this.priceMin().toFixed(2);
+    const format = this.currencyFormat();
+    const currency = format.short;
+    // Add thousands separator (space)
+    const [intPart, decPart] = price.split('.');
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const formattedPrice = `${formattedInt}.${decPart}`;
+    return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
+  });
+
+  formattedMaxPrice = computed(() => {
+    const price = this.priceMax().toFixed(2);
+    const format = this.currencyFormat();
+    const currency = format.short;
+    // Add thousands separator (space)
+    const [intPart, decPart] = price.split('.');
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const formattedPrice = `${formattedInt}.${decPart}`;
+    return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
+  });
   priceMax = signal<number>(this.priceRange()[1]);
   tags = signal<string[]>(this.tagsInput());
   showSelectedOnly = signal<boolean>(false);

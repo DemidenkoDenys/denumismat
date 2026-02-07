@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -64,7 +64,7 @@ export interface Coin {
             </span>
           }
         </div>
-        <span class="coin-card__price-badge">{{ 'coin.price' | translate:{ price: (coin().price | number:'1.0-2') } }}</span>
+        <span class="coin-card__price-badge">{{ 'coin.price' | translate:{ price: formattedPrice() } }}</span>
       </div>
 
       <div class="coin-card__body">
@@ -99,7 +99,20 @@ export interface Coin {
 export class CoinCardComponent {
   coin = input<Coin>({} as Coin);
   selected = input<boolean>(false);
+  conversionRate = input<number>(1);
+  currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
   selectedChange = output<boolean>();
+
+  formattedPrice = computed(() => {
+    const price = (this.coin().price * this.conversionRate()).toFixed(2);
+    const format = this.currencyFormat();
+    const currency = format.short;
+    // Add thousands separator (space)
+    const [intPart, decPart] = price.split('.');
+    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const formattedPrice = `${formattedInt}.${decPart}`;
+    return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
+  });
 
   detailsOpen = signal(false);
 
