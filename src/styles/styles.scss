@@ -1,7 +1,5 @@
 /* Global Styles */
-@import 'normalize.scss';
+@use 'normalize' as *;
 
-/* Component Styles */
-@import 'components/header.scss';
-@import 'components/filters.scss';
-@import 'components/introduction.scss';
+/* Component Styles (single entry) */
+@use 'components/index' as *;

@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { HeaderComponent, type Language } from './components/header/header';
 import { IntroductionComponent } from './components/introduction/introduction';
 import { FiltersComponent } from './components/filters/filters';
+import { CoinGridComponent } from './components/coins/coin-grid';
 
 @Component({
   selector: 'app-root',
@@ -16,11 +17,12 @@ import { FiltersComponent } from './components/filters/filters';
     <main>
       <app-introduction></app-introduction>
       <app-filters (filterChange)="handleFilters($event)"></app-filters>
+      <app-coin-grid></app-coin-grid>
     </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [HeaderComponent, IntroductionComponent, FiltersComponent]
+  imports: [HeaderComponent, IntroductionComponent, FiltersComponent, CoinGridComponent]
 })
 export class App {
   searchQuery = signal('');

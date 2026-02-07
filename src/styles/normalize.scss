@@ -192,7 +192,8 @@ th {
 main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  /* reserve space for fixed header */
+  padding: calc(2rem + 72px) 1rem 2rem;
 }
 
 /* Utilities */
