@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoinCardComponent, Coin } from './coin-card';
 
@@ -40,11 +40,18 @@ function sampleCoins(): Coin[] {
 export class CoinGridComponent {
   coins = signal<Coin[]>(sampleCoins());
   selectedIds = signal<string[]>([]);
+  selectedSummary = output<{ ids: string[]; totalWeight: number }>();
 
   onSelect(id: string, selected: boolean) {
     const set = new Set(this.selectedIds());
     if (selected) set.add(id);
     else set.delete(id);
     this.selectedIds.set(Array.from(set));
+    // compute total weight for selected ids
+    const ids = Array.from(set);
+    const totalWeight = this.coins()
+      .filter(c => ids.includes(c.id))
+      .reduce((sum, c) => sum + (c.weight || 0), 0);
+    this.selectedSummary.emit({ ids, totalWeight });
   }
 }
