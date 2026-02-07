@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent, type Language } from './components/header/header';
+import { IntroductionComponent } from './components/introduction/introduction';
 
 @Component({
   selector: 'app-root',
@@ -11,13 +12,14 @@ import { HeaderComponent, type Language } from './components/header/header';
       (onSearchChange)="handleSearch($event)"
       (onLanguageChange)="handleLanguageChange($event)">
     </app-header>
+    <app-introduction></app-introduction>
     <main>
       <router-outlet></router-outlet>
     </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [HeaderComponent, RouterOutlet]
+  imports: [HeaderComponent, IntroductionComponent, RouterOutlet]
 })
 export class App {
   searchQuery = signal('');
