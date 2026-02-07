@@ -1,4 +1,7 @@
+```markdown
 # Coin Card: Full-Card Selection
+
+Update Order: 05
 
 Date: 2026-02-07
 
@@ -18,3 +21,5 @@ Developer notes
 
 Revert
 - Restore the previous template that only toggled selection via the checkbox and remove the keyboard handlers and ARIA attributes.
+
+```

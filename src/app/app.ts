@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+// Note: TranslateModule is configured in bootstrap providers (main.ts)
 import { HeaderComponent, type Language } from './components/header/header';
 import { IntroductionComponent } from './components/introduction/introduction';
 import { FiltersComponent } from './components/filters/filters';
@@ -24,7 +25,14 @@ import { FooterComponent } from './components/footer/footer';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [HeaderComponent, IntroductionComponent, FiltersComponent, CoinGridComponent, FooterComponent]
+  imports: [
+    HeaderComponent,
+    IntroductionComponent,
+    FiltersComponent,
+    CoinGridComponent,
+    FooterComponent,
+
+  ]
 })
 export class App {
   searchQuery = signal('');

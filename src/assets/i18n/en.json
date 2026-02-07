@@ -1,0 +1,42 @@
+{
+  "header": {
+    "brand": "Denumismat",
+    "searchPlaceholder": "Search coins...",
+    "language": "Language",
+    "themeToggle": "Toggle dark theme"
+  },
+  "coin": {
+    "details": "Details",
+    "hide": "Hide",
+    "select": "Select coin",
+    "price": "{price} USD",
+    "weight": "{weight} g",
+    "booked": "Booked"
+  },
+  "footer": {
+    "selected": "Selected: {count}",
+    "totalWeight": "Total weight: {weight} g",
+    "book": "Book",
+    "order": "Order"
+  },
+  "filters": {
+    "countryPlaceholder": "Country",
+    "priceMin": "Min price",
+    "priceMax": "Max price",
+    "tags": "Tags",
+    "tag": {
+      "UNC": "UNC",
+      "Rare": "Rare",
+      "Sale": "Sale"
+    }
+  }
+  ,
+  "introduction": {
+    "title": "Explore historical and rare coins",
+    "subtitle": "Browse, filter and book coins from around the world"
+  }
+  ,
+  "grid": {
+    "ariaLabel": "Coin grid"
+  }
+}

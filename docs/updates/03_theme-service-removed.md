@@ -1,4 +1,7 @@
+```markdown
 # Theme Service Added then Removed
+
+Update Order: 03
 
 Date: 2026-02-07
 
@@ -17,3 +20,5 @@ Reason
 
 Revert
 - No action required; the service file was removed. Recreate the service if a centralized theme API becomes necessary.
+
+```

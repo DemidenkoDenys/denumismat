@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface Filters {
   country: string | null;
@@ -10,23 +11,23 @@ export interface Filters {
 @Component({
   selector: 'app-filters',
   template: `
-    <aside class="filters" aria-label="Filters">
+    <aside class="filters" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
         <div class="filters__group">
-          <label for="country" class="filters__label">Country</label>
+          <label for="country" class="filters__label">{{ 'filters.countryPlaceholder' | translate }}</label>
           <input
             id="country"
             type="text"
             class="filters__input"
             [value]="country() ?? ''"
             (input)="onCountryInput($event)"
-            placeholder="Enter country"
-            aria-label="Filter by country"
+            [placeholder]="'filters.countryPlaceholder' | translate"
+            [attr.aria-label]="'filters.countryPlaceholder' | translate"
           />
         </div>
 
         <div class="filters__group">
-          <label class="filters__label">Price Range</label>
+          <label class="filters__label">{{ 'filters.priceRange' | translate }}</label>
           <div class="filters__range">
             <input
               type="range"
@@ -35,7 +36,7 @@ export interface Filters {
               step="1"
               [value]="priceMin()"
               (input)="onPriceMinChange($event)"
-              aria-label="Minimum price"
+                [attr.aria-label]="'filters.priceMin' | translate"
             />
             <input
               type="range"
@@ -44,7 +45,7 @@ export interface Filters {
               step="1"
               [value]="priceMax()"
               (input)="onPriceMaxChange($event)"
-              aria-label="Maximum price"
+                [attr.aria-label]="'filters.priceMax' | translate"
             />
           </div>
           <div class="filters__range-values">
@@ -55,23 +56,23 @@ export interface Filters {
         </div>
 
         <div class="filters__group">
-          <label class="filters__label">Tags</label>
+          <label class="filters__label">{{ 'filters.tags' | translate }}</label>
           <div class="filters__tags">
             <button
               type="button"
               class="filters__tag"
               [class.active]="tags().includes('UNC')"
-              (click)="toggleTag('UNC')">UNC</button>
+              (click)="toggleTag('UNC')">{{ 'filters.tag.UNC' | translate }}</button>
             <button
               type="button"
               class="filters__tag"
               [class.active]="tags().includes('Rare')"
-              (click)="toggleTag('Rare')">Rare</button>
+              (click)="toggleTag('Rare')">{{ 'filters.tag.Rare' | translate }}</button>
             <button
               type="button"
               class="filters__tag"
               [class.active]="tags().includes('Sale')"
-              (click)="toggleTag('Sale')">Sale</button>
+              (click)="toggleTag('Sale')">{{ 'filters.tag.Sale' | translate }}</button>
           </div>
         </div>
 
@@ -80,7 +81,7 @@ export interface Filters {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
 })
 export class FiltersComponent {
   country = input<string | null>(null);

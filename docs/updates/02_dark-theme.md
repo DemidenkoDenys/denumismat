@@ -1,4 +1,7 @@
+````markdown
 # Dark Theme
+
+Update Order: 02
 
 Date: 2026-02-07
 
@@ -26,3 +29,5 @@ Notes
 
 Revert
 - Remove the `@use 'themes/dark'` line from `src/styles/styles.scss` and delete `src/styles/themes/dark.scss`.
+
+````

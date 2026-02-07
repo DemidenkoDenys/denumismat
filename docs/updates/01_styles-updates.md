@@ -1,4 +1,7 @@
+```markdown
 # Styles Updates
+
+Update Order: 01
 
 Date: 2026-02-07
 
@@ -17,3 +20,5 @@ Notes
 
 Revert
 - Remove the `@use 'themes/dark'` line from `src/styles/styles.scss` and revert component SCSS changes as needed.
+
+```

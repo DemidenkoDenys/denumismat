@@ -1,8 +1,9 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, effect, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 
-export type Language = 'en' | 'ro' | 'de' | 'fr';
+export type Language = string;
 
 export interface LanguageOption {
   code: Language;
@@ -34,7 +35,7 @@ export interface LanguageOption {
       <div class="header__container">
         <!-- Brand with Shimmer Effect -->
         <div class="header__brand">
-          <h1 class="header__brand-text">Denumismat</h1>
+          <h1 class="header__brand-text">{{ 'header.brand' | translate }}</h1>
         </div>
 
         <!-- Search Field -->
@@ -42,10 +43,10 @@ export interface LanguageOption {
           <input
             type="search"
             class="header__search-input"
-            placeholder="Search coins..."
+            [placeholder]="'header.searchPlaceholder' | translate"
             [value]="searchQuery()"
             (input)="handleSearchInput($event)"
-            aria-label="Search coins"
+            [attr.aria-label]="'header.searchPlaceholder' | translate"
           />
           <span class="header__search-icon" aria-hidden="true">🔍</span>
         </div>
@@ -57,8 +58,8 @@ export interface LanguageOption {
             class="header__language-btn"
             (click)="toggleLanguageMenu()"
             [attr.aria-expanded]="isLanguageMenuOpen()"
-            aria-label="Select language">
-            {{ getCurrentLanguageFlag() }}
+            [attr.aria-label]="'header.language' | translate">
+            {{ getCurrentLanguageFlag() }} {{ 'header.language' | translate }}
           </button>
           @if (isLanguageMenuOpen()) {
             <div class="header__language-menu" role="menu">
@@ -66,7 +67,7 @@ export interface LanguageOption {
                 <button
                   type="button"
                   class="header__language-option"
-                  [class.active]="currentLanguage() === lang.code"
+                  [class.active]="(translate.currentLang === lang.code)"
                   (click)="selectLanguage(lang.code)"
                   role="menuitem">
                   {{ lang.flag }} {{ lang.label }}
@@ -81,8 +82,8 @@ export interface LanguageOption {
           type="button"
           class="header__theme-btn"
           (click)="toggleDarkTheme()"
-          [attr.aria-label]="isDarkMode() ? 'Switch to light theme' : 'Switch to dark theme'"
-          title="Toggle dark theme">
+          [attr.aria-label]="'header.themeToggle' | translate"
+          [attr.title]="'header.themeToggle' | translate">
           {{ isDarkMode() ? '☀️' : '🌙' }}
         </button>
       </div>
@@ -90,11 +91,13 @@ export interface LanguageOption {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
 })
 export class HeaderComponent {
   searchQuery = input('');
   currentLanguage = input<Language>('en');
+
+  translate = inject(TranslateService);
 
   onSearchChange = output<string>();
   onLanguageChange = output<Language>();
@@ -104,9 +107,7 @@ export class HeaderComponent {
 
   readonly languages: LanguageOption[] = [
     { code: 'en', label: 'English', flag: '🇬🇧' },
-    { code: 'ro', label: 'Română', flag: '🇷🇴' },
-    { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-    { code: 'fr', label: 'Français', flag: '🇫🇷' },
+    { code: 'ua', label: 'Українська', flag: '🇺🇦' },
   ];
 
   constructor() {
@@ -165,13 +166,16 @@ export class HeaderComponent {
     this.isLanguageMenuOpen.update(open => !open);
   }
 
-  selectLanguage(lang: Language): void {
+  async selectLanguage(lang: Language): Promise<void> {
+    await this.translate.use(lang as any);
+    localStorage.setItem('denumismat-lang', lang);
     this.onLanguageChange.emit(lang);
     this.isLanguageMenuOpen.set(false);
   }
 
   getCurrentLanguageFlag(): string {
-    const lang = this.languages.find(l => l.code === this.currentLanguage());
+    const current = this.translate.currentLang || this.translate.getDefaultLang();
+    const lang = this.languages.find(l => l.code === current);
     return lang ? lang.flag : '🇬🇧';
   }
 }

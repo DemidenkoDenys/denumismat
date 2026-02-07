@@ -1,6 +1,7 @@
-import { Component, ChangeDetectionStrategy, signal, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CoinCardComponent, Coin } from './coin-card';
+import { TranslateModule } from '@ngx-translate/core';
 
 function sampleCoins(): Coin[] {
   return Array.from({ length: 20 }).map((_, i) => ({
@@ -21,10 +22,10 @@ function sampleCoins(): Coin[] {
 @Component({
   selector: 'app-coin-grid',
   standalone: true,
-  imports: [CommonModule, CoinCardComponent],
+  imports: [CommonModule, CoinCardComponent, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="coin-grid" aria-label="Coin grid">
+    <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
       <div class="coin-grid__list">
         @for (c of coins(); track c.id) {
           <app-coin-card

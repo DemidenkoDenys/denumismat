@@ -4,6 +4,8 @@
 **Last Updated:** February 7, 2026
 **Language:** English
 
+**Note:** All documentation files should begin their filename with a timestamp including seconds (for example: 2026-02-07T13-33-45_spec.md). Filenames and front-matter timestamps must include seconds for accurate ordering.
+
 ## Table of Contents
 
 1. [Overview](#overview)

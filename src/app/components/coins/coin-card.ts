@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 export interface Coin {
   id: string;
@@ -30,7 +31,7 @@ export interface Coin {
 @Component({
   selector: 'app-coin-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article
@@ -48,7 +49,7 @@ export interface Coin {
           type="checkbox"
           [checked]="selected()"
           (change)="$event.stopPropagation(); toggleSelect()"
-          aria-label="Select coin" />
+          [attr.aria-label]="'coin.select' | translate" />
       </label>
 
       <div class="coin-card__media" (mouseenter)="loadHighRes()" (mouseleave)="cancelPreview()">
@@ -58,20 +59,20 @@ export interface Coin {
 
       <div class="coin-card__body">
         <h3 class="coin-card__title">{{ coin().name }} <span class="coin-card__year">({{ coin().year }})</span></h3>
-        <p class="coin-card__price">{{ coin().price | number:'1.0-2' }} USD</p>
+        <p class="coin-card__price">{{ 'coin.price' | translate:{ price: (coin().price | number:'1.0-2') } }}</p>
 
         <button
           type="button"
           class="coin-card__toggle"
           (click)="$event.stopPropagation(); toggleDetails()">
-          {{ detailsOpen() ? 'Hide' : 'Details' }}
+          {{ detailsOpen() ? ('coin.hide' | translate) : ('coin.details' | translate) }}
         </button>
 
         @if (detailsOpen()) {
           <div class="coin-card__details">
             <p>{{ coin().description }}</p>
-            <p><strong>Weight:</strong> {{ coin().weight }} g</p>
-            <p><strong>Country:</strong> {{ coin().country }}</p>
+            <p>{{ 'coin.weight' | translate:{ weight: coin().weight } }}</p>
+            <p>{{ 'filters.countryPlaceholder' | translate }}: {{ coin().country }}</p>
           </div>
         }
       </div>

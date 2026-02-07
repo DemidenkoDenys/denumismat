@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-introduction',
@@ -7,10 +8,10 @@ import { CommonModule } from '@angular/common';
     <section class="introduction" aria-labelledby="intro-heading">
       <div class="introduction__content">
         <h1 id="intro-heading" class="introduction__title">
-          Explore Rare & Exquisite Coins
+          {{ 'introduction.title' | translate }}
         </h1>
         <p class="introduction__subtitle">
-          Discover the world's finest numismatic collections. Browse, filter, and order coins from trusted sellers worldwide.
+          {{ 'introduction.subtitle' | translate }}
         </p>
       </div>
       <div class="introduction__background" aria-hidden="true"></div>
@@ -18,6 +19,6 @@ import { CommonModule } from '@angular/common';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
 })
 export class IntroductionComponent {}

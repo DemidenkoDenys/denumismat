@@ -1,23 +1,24 @@
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (count() > 0) {
       <div class="action-footer" role="region" aria-live="polite">
         <div class="action-footer__inner">
           <div class="action-footer__metrics">
-            <span class="action-footer__count">Selected: {{ count() }}</span>
-            <span class="action-footer__weight">Total weight: {{ totalWeight() }} g</span>
+            <span class="action-footer__count">{{ 'footer.selected' | translate:{ count: count() } }}</span>
+            <span class="action-footer__weight">{{ 'footer.totalWeight' | translate:{ weight: totalWeight() } }}</span>
           </div>
 
           <div class="action-footer__actions">
-            <button class="btn btn--ghost" (click)="handleBook()">Book</button>
-            <button class="btn btn--primary" (click)="handleOrder()">Order</button>
+            <button class="btn btn--ghost" (click)="handleBook()">{{ 'footer.book' | translate }}</button>
+            <button class="btn btn--primary" (click)="handleOrder()">{{ 'footer.order' | translate }}</button>
           </div>
         </div>
       </div>

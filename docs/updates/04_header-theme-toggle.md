@@ -1,4 +1,7 @@
+```markdown
 # Header Theme Toggle
+
+Update Order: 04
 
 Date: 2026-02-07
 
@@ -19,3 +22,5 @@ Developer notes
 
 Revert
 - Remove the toggle button and the `isDarkMode` logic from `header.ts`, and remove the theme import if desired.
+
+```
