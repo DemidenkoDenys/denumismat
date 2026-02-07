@@ -15,15 +15,40 @@ export interface Coin {
   isBooked: boolean;
 }
 
+/**
+ * CoinCardComponent
+ *
+ * Displays a coin card with:
+ * - Selectable entire card area
+ * - Coin image with high-res preview on hover
+ * - Coin details (name, year, price)
+ * - Expandable details section
+ * - Selection checkbox
+ *
+ * The entire card is clickable to toggle selection.
+ */
 @Component({
   selector: 'app-coin-card',
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <article class="coin-card" [class.selected]="selected()">
-      <label class="coin-card__select">
-        <input type="checkbox" [checked]="selected()" (change)="toggleSelect()" aria-label="Select coin" />
+    <article
+      class="coin-card"
+      [class.selected]="selected()"
+      (click)="toggleSelect()"
+      role="button"
+      tabindex="0"
+      (keydown.space)="toggleSelect()"
+      (keydown.enter)="toggleSelect()"
+      [attr.aria-pressed]="selected()">
+
+      <label class="coin-card__select" (click)="$event.stopPropagation()">
+        <input
+          type="checkbox"
+          [checked]="selected()"
+          (change)="$event.stopPropagation(); toggleSelect()"
+          aria-label="Select coin" />
       </label>
 
       <div class="coin-card__media" (mouseenter)="loadHighRes()" (mouseleave)="cancelPreview()">
@@ -35,7 +60,10 @@ export interface Coin {
         <h3 class="coin-card__title">{{ coin().name }} <span class="coin-card__year">({{ coin().year }})</span></h3>
         <p class="coin-card__price">{{ coin().price | number:'1.0-2' }} USD</p>
 
-        <button type="button" class="coin-card__toggle" (click)="toggleDetails()">
+        <button
+          type="button"
+          class="coin-card__toggle"
+          (click)="$event.stopPropagation(); toggleDetails()">
           {{ detailsOpen() ? 'Hide' : 'Details' }}
         </button>
 
