@@ -21,6 +21,20 @@
     "book": "Book",
     "order": "Order"
   },
+  "pageFooter": {
+    "aboutTitle": "About me",
+    "aboutText": "Independent numismatist helping collectors discover rare European coins.",
+    "linkGaleriaSavaria": "Galeria Savaria",
+    "linkVatera": "Vatera",
+    "linkAukro": "Aukro",
+    "linkEbay": "eBay",
+    "infoTitle": "Shipping",
+    "infoItemOne": "Processing: 1-2 business days",
+    "infoItemTwo": "Delivery: 5-10 business days",
+    "infoItemThree": "Tracking included",
+    "infoItemFour": "Free shipping over $100",
+    "mapTitle": "Personal pickup available at"
+  },
   "filters": {
     "countryPlaceholder": "Country",
     "tag": {

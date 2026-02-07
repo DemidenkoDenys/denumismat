@@ -103,6 +103,11 @@ interface FilterState {
 - **Actions**: [Book] and [Order] buttons.
 - **Positioning**: Floating with 100px margins from edges.
 
+### F. Page Footer
+- **Layout**: Three columns (about, info list, map).
+- **Placement**: Bottom of the page below main content.
+- **Content**: About text, quick info list, embedded map.
+
 ---
 
 ## 5. State Management (NgRx)

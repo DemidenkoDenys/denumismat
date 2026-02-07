@@ -324,4 +324,37 @@ body.theme-dark {
       background: #2563eb;
     }
   }
+
+  /* Page Footer */
+  .page-footer {
+    background-image: url('https://img.freepik.com/premium-photo/gold-coins-scattered-dark-background_483511-2306.jpg');
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: 100% auto;
+    background-color: #0f172a;
+    background-attachment: fixed;
+    border-top-color: #334155;
+    color: #e2e8f0;
+
+    &::before {
+      background: rgba(15, 23, 42, 0.9);
+    }
+  }
+
+  .page-footer__text,
+  .page-footer__list {
+    color: #94a3b8;
+  }
+
+  .page-footer__link {
+    color: #60a5fa;
+
+    &:hover {
+      color: #93c5fd;
+    }
+  }
+
+  .page-footer__map iframe {
+    filter: invert(1) hue-rotate(180deg) saturate(1.1) brightness(0.9);
+  }
 }

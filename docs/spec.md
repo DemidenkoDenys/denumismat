@@ -139,6 +139,10 @@ denumismat/
 - **Inputs:** `count`, `totalWeight`
 - **Outputs:** `onBook`, `onOrder`
 
+#### FooterComponent
+- **Purpose:** Page footer at the bottom of the layout
+- **Features:** About section, info list, embedded map
+
 ---
 
 ## Features

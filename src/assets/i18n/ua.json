@@ -21,6 +21,20 @@
     "book": "Бронювати",
     "order": "Замовити"
   },
+  "pageFooter": {
+    "aboutTitle": "Про мене",
+    "aboutText": "Незалежний нумізмат, який допомагає знаходити рідкісні європейські монети.",
+    "linkGaleriaSavaria": "Galeria Savaria",
+    "linkVatera": "Vatera",
+    "linkAukro": "Aukro",
+    "linkEbay": "eBay",
+    "infoTitle": "Доставка",
+    "infoItemOne": "Обробка: 1-2 робочі дні",
+    "infoItemTwo": "Доставка: 5-10 робочих днів",
+    "infoItemThree": "Трек-номер включено",
+    "infoItemFour": "Безкоштовна доставка від $100",
+    "mapTitle": "Особисто можна забрати за адресою"
+  },
   "filters": {
     "countryPlaceholder": "Країна",
     "tag": {

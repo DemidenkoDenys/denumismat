@@ -5,6 +5,7 @@ import { IntroductionComponent } from './components/introduction/introduction';
 import { FiltersComponent } from './components/filters/filters';
 import { CoinGridComponent } from './components/coins/coin-grid';
 import { SelectionBarComponent } from './components/selection-bar/selection-bar';
+import { FooterComponent } from './components/footer/footer';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { SelectionBarComponent } from './components/selection-bar/selection-bar'
       <app-coin-grid #coinGrid [filters]="filters()" (selectedSummary)="handleSelectionSummary($event)"></app-coin-grid>
       <app-selection-bar [count]="selectedCount()" [totalWeight]="selectedWeight()" (onReset)="handleReset()"></app-selection-bar>
     </main>
+    <app-footer></app-footer>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -31,6 +33,7 @@ import { SelectionBarComponent } from './components/selection-bar/selection-bar'
     FiltersComponent,
     CoinGridComponent,
     SelectionBarComponent,
+    FooterComponent,
 
   ]
 })
