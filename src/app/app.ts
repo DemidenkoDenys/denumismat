@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, ViewChild } from '@angular/core';
 // Note: TranslateModule is configured in bootstrap providers (main.ts)
 import { HeaderComponent, type Language } from './components/header/header';
 import { IntroductionComponent } from './components/introduction/introduction';
@@ -18,9 +18,9 @@ import { FooterComponent } from './components/footer/footer';
 
     <main>
       <app-introduction></app-introduction>
-      <app-filters (filterChange)="handleFilters($event)"></app-filters>
-      <app-coin-grid (selectedSummary)="handleSelectionSummary($event)"></app-coin-grid>
-      <app-footer [count]="selectedCount()" [totalWeight]="selectedWeight()"></app-footer>
+      <app-filters [selectedCount]="selectedCount()" (filterChange)="handleFilters($event)"></app-filters>
+      <app-coin-grid #coinGrid [filters]="filters()" (selectedSummary)="handleSelectionSummary($event)"></app-coin-grid>
+      <app-footer [count]="selectedCount()" [totalWeight]="selectedWeight()" (onReset)="handleReset()"></app-footer>
     </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,10 +35,12 @@ import { FooterComponent } from './components/footer/footer';
   ]
 })
 export class App {
+  @ViewChild('coinGrid') coinGrid: any;
   searchQuery = signal('');
   currentLanguage = signal<Language>('en');
   selectedCount = signal(0);
   selectedWeight = signal(0);
+  filters = signal<any>(null);
 
   handleSearch(query: string): void {
     this.searchQuery.set(query);
@@ -51,12 +53,17 @@ export class App {
   }
 
   handleFilters(filters: any): void {
-    // Placeholder: dispatch to store or update local signals
-    console.log('Filters changed', filters);
+    this.filters.set(filters);
   }
 
   handleSelectionSummary(summary: { ids: string[]; totalWeight: number }) {
     this.selectedCount.set(summary.ids.length);
     this.selectedWeight.set(Math.round(summary.totalWeight));
+  }
+
+  handleReset() {
+    if (this.coinGrid) {
+      this.coinGrid.resetTrigger.update((v: number) => v + 1);
+    }
   }
 }

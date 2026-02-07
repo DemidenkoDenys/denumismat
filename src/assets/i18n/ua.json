@@ -9,33 +9,31 @@
     "details": "Деталі",
     "hide": "Приховати",
     "select": "Вибрати монету",
-    "price": "{price} USD",
-    "weight": "{weight} g",
+    "price": "$ {{price}}",
+    "weight": "{{weight}} g",
     "booked": "Заброньовано"
   },
   "footer": {
-    "selected": "Вибрано: {count}",
-    "totalWeight": "Загальна вага: {weight} g",
+    "selected": "Вибрано: {{count}}",
+    "totalWeightLabel": "Загальна вага:",
+    "totalWeightUnit": "грамів",
+    "reset": "Скинути",
     "book": "Бронювати",
     "order": "Замовити"
   },
   "filters": {
     "countryPlaceholder": "Країна",
-    "priceMin": "Мін ціна",
-    "priceMax": "Макс ціна",
-    "tags": "Теги",
     "tag": {
       "UNC": "UNC",
       "Rare": "Рідкісне",
-      "Sale": "Знижка"
+      "Sale": "Знижка",
+      "Selected": "Вибрані"
     }
-  }
-  ,
+  },
   "introduction": {
     "title": "Досліджуйте історичні та рідкісні монети",
     "subtitle": "Переглядайте, фільтруйте та бронюйте монети з усього світу"
-  }
-  ,
+  },
   "grid": {
     "ariaLabel": "Сітка монет"
   }

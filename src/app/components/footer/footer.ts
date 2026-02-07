@@ -13,10 +13,15 @@ import { TranslateModule } from '@ngx-translate/core';
         <div class="action-footer__inner">
           <div class="action-footer__metrics">
             <span class="action-footer__count">{{ 'footer.selected' | translate:{ count: count() } }}</span>
-            <span class="action-footer__weight">{{ 'footer.totalWeight' | translate:{ weight: totalWeight() } }}</span>
+            <span class="action-footer__weight">
+              <span class="action-footer__weight-label">{{ 'footer.totalWeightLabel' | translate }}</span>
+              <span class="action-footer__weight-value">{{ totalWeight() }}</span>
+              <span class="action-footer__weight-unit">{{ 'footer.totalWeightUnit' | translate }}</span>
+            </span>
           </div>
 
           <div class="action-footer__actions">
+            <button class="btn btn--ghost" (click)="handleReset()">{{ 'footer.reset' | translate }}</button>
             <button class="btn btn--ghost" (click)="handleBook()">{{ 'footer.book' | translate }}</button>
             <button class="btn btn--primary" (click)="handleOrder()">{{ 'footer.order' | translate }}</button>
           </div>
@@ -31,8 +36,10 @@ export class FooterComponent {
 
   onBook = output<void>();
   onOrder = output<void>();
+  onReset = output<void>();
 
   // wire template clicks to outputs
   handleBook() { this.onBook.emit(); }
   handleOrder() { this.onOrder.emit(); }
+  handleReset() { this.onReset.emit(); }
 }

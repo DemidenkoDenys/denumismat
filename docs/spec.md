@@ -28,6 +28,9 @@ Denumismat is a modern Angular-based coin catalog application designed for manag
 - Interactive coin selection
 - User-friendly interface
 
+### Styling Guidelines
+- Implement new styles for both light and dark themes when applicable. If a change is not explicitly theme-specific, apply it to light and dark modes.
+
 ---
 
 ## Project Structure

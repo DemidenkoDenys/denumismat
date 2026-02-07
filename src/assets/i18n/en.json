@@ -9,34 +9,32 @@
     "details": "Details",
     "hide": "Hide",
     "select": "Select coin",
-    "price": "{price} USD",
-    "weight": "{weight} g",
+    "price": "$ {{price}}",
+    "weight": "{{weight}} g",
     "booked": "Booked"
   },
   "footer": {
-    "selected": "Selected: {count}",
-    "totalWeight": "Total weight: {weight} g",
+    "selected": "Selected: {{count}}",
+    "totalWeightLabel": "Total weight:",
+    "totalWeightUnit": "gramm",
+    "reset": "Reset",
     "book": "Book",
     "order": "Order"
   },
   "filters": {
     "countryPlaceholder": "Country",
-    "priceMin": "Min price",
-    "priceMax": "Max price",
-    "tags": "Tags",
     "tag": {
-      "UNC": "UNC",
-      "Rare": "Rare",
-      "Sale": "Sale"
+        "UNC": "UNC",
+        "Rare": "Rare",
+        "Sale": "Sale",
+        "Selected": "Selected"
+    },
+    "introduction": {
+      "title": "Explore historical and rare coins",
+      "subtitle": "Browse, filter and book coins from around the world"
+    },
+    "grid": {
+      "ariaLabel": "Coin grid"
     }
-  }
-  ,
-  "introduction": {
-    "title": "Explore historical and rare coins",
-    "subtitle": "Browse, filter and book coins from around the world"
-  }
-  ,
-  "grid": {
-    "ariaLabel": "Coin grid"
   }
 }

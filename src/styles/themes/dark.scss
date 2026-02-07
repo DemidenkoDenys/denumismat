@@ -4,40 +4,25 @@
  * Applied when the 'theme-dark' class is added to the body element.
  *
  * Color Palette:
- * - Primary: #64B5F6 (Light Blue)
- * - Primary Dark: #42A5F5
- * - Secondary: #90CAF9
- * - Background: #121212 (Very Dark)
- * - Surface: #1E1E1E (Dark)
- * - Border: #424242 (Medium Dark)
- * - Text: #E0E0E0 (Light Gray)
- * - Text Light: #B0B0B0
- * - Text Muted: #757575 (Medium Gray)
- *
- * Usage:
- * 1. Add 'theme-dark' class to body element to activate
- * 2. Remove 'theme-dark' class from body element to deactivate
- *
- * @example
- * // Activate dark theme
- * document.body.classList.add('theme-dark');
- *
- * @example
- * // Deactivate dark theme
- * document.body.classList.remove('theme-dark');
+ * - Primary: #3b82f6 (Blue)
+ * - Primary Dark: #2563eb
+ * - Background: #0f172a (Very Dark)
+ * - Surface: #1e293b (Dark)
+ * - Border: #334155 (Medium Dark)
+ * - Text: #f1f5f9 (Light Gray)
+ * - Text Muted: #94a3b8 (Medium Gray)
  */
 
 /* Dark Theme Root Color Variables */
 body.theme-dark {
-  --color-primary: #64B5F6;
-  --color-primary-dark: #42A5F5;
-  --color-secondary: #90CAF9;
-  --color-background: #121212;
-  --color-surface: #1E1E1E;
-  --color-border: #424242;
-  --color-text: #E0E0E0;
-  --color-text-light: #B0B0B0;
-  --color-text-muted: #757575;
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-text: #f1f5f9;
+  --color-text-light: #cbd5e1;
+  --color-text-muted: #94a3b8;
 }
 
 /* Dark Theme Component Overrides */
@@ -45,142 +30,298 @@ body.theme-dark {
   background-color: var(--color-background);
   color: var(--color-text);
 
-  /* Header */
-  .header {
-    background-color: var(--color-surface);
-    border-bottom-color: var(--color-border);
-  }
-
-  .header__search-input {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: var(--color-border);
-    color: var(--color-text);
-
-    &:focus {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
-    }
-
-    &::placeholder {
-      color: var(--color-text-muted);
-    }
-  }
-
-  .header__language-btn {
-    border-color: var(--color-border);
-    color: var(--color-text);
-
-    &:hover {
-      border-color: var(--color-primary);
-      background-color: rgba(100, 181, 246, 0.08);
-    }
-  }
-
-  .header__language-menu {
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
-  }
-
-  .header__language-option {
-    color: var(--color-text);
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.08);
-    }
-
-    &.active {
-      background-color: rgba(100, 181, 246, 0.15);
-      color: var(--color-primary);
-    }
-  }
-
   /* Introduction */
-  .introduction__background {
-    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  .introduction {
+    border-bottom-color: #334155;
+  }
+
+  .introduction__title {
+    color: #f1f5f9;
+  }
+
+  .introduction__subtitle {
+    color: #94a3b8;
   }
 
   /* Filters */
   .filters {
-    background: var(--color-surface);
-    border-bottom-color: var(--color-border);
+    background: #0f172a;
+    border-bottom-color: #334155;
   }
 
   .filters__label {
-    color: var(--color-text-muted);
+    color: #94a3b8;
   }
 
   .filters__input {
-    background-color: transparent;
-    border-bottom-color: var(--color-border);
-    color: var(--color-text);
+    background: #0f172a;
+    border-color: #334155;
+    color: #f1f5f9;
+
+    &:hover {
+      background: #1e293b;
+      border-color: #475569;
+    }
 
     &:focus {
-      border-bottom-color: var(--color-primary);
+      background: #1e293b;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    &::placeholder {
+      color: #64748b;
     }
   }
 
-  .filters__range input[type="range"] {
-    background: var(--color-border);
+  .filters__range-track {
+    background: #334155;
+  }
+
+  .filters__range-fill {
+    background: #3b82f6;
+  }
+
+  .filters__range-input {
+    &::-webkit-slider-thumb {
+      background: #1e293b;
+      border: 3px solid #3b82f6;
+
+      &:hover {
+        background: #334155;
+        border-width: 3px;
+      }
+
+      &:active {
+        background: #1e293b;
+      }
+    }
+
+    &::-moz-range-thumb {
+      background: #1e293b;
+      border: 3px solid #3b82f6;
+
+      &:hover {
+        background: #334155;
+        border-width: 3px;
+      }
+
+      &:active {
+        background: #1e293b;
+      }
+    }
+  }
+
+  .filters__range-values {
+    color: #94a3b8;
   }
 
   .filters__tag {
-    border-color: var(--color-border);
-    color: var(--color-text);
+    border-color: #334155;
+    color: #cbd5e1;
+    background: #1e293b;
+
+    &:hover {
+      border-color: #475569;
+      background: #243349;
+      color: #e2e8f0;
+    }
 
     &.active {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: #fff;
+      background: #243349;
+      border-color: #475569;
+      color: #e2e8f0;
+    }
+  }
+
+  .filters__tag--unc {
+    border-color: #9ca3af;
+    color: #e2e8f0;
+
+    &:hover {
+      border-color: #9ca3af;
+      background: #334155;
+      color: #f8fafc;
+    }
+
+    &.active {
+      background: #6b7280;
+      border-color: #6b7280;
+      color: #ffffff;
+    }
+  }
+
+  .filters__tag--rare {
+    border-color: #f97316;
+    color: #fed7aa;
+
+    &:hover {
+      border-color: #f97316;
+      background: #3b1f0e;
+      color: #ffedd5;
+    }
+
+    &.active {
+      background: #f97316;
+      border-color: #f97316;
+      color: #ffffff;
+    }
+  }
+
+  .filters__tag--sale {
+    border-color: #22c55e;
+    color: #bbf7d0;
+
+    &:hover {
+      border-color: #22c55e;
+      background: #0f2a1c;
+      color: #dcfce7;
+    }
+
+    &.active {
+      background: #22c55e;
+      border-color: #22c55e;
+      color: #ffffff;
+    }
+  }
+
+  .filters__tag--selected {
+    border-color: #3b82f6;
+    color: #93c5fd;
+    margin-left: auto;
+
+    &:hover {
+      border-color: #3b82f6;
+      background: #0f172a;
+      color: #bfdbfe;
+    }
+
+    &.active {
+      background: #3b82f6;
+      border-color: #3b82f6;
+      color: #ffffff;
     }
   }
 
   /* Coin Grid */
   .coin-card {
-    background-color: var(--color-surface);
-    border-color: var(--color-border);
+    background-color: transparent;
+    border-color: #334155;
+    border-width: 1px;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.45);
+    }
+
+    &.selected {
+      background: #0f172a;
+      border-color: #3b82f6;
+      border-width: 1px;
+    }
+
+    &.selected:hover {
+      border-color: #3b82f6;
+      border-width: 1px;
+    }
+  }
+
+  .coin-card__media {
+    background: #0f172a;
   }
 
   .coin-card__title {
-    color: var(--color-text);
+    color: #f1f5f9;
+  }
+
+  .coin-card__year {
+    color: #2563eb;
   }
 
   .coin-card__price {
-    color: var(--color-text-light);
+    color: #cbd5e1;
   }
 
   .coin-card__toggle {
-    color: var(--color-primary);
+    color: #3b82f6;
+
+    &:hover {
+      color: #60a5fa;
+    }
   }
 
   .coin-card__details {
-    color: var(--color-text-muted);
+    border-top-color: #334155;
+    color: #94a3b8;
+  }
+
+  .coin-card__select {
+    background: rgba(15, 23, 42, 0.7);
+    box-shadow: none;
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.85);
+    }
+  }
+
+  .coin-card__select input[type='checkbox'] {
+    &:checked {
+      background: rgba(59, 130, 246, 0.3);
+    }
+  }
+
+  .coin-card__spinner {
+    border-color: #334155;
+    border-top-color: #3b82f6;
   }
 
   /* Footer */
   .action-footer {
-    background: rgba(30, 30, 30, 0.95);
-    border-color: var(--color-border);
+    background: rgba(30, 41, 59, 0.98);
+    backdrop-filter: blur(10px);
+    border-color: #334155;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.3);
   }
 
   .action-footer__metrics {
-    color: var(--color-text-muted);
+    color: #cbd5e1;
+  }
+
+  .action-footer__count {
+    color: #f97316;
+  }
+
+  .action-footer__weight {
+    color: #94a3b8;
+  }
+
+  .action-footer__weight-label {
+    color: #94a3b8;
+  }
+
+  .action-footer__weight-value {
+    color: #f97316;
+  }
+
+  .action-footer__weight-unit {
+    color: #f97316;
   }
 
   .btn--ghost {
-    border-color: var(--color-border);
-    color: var(--color-text);
+    border-color: #334155;
+    color: #cbd5e1;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.08);
+      background: #334155;
+      border-color: #475569;
     }
   }
 
   .btn--primary {
-    background: var(--color-primary);
-    color: #fff;
+    background: #3b82f6;
+    color: #ffffff;
 
     &:hover {
-      background: var(--color-primary-dark);
+      background: #2563eb;
     }
   }
 }

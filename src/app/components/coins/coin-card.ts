@@ -10,7 +10,6 @@ export interface Coin {
   weight: number;
   description: string;
   imageUrl: string;
-  highResUrl?: string;
   category: string[];
   country: string;
   isBooked: boolean;
@@ -21,7 +20,7 @@ export interface Coin {
  *
  * Displays a coin card with:
  * - Selectable entire card area
- * - Coin image with high-res preview on hover
+ * - Coin image thumbnail
  * - Coin details (name, year, price)
  * - Expandable details section
  * - Selection checkbox
@@ -52,21 +51,39 @@ export interface Coin {
           [attr.aria-label]="'coin.select' | translate" />
       </label>
 
-      <div class="coin-card__media" (mouseenter)="loadHighRes()" (mouseleave)="cancelPreview()">
-        <img [src]="currentSrc()" alt="{{ coin().name }} thumbnail" class="coin-card__image" />
-        <div *ngIf="isLoading()" class="coin-card__spinner" aria-hidden="true"></div>
+      <div class="coin-card__media">
+        <img [src]="coin().imageUrl" alt="{{ coin().name }} thumbnail" class="coin-card__image" />
+        <div class="coin-card__tags">
+          @for (tag of coin().category; track tag) {
+            <span
+              class="coin-card__tag"
+              [class.coin-card__tag--unc]="tag === 'UNC'"
+              [class.coin-card__tag--rare]="tag === 'Rare'"
+              [class.coin-card__tag--sale]="tag === 'Sale'">
+              {{ ('filters.tag.' + tag) | translate }}
+            </span>
+          }
+        </div>
+        <span class="coin-card__price-badge">{{ 'coin.price' | translate:{ price: (coin().price | number:'1.0-2') } }}</span>
       </div>
 
       <div class="coin-card__body">
-        <h3 class="coin-card__title">{{ coin().name }} <span class="coin-card__year">({{ coin().year }})</span></h3>
-        <p class="coin-card__price">{{ 'coin.price' | translate:{ price: (coin().price | number:'1.0-2') } }}</p>
-
-        <button
-          type="button"
-          class="coin-card__toggle"
-          (click)="$event.stopPropagation(); toggleDetails()">
-          {{ detailsOpen() ? ('coin.hide' | translate) : ('coin.details' | translate) }}
-        </button>
+        <h3 class="coin-card__title">{{ coin().name }}</h3>
+        <div class="coin-card__meta">
+          <p class="coin-card__year">{{ coin().year }}</p>
+          <button
+            type="button"
+            class="coin-card__toggle"
+            [class.coin-card__toggle--open]="detailsOpen()"
+            (click)="$event.stopPropagation(); toggleDetails()">
+            <span class="coin-card__toggle-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="sr-only">{{ detailsOpen() ? ('coin.hide' | translate) : ('coin.details' | translate) }}</span>
+          </button>
+        </div>
 
         @if (detailsOpen()) {
           <div class="coin-card__details">
@@ -85,18 +102,6 @@ export class CoinCardComponent {
   selectedChange = output<boolean>();
 
   detailsOpen = signal(false);
-  isLoading = signal(false);
-  highResLoaded = signal(false);
-  currentSrc = signal<string>('');
-
-  private highResTimeout: any = null;
-
-  ngOnInit() {
-    const img = this.coin().imageUrl;
-    if (img) {
-      this.currentSrc.set(img);
-    }
-  }
 
   toggleDetails() {
     this.detailsOpen.update(v => !v);
@@ -107,26 +112,4 @@ export class CoinCardComponent {
     this.selectedChange.emit(next);
   }
 
-  loadHighRes() {
-    if (!this.coin() || this.highResLoaded()) return;
-    this.isLoading.set(true);
-    // simulate async high-res load
-    this.highResTimeout = setTimeout(() => {
-      const hr = this.coin().highResUrl ?? this.coin().imageUrl;
-      this.currentSrc.set(hr);
-      this.isLoading.set(false);
-      this.highResLoaded.set(true);
-    }, 700);
-  }
-
-  cancelPreview() {
-    if (this.highResTimeout) {
-      clearTimeout(this.highResTimeout);
-      this.highResTimeout = null;
-    }
-    if (this.highResLoaded()) return;
-    this.isLoading.set(false);
-    // revert to thumbnail
-    if (this.coin().imageUrl) this.currentSrc.set(this.coin().imageUrl);
-  }
 }
