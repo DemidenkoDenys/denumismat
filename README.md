@@ -1,53 +1,122 @@
-# Project Specification: Denumismat Single Page Catalog-Shop
+# Denumismat - Single Page Coin Catalog & Shop
 
-## 1. Short Summary
-"Denumismat" it's single-page Angular interactive application for browsing coins in separate blocks grid with filtering and ability to order or book coins. Application is localized, have google/mail login feature (without separate page).
+Denumismat is a high-performance, single-page Angular application for browsing, filtering, and ordering coins. It features a responsive grid, real-time filtering, and deep integration with Firebase for data and image storage.
 
-## 2. Technical Stack
-- **Framework:** Angular 19+ (Standalone Components)
-- **State Management:** NGRX store
-- **Styling:** SCSS
-- **Themes:** Dark | Light | Blue
-- **Icons:** Lucide-Angular or Heroicons
-- **Change Detection:** OnPush Strategy
-- **Data storage:** Firebase Cloud Firestore
-- **Image storage:** Firebase Cloud Storage
-- **Localization:** Angular i18n localization
+---
 
-## 3. Components Architecture
+## 1. Technical Stack
 
-### A. Header
-- **Title:** Bit text "Denumismat" that is shimmer on hover to the left. Search field to the right. "Country flag icon" to the very right position with dropdown list (country icon + country name).
-- **Position:** Placed at the very top of the page and sticky on scrolling.
+- **Framework**: Angular 19+ (Standalone Components)
+- **State Management**: NgRx Store (Signal-based)
+- **Styling**: SCSS (Mobile-first, Responsive)
+- **Change Detection**: `OnPush` Strategy
+- **Backend**:
+  - **Database**: Firebase Cloud Firestore
+  - **Storage**: Firebase Cloud Storage
+- **Auth**: Google/Email Firebase Authentication (Modal/In-page)
+- **Localization**: Angular i18n
+- **Icons**: Lucide-Angular / Heroicons
+- **Theming**: Dark, Light, and Blue themes
 
-### B. Inroduction section
-- **Content:** Contain inroductory text.
-- **Position:** Placed between header and filters section. Not sticky. Height is 60% of the screen height.
+---
 
-### C. Filters section
-- **Content:** Filter fields with readtime list section update. text "(filter icon) Filter:" to the left. Text field "Country". Range slider for "Price". Buttons group: "UNC", "Rare", "Sale".
-- **State:** Use a ngrx store to store selected filters
-- **Position:** Sticky when reach under the header position on scrolling.
+## 2. Project Structure
+
+```text
+src/
+├── app/
+│   ├── components/       # Shared UI components
+│   ├── services/         # Firestore, Storage, Auth services
+│   ├── state/            # NgRx Store (Actions, Reducers, Selectors)
+│   ├── config/           # Firebase and App configuration
+│   ├── models/           # TypeScript Interfaces/Types
+│   ├── app.ts            # Root Component
+│   ├── app.routes.ts     # Routing configuration
+│   └── app.config.ts     # App-wide providers
+├── environments/         # Environment variables
+└── assets/               # Local static assets & i18n files
+```
+
+---
+
+## 3. Core Data Models
+
+### `Coin` Interface
+```typescript
+interface Coin {
+  id: string;
+  name: string;
+  year: number;
+  price: number;
+  weight: number;      // in grams
+  description: string;
+  imageUrl: string;    // Thumbnail/Low-res
+  highResUrl?: string; // High-res for hover preview
+  category: string[];  // e.g., ['UNC', 'Rare', 'Sale']
+  country: string;
+  isBooked: boolean;
+}
+```
+
+### `FilterState`
+```typescript
+interface FilterState {
+  searchQuery: string;
+  country: string | null;
+  priceRange: [number, number];
+  tags: string[]; // ['UNC', 'Rare', 'Sale']
+}
+```
+
+---
+
+## 4. Component Architecture & Logic
+
+### A. Header (Sticky)
+- **Brand**: "Denumismat" text with a shimmer effect on hover.
+- **Search**: Integrated search field affecting the grid in real-time.
+- **Localization**: Flag icon with a dropdown for language selection.
+
+### B. Introduction Section
+- **UI**: Large hero-style section (60% viewport height).
+- **Behavior**: Non-sticky, fades out or scrolls away.
+
+### C. Filters Section (Sticky)
+- **Sticky Trigger**: Locks under the Header when scrolled.
+- **Controls**:
+  - Country free text input.
+  - Price range slider.
+  - Toggle buttons for categories (UNC, Rare, Sale).
+- **State**: Directly syncs with NgRx Store.
 
 ### D. Interactive Coin Grid
-A responsive grid (1 col mobile, 3-4 cols desktop) of `List` components.
-Each card includes:
-- **Core Info:** Coin image, Name, Year, Price, Collapsable: descripion with list, numeric field with apply icon, text field.
-- **Selection:** A checkbox or a clickable card state to "select" the coin.
-- **Advanced Preview Logic:**
-    - **Trigger:** Hover on image.
-    - **Action (On Hover):**
-        1. The image container expands (scale effect).
-        2. A loading spinner appears in the center of the image.
-        3. Start an asynchronous load of a high-resolution version of the image from firebase.
-        4. **Completion:** Once the high-res image is fully loaded, replace the thumbnail and hide the spinner.
-        5. **Transition:** Use smooth CSS transitions for expansion and opacity fades for image swapping.
+- **Layout**: Responsive (1 col Mobile -> 4 cols Desktop).
+- **Coin Card Features**:
+  - **Hover Preview**: Scale effect + Loading spinner + Async load of high-res image from Firebase.
+  - **Expandable Info**: Detailed description, numeric quantity field, and comments.
+  - **Selection**: Clickable card state or checkbox to add to selection.
 
-### E. Conditional Footer Bar
-- **Visibility:** Hidden by default.
-- **Trigger:** Becomes visible only when `selectedCoins.length > 0`.
-- **Functionality:** - Displays "Selected: X coins / X gramms".
-    - Buttons: [Book] [Order].
-- **Animation:** Slide-up animation from the bottom of the viewport.
-- **Psition:** Sticky to the bottom with 100 px margin to the left, right and bottom.
-- **Size:** 200 px height and full screen (except margins).
+### E. Action Footer Bar (Conditional)
+- **Visibility**: Visible only when `selectedCoins.length > 0`.
+- **Animation**: Smooth slide-up from bottom.
+- **Metrics**: Displays total count and total weight.
+- **Actions**: [Book] and [Order] buttons.
+- **Positioning**: Floating with 100px margins from edges.
+
+---
+
+## 5. State Management (NgRx)
+
+- **Coins State**: Stores the list of coins fetched from Firestore.
+- **Filter State**: Manages current filtering criteria.
+- **Selection State**: Tracks IDs of selected coins for the Footer Bar.
+- **UI State**: Theme selection, Loading states.
+
+---
+
+## 6. Implementation Notes
+
+- **Performance**: Use `trackBy` in loops and `OnPush` change detection.
+- **Theming**: Implemented via CSS Variables (Root classes like `.theme-dark`).
+- **Firebase**: Use `angular/fire` for reactive data streams.
+- **Images**: Implement lazy loading and high-res swapping logic in a dedicated directive or component.
