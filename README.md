@@ -1,59 +1,53 @@
-# Denumismat
+# Project Specification: Denumismat Single Page Catalog-Shop
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.3.
+## 1. Short Summary
+"Denumismat" it's single-page Angular interactive application for browsing coins in separate blocks grid with filtering and ability to order or book coins. Application is localized, have google/mail login feature (without separate page).
 
-## Development server
+## 2. Technical Stack
+- **Framework:** Angular 19+ (Standalone Components)
+- **State Management:** NGRX store
+- **Styling:** SCSS
+- **Themes:** Dark | Light | Blue
+- **Icons:** Lucide-Angular or Heroicons
+- **Change Detection:** OnPush Strategy
+- **Data storage:** Firebase Cloud Firestore
+- **Image storage:** Firebase Cloud Storage
+- **Localization:** Angular i18n localization
 
-To start a local development server, run:
+## 3. Components Architecture
 
-```bash
-ng serve
-```
+### A. Header
+- **Title:** Bit text "Denumismat" that is shimmer on hover to the left. Search field to the right. "Country flag icon" to the very right position with dropdown list (country icon + country name).
+- **Position:** Placed at the very top of the page and sticky on scrolling.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### B. Inroduction section
+- **Content:** Contain inroductory text.
+- **Position:** Placed between header and filters section. Not sticky. Height is 60% of the screen height.
 
-## Code scaffolding
+### C. Filters section
+- **Content:** Filter fields with readtime list section update. text "(filter icon) Filter:" to the left. Text field "Country". Range slider for "Price". Buttons group: "UNC", "Rare", "Sale".
+- **State:** Use a ngrx store to store selected filters
+- **Position:** Sticky when reach under the header position on scrolling.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### D. Interactive Coin Grid
+A responsive grid (1 col mobile, 3-4 cols desktop) of `List` components.
+Each card includes:
+- **Core Info:** Coin image, Name, Year, Price, Collapsable: descripion with list, numeric field with apply icon, text field.
+- **Selection:** A checkbox or a clickable card state to "select" the coin.
+- **Advanced Preview Logic:**
+    - **Trigger:** Hover on image.
+    - **Action (On Hover):**
+        1. The image container expands (scale effect).
+        2. A loading spinner appears in the center of the image.
+        3. Start an asynchronous load of a high-resolution version of the image from firebase.
+        4. **Completion:** Once the high-res image is fully loaded, replace the thumbnail and hide the spinner.
+        5. **Transition:** Use smooth CSS transitions for expansion and opacity fades for image swapping.
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### E. Conditional Footer Bar
+- **Visibility:** Hidden by default.
+- **Trigger:** Becomes visible only when `selectedCoins.length > 0`.
+- **Functionality:** - Displays "Selected: X coins / X gramms".
+    - Buttons: [Book] [Order].
+- **Animation:** Slide-up animation from the bottom of the viewport.
+- **Psition:** Sticky to the bottom with 100 px margin to the left, right and bottom.
+- **Size:** 200 px height and full screen (except margins).
