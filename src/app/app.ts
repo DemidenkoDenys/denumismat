@@ -4,7 +4,7 @@ import { HeaderComponent, type Language } from './components/header/header';
 import { IntroductionComponent } from './components/introduction/introduction';
 import { FiltersComponent } from './components/filters/filters';
 import { CoinGridComponent } from './components/coins/coin-grid';
-import { FooterComponent } from './components/footer/footer';
+import { SelectionBarComponent } from './components/selection-bar/selection-bar';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,7 @@ import { FooterComponent } from './components/footer/footer';
       <app-introduction></app-introduction>
       <app-filters [selectedCount]="selectedCount()" (filterChange)="handleFilters($event)"></app-filters>
       <app-coin-grid #coinGrid [filters]="filters()" (selectedSummary)="handleSelectionSummary($event)"></app-coin-grid>
-      <app-footer [count]="selectedCount()" [totalWeight]="selectedWeight()" (onReset)="handleReset()"></app-footer>
+      <app-selection-bar [count]="selectedCount()" [totalWeight]="selectedWeight()" (onReset)="handleReset()"></app-selection-bar>
     </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,7 +30,7 @@ import { FooterComponent } from './components/footer/footer';
     IntroductionComponent,
     FiltersComponent,
     CoinGridComponent,
-    FooterComponent,
+    SelectionBarComponent,
 
   ]
 })

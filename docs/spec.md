@@ -130,7 +130,7 @@ denumismat/
 - **Inputs:** `coin`, `selected`
 - **Outputs:** `selectedChange`
 
-#### FooterComponent
+#### SelectionBarComponent
 - **Purpose:** Floating action bar
 - **Features:**
   - Selected coin count display

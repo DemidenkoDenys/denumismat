@@ -13,7 +13,7 @@
     "weight": "{{weight}} g",
     "booked": "Booked"
   },
-  "footer": {
+  "selectionBar": {
     "selected": "Selected: {{count}}",
     "totalWeightLabel": "Total weight:",
     "totalWeightUnit": "gramm",

@@ -13,7 +13,7 @@
     "weight": "{{weight}} g",
     "booked": "Заброньовано"
   },
-  "footer": {
+  "selectionBar": {
     "selected": "Вибрано: {{count}}",
     "totalWeightLabel": "Загальна вага:",
     "totalWeightUnit": "грамів",

@@ -96,7 +96,7 @@ interface FilterState {
   - **Expandable Info**: Detailed description, numeric quantity field, and comments.
   - **Selection**: Clickable card state or checkbox to add to selection.
 
-### E. Action Footer Bar (Conditional)
+### E. Selection Bar (Conditional)
 - **Visibility**: Visible only when `selectedCoins.length > 0`.
 - **Animation**: Smooth slide-up from bottom.
 - **Metrics**: Displays total count and total weight.
@@ -109,7 +109,7 @@ interface FilterState {
 
 - **Coins State**: Stores the list of coins fetched from Firestore.
 - **Filter State**: Manages current filtering criteria.
-- **Selection State**: Tracks IDs of selected coins for the Footer Bar.
+- **Selection State**: Tracks IDs of selected coins for the Selection Bar.
 - **UI State**: Theme selection, Loading states.
 
 ---

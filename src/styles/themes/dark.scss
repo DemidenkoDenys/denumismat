@@ -274,35 +274,35 @@ body.theme-dark {
     border-top-color: #3b82f6;
   }
 
-  /* Footer */
-  .action-footer {
+  /* Selection Bar */
+  .selection-bar {
     background: rgba(30, 41, 59, 0.98);
     backdrop-filter: blur(10px);
     border-color: #334155;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.3);
   }
 
-  .action-footer__metrics {
+  .selection-bar__metrics {
     color: #cbd5e1;
   }
 
-  .action-footer__count {
+  .selection-bar__count {
     color: #f97316;
   }
 
-  .action-footer__weight {
+  .selection-bar__weight {
     color: #94a3b8;
   }
 
-  .action-footer__weight-label {
+  .selection-bar__weight-label {
     color: #94a3b8;
   }
 
-  .action-footer__weight-value {
+  .selection-bar__weight-value {
     color: #f97316;
   }
 
-  .action-footer__weight-unit {
+  .selection-bar__weight-unit {
     color: #f97316;
   }
 
