@@ -19,9 +19,23 @@ import { FooterComponent } from './components/footer/footer';
 
     <main>
       <app-introduction></app-introduction>
-      <app-filters [selectedCount]="selectedCount()" (filterChange)="handleFilters($event)"></app-filters>
-      <app-coin-grid #coinGrid [filters]="filters()" (selectedSummary)="handleSelectionSummary($event)"></app-coin-grid>
-      <app-selection-bar [count]="selectedCount()" [totalWeight]="selectedWeight()" (onReset)="handleReset()"></app-selection-bar>
+      <app-filters
+        [selectedCount]="selectedCount()"
+        [priceBounds]="priceBounds()"
+        [priceRange]="priceRange()"
+        (filterChange)="handleFilters($event)">
+      </app-filters>
+      <app-coin-grid
+        #coinGrid
+        [filters]="filters()"
+        (selectedSummary)="handleSelectionSummary($event)"
+        (priceBoundsChange)="handlePriceBoundsChange($event)">
+      </app-coin-grid>
+      <app-selection-bar
+        [count]="selectedCount()"
+        [totalWeight]="selectedWeight()"
+        [totalPrice]="selectedPrice()"
+        (onReset)="handleReset()"></app-selection-bar>
     </main>
     <app-footer></app-footer>
   `,
@@ -43,7 +57,10 @@ export class App {
   currentLanguage = signal<Language>('en');
   selectedCount = signal(0);
   selectedWeight = signal(0);
+  selectedPrice = signal(0);
   filters = signal<any>(null);
+  priceBounds = signal<[number, number]>([0, 10000]);
+  priceRange = signal<[number, number]>([0, 10000]);
 
   handleSearch(query: string): void {
     this.searchQuery.set(query);
@@ -57,11 +74,24 @@ export class App {
 
   handleFilters(filters: any): void {
     this.filters.set(filters);
+    if (filters?.priceRange) {
+      this.priceRange.set(filters.priceRange);
+    }
   }
 
-  handleSelectionSummary(summary: { ids: string[]; totalWeight: number }) {
+  handleSelectionSummary(summary: { ids: string[]; totalWeight: number; totalPrice: number }) {
     this.selectedCount.set(summary.ids.length);
     this.selectedWeight.set(Math.round(summary.totalWeight));
+    this.selectedPrice.set(Number(summary.totalPrice.toFixed(2)));
+  }
+
+  handlePriceBoundsChange(bounds: [number, number]) {
+    this.priceBounds.set(bounds);
+    const [currentMin, currentMax] = this.priceRange();
+    const [min, max] = bounds;
+    if (currentMin < min || currentMax > max || (currentMin === 0 && currentMax === 10000)) {
+      this.priceRange.set([min, max]);
+    }
   }
 
   handleReset() {

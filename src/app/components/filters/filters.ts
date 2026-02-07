@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -28,20 +28,20 @@ export interface Filters {
 
         <div class="filters__group filters__group--range">
           <div class="filters__range-values">
-            <span class="filters__value">{{ priceMin() | currency:'USD':'symbol':'1.0-0' }} - {{ priceMax() | currency:'USD':'symbol':'1.0-0' }}</span>
+            <span class="filters__value">{{ priceMin() | currency:'USD':'symbol':'1.2-2' }} - {{ priceMax() | currency:'USD':'symbol':'1.2-2' }}</span>
           </div>
           <div class="filters__range-slider">
             <div class="filters__range-track"></div>
             <div
               class="filters__range-fill"
-              [style.left.%]="(priceMin() / 10000) * 100"
-              [style.width.%]="((priceMax() - priceMin()) / 10000) * 100">
+              [style.left.%]="rangeLeftPct()"
+              [style.width.%]="rangeWidthPct()">
             </div>
             <input
               type="range"
-              min="0"
-              max="10000"
-              step="100"
+              [min]="priceMinBound()"
+              [max]="priceMaxBound()"
+              step="0.1"
               [value]="priceMin()"
               (input)="onPriceMinInput($event)"
               (pointerdown)="bringMinToFront()"
@@ -51,9 +51,9 @@ export interface Filters {
             />
             <input
               type="range"
-              min="0"
-              max="10000"
-              step="100"
+              [min]="priceMinBound()"
+              [max]="priceMaxBound()"
+              step="0.1"
               [value]="priceMax()"
               (input)="onPriceMaxInput($event)"
               (pointerdown)="bringMaxToFront()"
@@ -108,6 +108,7 @@ export interface Filters {
 export class FiltersComponent {
   country = input<string | null>(null);
   priceRange = input<[number, number]>([0, 10000]);
+  priceBounds = input<[number, number]>([0, 10000]);
   tagsInput = input<string[]>([]);
 
   selectedCount = input<number>(0);
@@ -121,6 +122,32 @@ export class FiltersComponent {
   tags = signal<string[]>(this.tagsInput());
   showSelectedOnly = signal<boolean>(false);
   minOnTop = signal<boolean>(false);
+  priceMinBound = computed(() => this.priceBounds()[0]);
+  priceMaxBound = computed(() => this.priceBounds()[1]);
+  rangeSpan = computed(() => Math.max(0.01, this.priceMaxBound() - this.priceMinBound()));
+  rangeLeftPct = computed(() => ((this.priceMin() - this.priceMinBound()) / this.rangeSpan()) * 100);
+  rangeWidthPct = computed(() => ((this.priceMax() - this.priceMin()) / this.rangeSpan()) * 100);
+
+  constructor() {
+    effect(() => {
+      const [min, max] = this.priceRange();
+      this.priceMin.set(min);
+      this.priceMax.set(max);
+    });
+
+    effect(() => {
+      const minBound = this.priceMinBound();
+      const maxBound = this.priceMaxBound();
+      const nextMin = Math.max(minBound, Math.min(this.priceMin(), maxBound));
+      const nextMax = Math.max(minBound, Math.min(this.priceMax(), maxBound));
+      if (nextMin !== this.priceMin()) this.priceMin.set(nextMin);
+      if (nextMax !== this.priceMax()) this.priceMax.set(nextMax);
+      if (this.priceMin() > this.priceMax()) {
+        this.priceMin.set(minBound);
+        this.priceMax.set(maxBound);
+      }
+    });
+  }
 
   private emit() {
     this.filterChange.emit({

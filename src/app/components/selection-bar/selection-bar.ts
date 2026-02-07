@@ -12,7 +12,10 @@ import { TranslateModule } from '@ngx-translate/core';
       <div class="selection-bar" role="region" aria-live="polite">
         <div class="selection-bar__inner">
           <div class="selection-bar__metrics">
-            <span class="selection-bar__count">{{ 'selectionBar.selected' | translate:{ count: count() } }}</span>
+            <span class="selection-bar__count">
+              {{ 'selectionBar.selected' | translate:{ count: count() } }}
+              <span class="selection-bar__price">({{ totalPrice() | currency:'USD':'symbol':'1.0-2' }})</span>
+            </span>
             <span class="selection-bar__weight">
               <span class="selection-bar__weight-label">{{ 'selectionBar.totalWeightLabel' | translate }}</span>
               <span class="selection-bar__weight-value">{{ totalWeight() }}</span>
@@ -33,6 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class SelectionBarComponent {
   count = input<number>(0);
   totalWeight = input<number>(0);
+  totalPrice = input<number>(0);
 
   onBook = output<void>();
   onOrder = output<void>();

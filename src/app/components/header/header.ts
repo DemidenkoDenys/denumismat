@@ -8,7 +8,7 @@ export type Language = string;
 export interface LanguageOption {
   code: Language;
   label: string;
-  flag: string;
+  flagUrl: string;
 }
 
 /**
@@ -63,9 +63,7 @@ export interface LanguageOption {
               (click)="toggleLanguageMenu()"
               [attr.aria-expanded]="isLanguageMenuOpen()"
               [attr.aria-label]="'header.language' | translate">
-              <svg viewBox="0 0 20 20" fill="none">
-                <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm4.5 5h-2.55C11.56 5.56 10.84 4.2 10 3.05 12.36 3.52 14.24 5.02 14.5 7zM10 16c-.83-1.15-1.56-2.51-1.95-4h3.9c-.39 1.49-1.12 2.85-1.95 4zM6.05 11C5.88 10.34 5.8 9.68 5.8 9s.08-1.34.25-2h3.9c-.17.66-.25 1.32-.25 2s.08 1.34.25 2H6.05zm.4 2h2.55c.39 1.44 1.11 2.8 1.95 3.95C8.6 16.48 6.72 14.98 6.45 13zm2.55-6H6.45C6.72 5.02 8.6 3.52 10.95 3.05 10.11 4.2 9.39 5.56 9 7zm4.5 0h-2.55c-.39-1.44-1.11-2.8-1.95-3.95C12.4 3.52 14.28 5.02 14.5 7z" fill="currentColor"/>
-              </svg>
+              <img class="header__flag" [src]="getCurrentLanguageFlag()" alt="" aria-hidden="true" />
             </button>
             @if (isLanguageMenuOpen()) {
               <div class="header__dropdown" role="menu">
@@ -76,7 +74,7 @@ export interface LanguageOption {
                     [class.active]="(translate.currentLang === lang.code)"
                     (click)="selectLanguage(lang.code)"
                     role="menuitem">
-                    <span class="flag">{{ lang.flag }}</span>
+                    <img class="flag" [src]="lang.flagUrl" [alt]="lang.label" />
                     <span>{{ lang.label }}</span>
                   </button>
                 }
@@ -87,7 +85,7 @@ export interface LanguageOption {
           <!-- Theme Toggle -->
           <button
             type="button"
-            class="header__icon-btn"
+            class="header__icon-btn header__icon-btn--theme-fixed"
             (click)="toggleDarkTheme()"
             [attr.aria-label]="'header.themeToggle' | translate"
             [attr.title]="'header.themeToggle' | translate">
@@ -123,8 +121,8 @@ export class HeaderComponent {
   isDarkMode = signal(false);
 
   readonly languages: LanguageOption[] = [
-    { code: 'en', label: 'English', flag: '🇬🇧' },
-    { code: 'ua', label: 'Українська', flag: '🇺🇦' },
+    { code: 'en', label: 'English', flagUrl: 'https://flagcdn.com/w20/gb.png' },
+    { code: 'ua', label: 'Українська', flagUrl: 'https://flagcdn.com/w20/ua.png' },
   ];
 
   constructor() {
@@ -193,6 +191,6 @@ export class HeaderComponent {
   getCurrentLanguageFlag(): string {
     const current = this.translate.currentLang || this.translate.getDefaultLang();
     const lang = this.languages.find(l => l.code === current);
-    return lang ? lang.flag : '🇬🇧';
+    return lang ? lang.flagUrl : 'https://flagcdn.com/w20/gb.png';
   }
 }

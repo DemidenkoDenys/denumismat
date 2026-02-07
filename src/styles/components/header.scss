@@ -33,7 +33,27 @@
   font-weight: 600;
   color: #111827;
   letter-spacing: -0.025em;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, text-shadow 0.2s ease, background-size 0.4s ease;
+}
+
+.header__brand-text:hover {
+  background-image: linear-gradient(90deg, #3b82f6, #f97316, #3b82f6);
+  background-size: 200% 100%;
+  background-position: 0 0;
+  animation: brandShine 1.6s linear infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.45), 0 0 16px rgba(249, 115, 22, 0.35);
+}
+
+@keyframes brandShine {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 // Search Field
@@ -125,6 +145,25 @@
   }
 }
 
+.header__icon-btn--theme-fixed {
+  position: fixed;
+  right: 1.5rem;
+  top: 12px;
+  z-index: 1200;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  box-shadow: none;
+  backdrop-filter: blur(6px);
+}
+
+.header__flag {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+  object-fit: cover;
+  display: block;
+}
+
 .header__localization {
   position: relative;
 }
@@ -157,8 +196,11 @@
   transition: background-color 0.15s ease;
 
   .flag {
-    font-size: 1.125rem;
-    line-height: 1;
+    width: 20px;
+    height: 14px;
+    border-radius: 2px;
+    object-fit: cover;
+    display: block;
   }
 
   &:hover {
@@ -187,6 +229,17 @@ body.theme-dark {
 
   .header__brand-text {
     color: #f9fafb;
+  }
+
+  .header__brand-text:hover {
+    background-image: linear-gradient(90deg, #3b82f6, #f97316, #3b82f6);
+    background-size: 200% 100%;
+    background-position: 0 0;
+    animation: brandShine 1.6s linear infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 12px rgba(59, 130, 246, 0.6), 0 0 18px rgba(249, 115, 22, 0.5);
   }
 
   .header__search-input {
@@ -228,6 +281,13 @@ body.theme-dark {
     &:active {
       background-color: #4b5563;
     }
+  }
+
+  .header__icon-btn--theme-fixed {
+    background: rgba(31, 41, 55, 0.95);
+    color: #e5e7eb;
+    border: none;
+    box-shadow: none;
   }
 
   .header__dropdown {
