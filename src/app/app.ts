@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { HeaderComponent, type Language } from './components/header/header';
 import { IntroductionComponent } from './components/introduction/introduction';
+import { FiltersComponent } from './components/filters/filters';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +12,15 @@ import { IntroductionComponent } from './components/introduction/introduction';
       (onSearchChange)="handleSearch($event)"
       (onLanguageChange)="handleLanguageChange($event)">
     </app-header>
-    <app-introduction></app-introduction>
+
     <main>
-      <router-outlet></router-outlet>
+      <app-introduction></app-introduction>
+      <app-filters (filterChange)="handleFilters($event)"></app-filters>
     </main>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [HeaderComponent, IntroductionComponent, RouterOutlet]
+  imports: [HeaderComponent, IntroductionComponent, FiltersComponent]
 })
 export class App {
   searchQuery = signal('');
@@ -33,5 +34,10 @@ export class App {
   handleLanguageChange(lang: Language): void {
     this.currentLanguage.set(lang);
     // TODO: Update i18n and persist language preference
+  }
+
+  handleFilters(filters: any): void {
+    // Placeholder: dispatch to store or update local signals
+    console.log('Filters changed', filters);
   }
 }
