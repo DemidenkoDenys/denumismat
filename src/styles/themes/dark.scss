@@ -1,0 +1,186 @@
+/**
+ * Dark Theme Styles
+ *
+ * Applied when the 'theme-dark' class is added to the body element.
+ *
+ * Color Palette:
+ * - Primary: #64B5F6 (Light Blue)
+ * - Primary Dark: #42A5F5
+ * - Secondary: #90CAF9
+ * - Background: #121212 (Very Dark)
+ * - Surface: #1E1E1E (Dark)
+ * - Border: #424242 (Medium Dark)
+ * - Text: #E0E0E0 (Light Gray)
+ * - Text Light: #B0B0B0
+ * - Text Muted: #757575 (Medium Gray)
+ *
+ * Usage:
+ * 1. Add 'theme-dark' class to body element to activate
+ * 2. Remove 'theme-dark' class from body element to deactivate
+ *
+ * @example
+ * // Activate dark theme
+ * document.body.classList.add('theme-dark');
+ *
+ * @example
+ * // Deactivate dark theme
+ * document.body.classList.remove('theme-dark');
+ */
+
+/* Dark Theme Root Color Variables */
+body.theme-dark {
+  --color-primary: #64B5F6;
+  --color-primary-dark: #42A5F5;
+  --color-secondary: #90CAF9;
+  --color-background: #121212;
+  --color-surface: #1E1E1E;
+  --color-border: #424242;
+  --color-text: #E0E0E0;
+  --color-text-light: #B0B0B0;
+  --color-text-muted: #757575;
+}
+
+/* Dark Theme Component Overrides */
+body.theme-dark {
+  background-color: var(--color-background);
+  color: var(--color-text);
+
+  /* Header */
+  .header {
+    background-color: var(--color-surface);
+    border-bottom-color: var(--color-border);
+  }
+
+  .header__search-input {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: var(--color-border);
+    color: var(--color-text);
+
+    &:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(100, 181, 246, 0.15);
+    }
+
+    &::placeholder {
+      color: var(--color-text-muted);
+    }
+  }
+
+  .header__language-btn {
+    border-color: var(--color-border);
+    color: var(--color-text);
+
+    &:hover {
+      border-color: var(--color-primary);
+      background-color: rgba(100, 181, 246, 0.08);
+    }
+  }
+
+  .header__language-menu {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+  }
+
+  .header__language-option {
+    color: var(--color-text);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+
+    &.active {
+      background-color: rgba(100, 181, 246, 0.15);
+      color: var(--color-primary);
+    }
+  }
+
+  /* Introduction */
+  .introduction__background {
+    background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  }
+
+  /* Filters */
+  .filters {
+    background: var(--color-surface);
+    border-bottom-color: var(--color-border);
+  }
+
+  .filters__label {
+    color: var(--color-text-muted);
+  }
+
+  .filters__input {
+    background-color: transparent;
+    border-bottom-color: var(--color-border);
+    color: var(--color-text);
+
+    &:focus {
+      border-bottom-color: var(--color-primary);
+    }
+  }
+
+  .filters__range input[type="range"] {
+    background: var(--color-border);
+  }
+
+  .filters__tag {
+    border-color: var(--color-border);
+    color: var(--color-text);
+
+    &.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+  }
+
+  /* Coin Grid */
+  .coin-card {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+  }
+
+  .coin-card__title {
+    color: var(--color-text);
+  }
+
+  .coin-card__price {
+    color: var(--color-text-light);
+  }
+
+  .coin-card__toggle {
+    color: var(--color-primary);
+  }
+
+  .coin-card__details {
+    color: var(--color-text-muted);
+  }
+
+  /* Footer */
+  .action-footer {
+    background: rgba(30, 30, 30, 0.95);
+    border-color: var(--color-border);
+  }
+
+  .action-footer__metrics {
+    color: var(--color-text-muted);
+  }
+
+  .btn--ghost {
+    border-color: var(--color-border);
+    color: var(--color-text);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .btn--primary {
+    background: var(--color-primary);
+    color: #fff;
+
+    &:hover {
+      background: var(--color-primary-dark);
+    }
+  }
+}

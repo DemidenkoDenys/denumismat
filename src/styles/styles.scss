@@ -3,3 +3,6 @@
 
 /* Component Styles (single entry) */
 @use 'components/index' as *;
+
+/* Theme Styles */
+@use 'themes/dark' as *;

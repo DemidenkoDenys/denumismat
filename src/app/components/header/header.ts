@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -10,6 +10,23 @@ export interface LanguageOption {
   flag: string;
 }
 
+/**
+ * HeaderComponent
+ *
+ * Main navigation header with:
+ * - Brand/Logo
+ * - Search functionality
+ * - Language selection
+ * - Dark theme toggle
+ *
+ * @example
+ * <app-header
+ *   [searchQuery]="searchQuery()"
+ *   [currentLanguage]="currentLanguage()"
+ *   (onSearchChange)="handleSearch($event)"
+ *   (onLanguageChange)="handleLanguageChange($event)">
+ * </app-header>
+ */
 @Component({
   selector: 'app-header',
   template: `
@@ -58,6 +75,16 @@ export interface LanguageOption {
             </div>
           }
         </div>
+
+        <!-- Theme Toggle Button -->
+        <button
+          type="button"
+          class="header__theme-btn"
+          (click)="toggleDarkTheme()"
+          [attr.aria-label]="isDarkMode() ? 'Switch to light theme' : 'Switch to dark theme'"
+          title="Toggle dark theme">
+          {{ isDarkMode() ? '☀️' : '🌙' }}
+        </button>
       </div>
     </header>
   `,
@@ -73,6 +100,7 @@ export class HeaderComponent {
   onLanguageChange = output<Language>();
 
   isLanguageMenuOpen = signal(false);
+  isDarkMode = signal(false);
 
   readonly languages: LanguageOption[] = [
     { code: 'en', label: 'English', flag: '🇬🇧' },
@@ -80,6 +108,53 @@ export class HeaderComponent {
     { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
     { code: 'fr', label: 'Français', flag: '🇫🇷' },
   ];
+
+  constructor() {
+    this.initializeDarkMode();
+
+    // Apply dark mode class whenever isDarkMode signal changes
+    effect(() => {
+      this.applyDarkMode(this.isDarkMode());
+    });
+  }
+
+  /**
+   * Initialize dark mode from localStorage or system preference
+   */
+  private initializeDarkMode(): void {
+    const stored = localStorage.getItem('enumerate-dark-mode');
+
+    if (stored !== null) {
+      this.isDarkMode.set(stored === 'true');
+    } else {
+      // Detect system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      this.isDarkMode.set(prefersDark);
+    }
+  }
+
+  /**
+   * Apply dark mode by adding/removing theme-dark class to body
+   * and persist preference in localStorage
+   */
+  private applyDarkMode(isDark: boolean): void {
+    const body = document.body;
+
+    if (isDark) {
+      body.classList.add('theme-dark');
+    } else {
+      body.classList.remove('theme-dark');
+    }
+
+    localStorage.setItem('enumerate-dark-mode', isDark.toString());
+  }
+
+  /**
+   * Toggle dark theme on/off
+   */
+  toggleDarkTheme(): void {
+    this.isDarkMode.update(current => !current);
+  }
 
   handleSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
