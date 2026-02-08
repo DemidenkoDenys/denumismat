@@ -13,6 +13,7 @@ import * as CountriesActions from './state/countries.actions';
 import * as CoinsActions from './state/coins.actions';
 import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } from './state/currency.selectors';
 import { selectCountries } from './state/countries.selectors';
+import { PingService } from './services/ping.service';
 
 @Component({
   selector: 'app-root',
@@ -68,6 +69,7 @@ import { selectCountries } from './state/countries.selectors';
   ]
 })
 export class App implements OnInit {
+  private pingService = inject(PingService);
   private store = inject(Store);
   @ViewChild('coinGrid') coinGrid: any;
   searchQuery = signal('');
