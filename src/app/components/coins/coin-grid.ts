@@ -7,7 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { CoinCardComponent, Coin } from './coin-card';
 import { TranslateModule } from '@ngx-translate/core';
 import { selectCoins } from '../../state/coins.selectors';
-import { selectCountries } from '../../state/countries.selectors';
+import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 
 @Component({
   selector: 'app-coin-grid',
@@ -35,17 +35,22 @@ export class CoinGridComponent implements OnInit {
   private store = inject(Store);
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
+  extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
 
   // Enrich coins with pre-computed searchable title
   enrichedCoins = computed<Coin[]>(() => {
     const allCoins = this.coins();
     const countriesMap = this.countries();
+    const extinctsMap = this.extinctCountries();
 
-    if (!allCoins || !countriesMap) return [];
+    if (!allCoins) return [];
+
+    // Merge countries and extinct countries
+    const allCountriesMap = { ...countriesMap, ...extinctsMap };
 
     return allCoins.map(coin => ({
       ...coin,
-      title: `${countriesMap[coin.country]?.name || coin.country || ''} ${coin.deno} ${coin.year} ${coin.description || ''}`
+      title: `${allCountriesMap[coin.country]?.name || coin.country || ''} ${coin.deno} ${coin.year} ${coin.description || ''}`
     }));
   });
 

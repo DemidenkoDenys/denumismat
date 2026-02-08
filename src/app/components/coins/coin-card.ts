@@ -4,7 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { S3Service } from '../../services/s3.service';
-import { selectCountries } from '../../state/countries.selectors';
+import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 
 export interface CoinImage {
   obverse: string | null;
@@ -151,6 +151,7 @@ export class CoinCardComponent {
 
   // Get countries from store
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
+  private extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
 
   // Placeholder image URL for coins without images
   readonly placeholderImageUrl = 'assets/placeholder-image.jpg';
@@ -185,11 +186,17 @@ export class CoinCardComponent {
   // Get country full name from countries store
   countryFullName = computed(() => {
     const countriesMap = this.countries();
+    const extinctsMap = this.extinctCountries();
     const coin = this.coin();
-    if (!countriesMap || !coin.country) {
+
+    if (!coin.country) {
       return coin.country_name || '';
     }
-    return countriesMap[coin.country]?.name || coin.country_name || '';
+
+    // Merge countries and extinct countries
+    const allCountriesMap = { ...countriesMap, ...extinctsMap };
+
+    return allCountriesMap[coin.country]?.name || coin.country_name || '';
   });
 
   // Get total count of available images

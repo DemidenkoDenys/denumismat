@@ -1,0 +1,59 @@
+{
+  "USR": {
+    "code": "USR",
+    "name": "Soviet Union",
+    "original": "СССР",
+    "rate": 1.0,
+    "currency": "SUR",
+    "description": "Union of Soviet Socialist Republics"
+  },
+  "YUG": {
+    "code": "YUG",
+    "name": "Yugoslavia",
+    "original": "Jugoslavija",
+    "rate": 1.0,
+    "currency": "YUD"
+  },
+  "DDR": {
+    "code": "DDR",
+    "name": "East Germany",
+    "original": "Deutsche Demokratische Republik",
+    "rate": 1.0,
+    "currency": "DDM"
+  },
+  "CSK": {
+    "code": "CSK",
+    "name": "Czechoslovakia",
+    "original": "Československo",
+    "rate": 1.0,
+    "currency": "CSK"
+  },
+  "VNM": {
+    "code": "VDR",
+    "name": "South Vietnam",
+    "original": "Việt Nam Cộng hòa",
+    "rate": 1.0,
+    "currency": "VNC"
+  },
+  "ZAR": {
+    "code": "ZAR",
+    "name": "Zaire",
+    "original": "Zaïre",
+    "rate": 1.0,
+    "currency": "ZRZ"
+  },
+  "RHO": {
+    "code": "RHO",
+    "name": "Rhodesia",
+    "original": "Rhodesia",
+    "rate": 1.0,
+    "currency": "RHD"
+  },
+  "AUT": {
+    "code": "AUH",
+    "name": "Austro-Hungarian Empire",
+    "original": "Österreich-Ungarn",
+    "rate": 1.0,
+    "currency": "KR"
+  }
+}

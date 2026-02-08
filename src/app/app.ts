@@ -150,6 +150,7 @@ export class App implements OnInit {
     this.store.dispatch(CurrencyActions.loadCurrencyRates());
     this.store.dispatch(CurrencyActions.loadCurrenciesInfo());
     this.store.dispatch(CountriesActions.loadCountries());
+    this.store.dispatch(CountriesActions.loadExtinctCountries());
     this.store.dispatch(CoinsActions.loadCoins());
   }
 

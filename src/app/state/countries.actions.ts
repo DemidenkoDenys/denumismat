@@ -19,3 +19,17 @@ export const setSelectedLanguage = createAction(
   '[Countries] Set Selected Language',
   props<{ countryKey: string }>()
 );
+
+export const loadExtinctCountries = createAction(
+  '[Countries] Load Extinct Countries'
+);
+
+export const loadExtinctCountriesSuccess = createAction(
+  '[Countries] Load Extinct Countries Success',
+  props<{ extincts: CountriesMap }>()
+);
+
+export const loadExtinctCountriesFailure = createAction(
+  '[Countries] Load Extinct Countries Failure',
+  props<{ error: any }>()
+);

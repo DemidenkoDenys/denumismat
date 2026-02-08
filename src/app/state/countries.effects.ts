@@ -22,4 +22,16 @@ export class CountriesEffects {
       )
     )
   );
+
+  loadExtinctCountries$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(CountriesActions.loadExtinctCountries),
+      switchMap(() =>
+        this.http.get<CountriesMap>('/assets/countries-extincts.json').pipe(
+          map((extincts) => CountriesActions.loadExtinctCountriesSuccess({ extincts })),
+          catchError((error) => of(CountriesActions.loadExtinctCountriesFailure({ error })))
+        )
+      )
+    )
+  );
 }

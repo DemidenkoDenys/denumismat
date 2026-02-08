@@ -22,3 +22,8 @@ export const selectSelectedLanguage = createSelector(
   selectCountriesState,
   (state) => state.selected
 );
+
+export const selectExtinctCountries = createSelector(
+  selectCountriesState,
+  (state) => state.extincts
+);
