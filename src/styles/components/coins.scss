@@ -139,15 +139,10 @@
 .coin-card__dots {
   position: absolute;
   bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 8px;
   display: flex;
   gap: 6px;
   z-index: 5;
-  padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  backdrop-filter: blur(4px);
 }
 
 .coin-card__dot {
@@ -407,5 +402,36 @@
     &::after {
       opacity: 1;
     }
+  }
+}
+
+.coin-grid__actions {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0 4rem 0;
+}
+
+.coin-grid__show-more {
+  background: white;
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  &:active {
+    transform: translateY(0);
+    background: #f3f4f6;
   }
 }

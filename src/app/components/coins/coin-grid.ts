@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, output, effect, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, output, effect, inject, untracked } from '@angular/core';
 import type { OnInit } from '@angular/core';
 import { input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,7 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
   template: `
     <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
       <div class="coin-grid__list">
-        @for (c of visibleCoins(); track c.id) {
+        @for (c of paginatedCoins(); track c.id) {
           <app-coin-card
             [coin]="c"
             [selected]="selectedIds().includes(c.id)"
@@ -27,6 +27,13 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
           </app-coin-card>
         }
       </div>
+      @if (visibleCoins().length > displayLimit()) {
+        <div class="coin-grid__actions">
+          <button class="coin-grid__show-more" (click)="showMore()">
+            {{ 'grid.showMore' | translate }}
+          </button>
+        </div>
+      }
     </section>
   `,
 })
@@ -36,6 +43,8 @@ export class CoinGridComponent implements OnInit {
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
+
+  displayLimit = signal(20);
 
   // Enrich coins with pre-computed searchable title
   enrichedCoins = computed<Coin[]>(() => {
@@ -116,11 +125,24 @@ export class CoinGridComponent implements OnInit {
     });
   });
 
+  paginatedCoins = computed(() => {
+    return this.visibleCoins().slice(0, this.displayLimit());
+  });
+
   constructor() {
     effect(() => {
       if (this.resetTrigger() > 0) {
         this.clearSelection();
       }
+    });
+
+    // Reset pagination when filters change
+    effect(() => {
+      this.filters();
+      this.searchQuery();
+      untracked(() => {
+        this.displayLimit.set(20);
+      });
     });
 
     // Update price bounds whenever coins data changes
@@ -144,6 +166,10 @@ export class CoinGridComponent implements OnInit {
     this.selectedIds.set(ids);
     this.persistSelection(ids);
     this.emitSummary(ids);
+  }
+
+  showMore() {
+    this.displayLimit.update(limit => limit + 30);
   }
 
   clearSelection() {

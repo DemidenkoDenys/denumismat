@@ -53,7 +53,8 @@
       "subtitle": "Browse, filter and book coins from around the world"
     },
     "grid": {
-      "ariaLabel": "Coin grid"
+      "ariaLabel": "Coin grid",
+      "showMore": "Show more"
     }
   }
 }

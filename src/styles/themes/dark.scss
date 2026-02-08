@@ -263,11 +263,11 @@ body.theme-dark {
   }
 
   .coin-card__dots {
-    background: rgba(15, 23, 42, 0.4);
+    // background: rgba(15, 23, 42, 0.5);
   }
 
   .coin-card__dot {
-    background: rgba(203, 213, 225, 0.4);
+    background: rgba(203, 213, 225, 0.5);
 
     &:hover {
       background: rgba(203, 213, 225, 0.7);
@@ -279,7 +279,7 @@ body.theme-dark {
   }
 
   .coin-card__dot--active {
-    background: rgba(203, 213, 225, 1);
+    background: #2563eb;
   }
 
   .coin-card__image-placeholder {
