@@ -14,7 +14,9 @@
     "select": "Вибрати монету",
     "price": "{{price}}",
     "weight": "{{weight}} g",
-    "booked": "Заброньовано"
+    "booked": "Заброньовано",
+    "denomination": "Номінал",
+    "year": "Рік"
   },
   "selectionBar": {
     "selected": "Вибрано: {{count}}",

@@ -22,7 +22,7 @@ import { TranslateModule } from '@ngx-translate/core';
         </section>
 
         <section class="page-footer__section">
-          <h3 class="page-footer__title">{{ 'pageFooter.infoTitle' | translate }}</h3>
+        <h3 class="page-footer__title">{{ 'pageFooter.infoTitle' | translate }}</h3>
           <ul class="page-footer__list">
             <li>{{ 'pageFooter.infoItemOne' | translate }}</li>
             <li>{{ 'pageFooter.infoItemTwo' | translate }}</li>

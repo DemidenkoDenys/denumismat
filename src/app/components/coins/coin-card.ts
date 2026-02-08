@@ -141,6 +141,8 @@ export interface Coin {
         @if (detailsOpen()) {
           <div class="coin-card__details">
             <p>{{ 'filters.countryPlaceholder' | translate }}: {{ countryFullName() }}</p>
+            <p>{{ 'coin.denomination' | translate }}: {{ coin().deno }}</p>
+            <p>{{ 'coin.year' | translate }}: {{ coin().year }}</p>
           </div>
         }
       </div>
@@ -418,6 +420,12 @@ export class CoinCardComponent {
             newSet.add(key);
             return newSet;
           });
+
+          // Update loadedImageUrls to use placeholder for this index
+          const newMap = new Map(this.loadedImageUrls());
+          newMap.set(index, this.placeholderImageUrl);
+          this.loadedImageUrls.set(newMap);
+
           if (this.coin().id === 'CC10FR1975') {
             console.log(`[${this.coin().id}] ❌ Image failed to load at index ${index}: ${currentSrc}`);
           }

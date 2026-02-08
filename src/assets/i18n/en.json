@@ -14,7 +14,9 @@
     "select": "Select coin",
     "price": "{{price}}",
     "weight": "{{weight}} g",
-    "booked": "Booked"
+    "booked": "Booked",
+    "denomination": "Denomination",
+    "year": "Year"
   },
   "selectionBar": {
     "selected": "Selected: {{count}}",
@@ -35,7 +37,7 @@
     "infoItemOne": "Processing: 1-2 business days",
     "infoItemTwo": "Delivery: 5-10 business days",
     "infoItemThree": "Tracking included",
-    "infoItemFour": "Free shipping over $100",
+    "infoItemFour": "Free shippsendinging Sover $100",
     "mapTitle": "Personal pickup available at"
   },
   "filters": {

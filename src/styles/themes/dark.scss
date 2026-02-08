@@ -243,13 +243,9 @@ body.theme-dark {
     background: #0f172a;
   }
 
-  .coin-card__slider--placeholder::before {
-    background: rgba(15, 23, 42, 0.5);
-  }
-
   .coin-card__image--placeholder {
     opacity: 0.3;
-    filter: grayscale(0.9) brightness(0.8);
+    filter: grayscale(0.9) brightness(0.8) blur(3px);
   }
 
   .coin-card__nav {
