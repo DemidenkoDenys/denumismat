@@ -22,7 +22,7 @@ export interface Filters {
                 [class]="'filters__tag--' + tag.toLowerCase()"
                 [class.active]="tags().includes(tag)"
                 (click)="toggleTag(tag)">
-                {{ tag }}
+                {{ tag.toUpperCase() }}
               </button>
             }
             @if (selectedCount() > 0) {

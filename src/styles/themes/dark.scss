@@ -43,6 +43,20 @@ body.theme-dark {
     color: #94a3b8;
   }
 
+  /* Header Search */
+  .header__search--active {
+    animation: searchShineDark 2s ease-in-out infinite;
+  }
+
+  @keyframes searchShineDark {
+    0%, 100% {
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 15px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 15px rgba(59, 130, 246, 0.7), 0 0 25px rgba(59, 130, 246, 0.4), 0 0 35px rgba(59, 130, 246, 0.2);
+    }
+  }
+
   /* Filters */
   .filters {
     background: #0f172a;

@@ -57,7 +57,7 @@ export interface CurrencyOption {
         </div>
 
         <!-- Search Field -->
-        <div class="header__search">
+        <div class="header__search" [class.header__search--active]="isSearchActive()">
           <svg class="header__search-icon" aria-hidden="true" viewBox="0 0 20 20" fill="none">
             <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -67,6 +67,8 @@ export interface CurrencyOption {
             [placeholder]="'header.searchPlaceholder' | translate"
             [value]="searchQuery()"
             (input)="handleSearchInput($event)"
+            (focus)="onSearchFocus()"
+            (blur)="onSearchBlur()"
             [attr.aria-label]="'header.searchPlaceholder' | translate"
           />
         </div>
@@ -218,6 +220,13 @@ export class HeaderComponent {
   isCurrencyExpanded = signal(false);
   isLanguageExpanded = signal(false);
   isDarkMode = signal(false);
+  isSearchFocused = signal(false);
+  currentSearchValue = signal('');
+
+  // Computed signal for search active state (has value and not focused)
+  isSearchActive = computed(() => {
+    return !this.isSearchFocused() && this.currentSearchValue() !== '';
+  });
   currentCurrencyKey = signal('');
   currentLanguageCountryKey = signal('');
 
@@ -432,7 +441,16 @@ export class HeaderComponent {
 
   handleSearchInput(event: Event): void {
     const value = (event.target as HTMLInputElement).value;
+    this.currentSearchValue.set(value);
     this.onSearchChange.emit(value);
+  }
+
+  onSearchFocus(): void {
+    this.isSearchFocused.set(true);
+  }
+
+  onSearchBlur(): void {
+    this.isSearchFocused.set(false);
   }
 
   toggleLanguageMenu(): void {

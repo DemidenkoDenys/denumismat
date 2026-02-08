@@ -69,22 +69,18 @@ export class CoinGridComponent implements OnInit {
     const search = this.searchQuery();
 
     if (!allCoins) return [];
-    console.log("🚀 ~ allCoins:", allCoins)
 
     return allCoins.filter(coin => {
       // Apply search query filter
       if (search && search.trim() !== '') {
         const searchText = search.trim();
-        console.log("🚀 ~ searchText:", searchText)
 
         // Extract year from search query (3-4 digit number starting with 18, 19, or 20)
         const yearMatch = searchText.match(/\b(18|19|20)\d{1,2}\b/);
         const searchYear = yearMatch ? parseInt(yearMatch[0]) : null;
-        console.log("🚀 ~ searchYear:", searchYear)
 
         // Get remaining text (everything except the year)
         const remainingText = searchText.replace(/\b(18|19|20)\d{1,2}\b/g, '').trim().toLowerCase();
-        console.log("🚀 ~ remainingText:", remainingText)
 
         // Check year match
         if (searchYear !== null && coin.year !== searchYear) {
