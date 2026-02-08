@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, signal, ViewChild, OnInit, inject, computed } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-// Note: TranslateModule is configured in bootstrap providers (main.ts)
 import { HeaderComponent, type Language, type Currency } from './components/header/header';
 import { IntroductionComponent } from './components/introduction/introduction';
 import { FiltersComponent } from './components/filters/filters';
 import { CoinGridComponent } from './components/coins/coin-grid';
 import { SelectionBarComponent } from './components/selection-bar/selection-bar';
 import { FooterComponent } from './components/footer/footer';
+import { MessageTooltipComponent } from './components/message-tooltip/message-tooltip';
 import * as CurrencyActions from './state/currency.actions';
 import * as CountriesActions from './state/countries.actions';
 import * as CoinsActions from './state/coins.actions';
@@ -53,6 +53,7 @@ import { selectCountries } from './state/countries.selectors';
         (onReset)="handleReset()"></app-selection-bar>
     </main>
     <app-footer></app-footer>
+    <app-message-tooltip></app-message-tooltip>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -63,7 +64,7 @@ import { selectCountries } from './state/countries.selectors';
     CoinGridComponent,
     SelectionBarComponent,
     FooterComponent,
-
+    MessageTooltipComponent
   ]
 })
 export class App implements OnInit {

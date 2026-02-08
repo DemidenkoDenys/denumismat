@@ -14,10 +14,9 @@ import { TranslateModule } from '@ngx-translate/core';
           <h3 class="page-footer__title">{{ 'pageFooter.aboutTitle' | translate }}</h3>
           <p class="page-footer__text">{{ 'pageFooter.aboutText' | translate }}</p>
           <div class="page-footer__links">
-            <a href="https://www.galeriasavaria.hu" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkGaleriaSavaria' | translate }}</a>
-            <a href="https://www.vatera.hu" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkVatera' | translate }}</a>
-            <a href="https://www.aukro.cz" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkAukro' | translate }}</a>
-            <a href="https://www.ebay.com" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkEbay' | translate }}</a>
+            <a href="https://galeriasavaria.hu/en/felhasznalo/Denumismat/termekek/" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkGaleriaSavaria' | translate }}</a>
+            <a href="https://www.vatera.hu/listings/index.php?us=Denumizmat" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkVatera' | translate }}</a>
+            <a href="https://aukro.hu/felhasznalo/denumismat/ajanlatok" target="_blank" rel="noopener noreferrer" class="page-footer__link">{{ 'pageFooter.linkAukro' | translate }}</a>
           </div>
         </section>
 

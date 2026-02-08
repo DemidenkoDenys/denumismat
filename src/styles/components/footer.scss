@@ -55,8 +55,7 @@
 
 .page-footer__links {
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  gap: 2rem;
   margin: 0.5rem 0 0;
   padding: 0;
 }
@@ -99,3 +98,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Send message styles removed and moved to message-tooltip.scss
