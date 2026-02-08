@@ -16,11 +16,6 @@ import { TranslateModule } from '@ngx-translate/core';
               {{ 'selectionBar.selected' | translate:{ count: count() } }}
               <span class="selection-bar__price">({{ formattedPrice() }})</span>
             </span>
-            <span class="selection-bar__weight">
-              <span class="selection-bar__weight-label">{{ 'selectionBar.totalWeightLabel' | translate }}</span>
-              <span class="selection-bar__weight-value">{{ totalWeight() }}</span>
-              <span class="selection-bar__weight-unit">{{ 'selectionBar.totalWeightUnit' | translate }}</span>
-            </span>
           </div>
 
           <div class="selection-bar__actions">

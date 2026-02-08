@@ -1,7 +1,7 @@
 {
   "header": {
     "brand": "Denumismat",
-    "searchPlaceholder": "Search coins...",
+    "searchPlaceholder": "enter country, year or coin name",
     "language": "Language",
     "currency": "Currency",
     "currencyMore": "More countries",

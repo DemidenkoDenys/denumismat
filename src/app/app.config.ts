@@ -8,6 +8,8 @@ import { currencyReducer } from './state/currency.reducer';
 import { CurrencyEffects } from './state/currency.effects';
 import { countriesReducer } from './state/countries.reducer';
 import { CountriesEffects } from './state/countries.effects';
+import { coinsReducer } from './state/coins.reducer';
+import { CoinsEffects } from './state/coins.effects';
 
 import { routes } from './app.routes';
 
@@ -16,8 +18,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ currency: currencyReducer, countries: countriesReducer }),
-    provideEffects([CurrencyEffects, CountriesEffects]),
+    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer }),
+    provideEffects([CurrencyEffects, CountriesEffects, CoinsEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]
 };

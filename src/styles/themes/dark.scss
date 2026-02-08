@@ -229,6 +229,58 @@ body.theme-dark {
     background: #0f172a;
   }
 
+  .coin-card__slider--placeholder::before {
+    background: rgba(15, 23, 42, 0.5);
+  }
+
+  .coin-card__image--placeholder {
+    opacity: 0.3;
+    filter: grayscale(0.9) brightness(0.8);
+  }
+
+  .coin-card__nav {
+    background: rgba(30, 41, 59, 0.95);
+    color: #cbd5e1;
+
+    &:hover {
+      background: rgba(30, 41, 59, 1);
+      color: #f1f5f9;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+  }
+
+  .coin-card__dots {
+    background: rgba(15, 23, 42, 0.4);
+  }
+
+  .coin-card__dot {
+    background: rgba(203, 213, 225, 0.4);
+
+    &:hover {
+      background: rgba(203, 213, 225, 0.7);
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(203, 213, 225, 0.4);
+    }
+  }
+
+  .coin-card__dot--active {
+    background: rgba(203, 213, 225, 1);
+  }
+
+  .coin-card__image-placeholder {
+    background: #1e293b;
+    color: #475569;
+
+    svg {
+      opacity: 0.4;
+    }
+  }
+
   .coin-card__title {
     color: #f1f5f9;
   }

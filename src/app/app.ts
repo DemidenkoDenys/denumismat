@@ -10,6 +10,7 @@ import { SelectionBarComponent } from './components/selection-bar/selection-bar'
 import { FooterComponent } from './components/footer/footer';
 import * as CurrencyActions from './state/currency.actions';
 import * as CountriesActions from './state/countries.actions';
+import * as CoinsActions from './state/coins.actions';
 import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } from './state/currency.selectors';
 import { selectCountries } from './state/countries.selectors';
 
@@ -31,11 +32,14 @@ import { selectCountries } from './state/countries.selectors';
         [priceBounds]="priceBounds()"
         [priceRange]="priceRange()"
         [currencyFormat]="currencyFormat()"
+        [conversionRate]="conversionRate()"
+        [allCoins]="coinGrid?.coins() || []"
         (filterChange)="handleFilters($event)">
       </app-filters>
       <app-coin-grid
         #coinGrid
         [filters]="filters()"
+        [searchQuery]="searchQuery()"
         [conversionRate]="conversionRate()"
         [currencyFormat]="currencyFormat()"
         (selectedSummary)="handleSelectionSummary($event)"
@@ -146,6 +150,7 @@ export class App implements OnInit {
     this.store.dispatch(CurrencyActions.loadCurrencyRates());
     this.store.dispatch(CurrencyActions.loadCurrenciesInfo());
     this.store.dispatch(CountriesActions.loadCountries());
+    this.store.dispatch(CoinsActions.loadCoins());
   }
 
   handleSearch(query: string): void {

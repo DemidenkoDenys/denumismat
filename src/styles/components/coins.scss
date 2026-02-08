@@ -69,12 +69,140 @@
   overflow: hidden;
 }
 
+.coin-card__slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  &.coin-card__slider--placeholder::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 1;
+    pointer-events: none;
+  }
+}
+
 .coin-card__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.3s ease;
+
+  &.coin-card__image--placeholder {
+    opacity: 0.4;
+    filter: grayscale(0.7);
+  }
+}
+
+.coin-card__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 5;
+  color: #374151;
+
+  &:hover {
+    background: rgba(255, 255, 255, 1);
+    color: #111827;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    opacity: 1;
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+.coin-card__nav--prev {
+  left: 8px;
+}
+
+.coin-card__nav--next {
+  right: 8px;
+}
+
+.coin-card:hover .coin-card__nav {
+  opacity: 1;
+}
+
+.coin-card__dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 5;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+}
+
+.coin-card__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.coin-card__dot--active {
+  background: rgba(255, 255, 255, 1);
+  width: 8px;
+  height: 8px;
+}
+
+.coin-card__image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+  color: #9ca3af;
+
+  svg {
+    width: 40%;
+    height: 40%;
+    opacity: 0.5;
+  }
 }
 
 .coin-card__price-badge {
@@ -85,6 +213,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  z-index: 2;
 }
 
 .coin-card__tags {
@@ -96,6 +225,7 @@
   gap: 0.4rem;
   flex-wrap: wrap;
   width: fit-content;
+  z-index: 2;
 }
 
 .coin-card__tag {
@@ -122,7 +252,7 @@
   background: #22c55e;
 }
 
-.coin-card:hover .coin-card__image {
+.coin-card:hover .coin-card__image:not(.coin-card__image--placeholder) {
   transform: scale(1.05);
 }
 

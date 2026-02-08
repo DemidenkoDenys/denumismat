@@ -44,5 +44,6 @@ __screenshots__/
 Thumbs.db
 
 # Local environment files (may contain secrets) - do NOT commit real credentials
+environments*
 *environment.ts
 *environment.*.ts

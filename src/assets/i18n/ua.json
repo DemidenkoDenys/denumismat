@@ -1,7 +1,7 @@
 {
   "header": {
     "brand": "Denumismat",
-    "searchPlaceholder": "Пошук монет...",
+    "searchPlaceholder": "введіть країну, рік або назву монети",
     "language": "Мова",
     "currency": "Валюта",
     "currencyMore": "Бiльше країн",

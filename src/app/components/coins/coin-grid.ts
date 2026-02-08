@@ -1,24 +1,13 @@
-import { Component, ChangeDetectionStrategy, signal, output, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, output, effect, inject } from '@angular/core';
 import type { OnInit } from '@angular/core';
 import { input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CoinCardComponent, Coin } from './coin-card';
 import { TranslateModule } from '@ngx-translate/core';
-
-function sampleCoins(): Coin[] {
-  return Array.from({ length: 20 }).map((_, i) => ({
-    id: `coin-${i + 1}`,
-    name: `Germany - 2 euro - 2007 coin - Schwerin Castle, Mecklenburg-Vorpommern - D`,
-    year: 1900 + i,
-    price: Number((0.1 + Math.random() * (115 - 0.1)).toFixed(2)),
-    weight: Math.round(5 + Math.random() * 30),
-    description: 'A fine example of historical minting, well preserved with attractive patina.',
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b6/Image_created_with_a_mobile_phone.png',
-    category: ['UNC', 'Rare', 'Sale'],
-    country: 'Unknown',
-    isBooked: false,
-  }));
-}
+import { selectCoins } from '../../state/coins.selectors';
+import { selectCountries } from '../../state/countries.selectors';
 
 @Component({
   selector: 'app-coin-grid',
@@ -43,39 +32,83 @@ function sampleCoins(): Coin[] {
 })
 export class CoinGridComponent implements OnInit {
   private readonly storageKey = 'denumismat.selectedCoinIds';
-  coins = signal<Coin[]>(sampleCoins());
+  private store = inject(Store);
+  coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
+  countries = toSignal(this.store.select(selectCountries), { initialValue: null });
+
+  // Enrich coins with pre-computed searchable title
+  enrichedCoins = computed<Coin[]>(() => {
+    const allCoins = this.coins();
+    const countriesMap = this.countries();
+
+    if (!allCoins || !countriesMap) return [];
+
+    return allCoins.map(coin => ({
+      ...coin,
+      title: `${countriesMap[coin.country]?.name || coin.country || ''} ${coin.deno} ${coin.year} ${coin.description || ''}`
+    }));
+  });
+
   selectedIds = signal<string[]>([]);
   selectedSummary = output<{ ids: string[]; totalWeight: number; totalPrice: number }>();
   priceBoundsChange = output<[number, number]>();
   resetTrigger = signal<number>(0);
   filters = input<any>(null);
+  searchQuery = input<string>('');
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   visibleCoins = computed(() => {
     const f = this.filters();
-    const allCoins = this.coins();
+    const allCoins = this.enrichedCoins();
+    const search = this.searchQuery();
 
-    if (!f) return allCoins;
+    if (!allCoins) return [];
+    console.log("🚀 ~ allCoins:", allCoins)
 
     return allCoins.filter(coin => {
-      if (f.selectedOnly && !this.selectedIds().includes(coin.id)) {
-        return false;
+      // Apply search query filter
+      if (search && search.trim() !== '') {
+        const searchText = search.trim();
+        console.log("🚀 ~ searchText:", searchText)
+
+        // Extract year from search query (3-4 digit number starting with 18, 19, or 20)
+        const yearMatch = searchText.match(/\b(18|19|20)\d{1,2}\b/);
+        const searchYear = yearMatch ? parseInt(yearMatch[0]) : null;
+        console.log("🚀 ~ searchYear:", searchYear)
+
+        // Get remaining text (everything except the year)
+        const remainingText = searchText.replace(/\b(18|19|20)\d{1,2}\b/g, '').trim().toLowerCase();
+        console.log("🚀 ~ remainingText:", remainingText)
+
+        // Check year match
+        if (searchYear !== null && coin.year !== searchYear) {
+          return false;
+        }
+
+        // Check text match in pre-computed title (if there's remaining text)
+        if (remainingText !== '' && !coin.title?.toLowerCase().includes(remainingText)) {
+          return false;
+        }
       }
 
-      if (f.tags && f.tags.length > 0) {
-        const hasTags = f.tags.some((tag: string) => coin.category.includes(tag));
-        if (!hasTags) return false;
-      }
+      // Apply other filters
+      if (f) {
+        if (f.selectedOnly && !this.selectedIds().includes(coin.id)) {
+          return false;
+        }
 
-      if (f.country) {
-        const countryMatch = coin.country.toLowerCase().includes(f.country.toLowerCase());
-        if (!countryMatch) return false;
-      }
+        if (f.priceRange) {
+          const [min, max] = f.priceRange;
+          if (coin.price < min || coin.price > max) return false;
+        }
 
-      if (f.priceRange) {
-        const [min, max] = f.priceRange;
-        if (coin.price < min || coin.price > max) return false;
+        if (f.tags && f.tags.length > 0) {
+          // Coin must have at least one of the selected tags
+          const coinTags = coin.tags || [];
+          const hasMatchingTag = f.tags.some((tag: string) => coinTags.includes(tag));
+          if (!hasMatchingTag) return false;
+        }
       }
 
       return true;
@@ -88,10 +121,17 @@ export class CoinGridComponent implements OnInit {
         this.clearSelection();
       }
     });
+
+    // Update price bounds whenever coins data changes
+    effect(() => {
+      const coins = this.coins();
+      if (coins && coins.length > 0) {
+        this.emitPriceBounds();
+      }
+    });
   }
 
   ngOnInit(): void {
-    this.emitPriceBounds();
     this.restoreSelection();
   }
 
@@ -118,8 +158,10 @@ export class CoinGridComponent implements OnInit {
     try {
       const ids = JSON.parse(stored);
       if (!Array.isArray(ids)) return;
+      const coins = this.coins();
+      if (!coins) return;
       const validIds = ids.filter((id: unknown) =>
-        typeof id === 'string' && this.coins().some(c => c.id === id)
+        typeof id === 'string' && coins.some(c => c.id === id)
       );
       if (validIds.length === 0) return;
       this.selectedIds.set(validIds);
@@ -135,15 +177,21 @@ export class CoinGridComponent implements OnInit {
   }
 
   private emitSummary(ids: string[]) {
-    const selected = this.coins().filter(c => ids.includes(c.id));
-    const totalWeight = selected.reduce((sum, c) => sum + (c.weight || 0), 0);
+    const coins = this.coins();
+    if (!coins) {
+      this.selectedSummary.emit({ ids: [], totalWeight: 0, totalPrice: 0 });
+      return;
+    }
+    const selected = coins.filter(c => ids.includes(c.id));
     const rate = this.conversionRate();
     const totalPrice = selected.reduce((sum, c) => sum + (c.price || 0) * rate, 0);
-    this.selectedSummary.emit({ ids, totalWeight, totalPrice });
+    this.selectedSummary.emit({ ids, totalWeight: 0, totalPrice });
   }
 
   private emitPriceBounds() {
-    const prices = this.coins()
+    const coins = this.coins();
+    if (!coins) return;
+    const prices = coins
       .map(c => c.price)
       .filter(price => Number.isFinite(price));
     if (prices.length === 0) return;
