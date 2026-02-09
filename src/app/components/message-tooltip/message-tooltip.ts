@@ -23,11 +23,19 @@ import { FormsModule } from '@angular/forms';
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           } @else {
-            <!-- Send Icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-               <line x1="22" y1="2" x2="11" y2="13"></line>
-               <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
+            @if (messageText().trim().length > 0) {
+              <!-- Send Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <line x1="22" y1="2" x2="11" y2="13"></line>
+                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            } @else {
+              <!-- Close Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            }
           }
         }
       </button>
@@ -63,7 +71,8 @@ export class MessageTooltipComponent {
 
   handleMainBtnClick() {
     if (this.isMessagerExpanded()) {
-      if (this.isError()) {
+      // Close mode: error or textarea empty
+      if (this.isError() || this.messageText().trim().length === 0) {
         this.closeMessager();
       } else {
         this.sendMessage();

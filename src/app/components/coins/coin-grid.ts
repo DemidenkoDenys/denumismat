@@ -30,7 +30,7 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
       @if (visibleCoins().length > displayLimit()) {
         <div class="coin-grid__actions">
           <button class="coin-grid__show-more" (click)="showMore()">
-            {{ 'grid.showMore' | translate }}
+            {{ 'grid.showMore' | translate }} ({{ paginatedCoins().length }}/{{ visibleCoins().length }})
           </button>
         </div>
       }

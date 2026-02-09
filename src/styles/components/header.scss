@@ -22,6 +22,12 @@
   gap: 2rem;
 }
 
+@media (max-width: 1400px) {
+  .header__container {
+    padding-right: 5rem;
+  }
+}
+
 // Brand
 .header__brand {
   flex-shrink: 0;
@@ -221,10 +227,14 @@
 
 // Global flag icons (fi) adjustments
 .fi {
-  font-size: 1.25em; // Scale flags relative to text
+  font-size: 1.125em; // 10% smaller than before
   border-radius: 2px;
   box-shadow: 0 0 1px rgba(0,0,0,0.1); // Subtle border/shadow
   line-height: 1;
+
+  .header__dropdown & {
+      margin-right: 5px;
+  }
 }
 
 .header__flag {
