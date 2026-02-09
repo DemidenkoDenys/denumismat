@@ -11,6 +11,7 @@ import { setSelectedLanguage } from '../../state/countries.actions';
 import { CountriesMap } from '../../state/countries.models';
 import { selectUser } from '../../state/auth/auth.selectors';
 import { loginWithGoogle, logout } from '../../state/auth/auth.actions';
+import { ALPHA3_TO_ALPHA2 } from '../../config/country-codes';
 
 export type Language = string;
 export type Currency = string;
@@ -163,7 +164,7 @@ export interface CurrencyOption {
               (click)="toggleLanguageMenu()"
               [attr.aria-expanded]="isLanguageMenuOpen()"
               [attr.aria-label]="'header.language' | translate">
-              <span class="header__country-code">{{ getCurrentLanguageCountryCode() }}</span>
+              <span class="fi fi-{{ getFlagCode(getCurrentLanguageCountryCode()) }}"></span>
             </button>
             @if (isLanguageMenuOpen()) {
               <div class="header__dropdown" role="menu">
@@ -174,7 +175,7 @@ export interface CurrencyOption {
                     [class.active]="(currentLanguageCountryKey() === lang.key)"
                     (click)="selectLanguage(lang.key)"
                     role="menuitem">
-                    <span class="country-code">{{ lang.countryCode }}</span>
+                    <span class="fi fi-{{ getFlagCode(lang.countryCode) }}"></span>
                     <span>{{ lang.countryName }} ({{ lang.languageCode.toUpperCase() }})</span>
                   </button>
                 }
@@ -196,7 +197,7 @@ export interface CurrencyOption {
                       [class.active]="(currentLanguageCountryKey() === lang.key)"
                       (click)="selectLanguage(lang.key)"
                       role="menuitem">
-                      <span class="country-code">{{ lang.countryCode }}</span>
+                      <span class="fi fi-{{ getFlagCode(lang.countryCode) }}"></span>
                       <span>{{ lang.countryName }} ({{ lang.languageCode.toUpperCase() }})</span>
                     </button>
                   }
@@ -614,5 +615,9 @@ export class HeaderComponent {
       symbol: usdInfo?.symbol || '$',
       rate: 0,
     };
+  }
+
+  getFlagCode(countryCode: string): string {
+    return ALPHA3_TO_ALPHA2[countryCode] || countryCode.toLowerCase().slice(0, 2);
   }
 }

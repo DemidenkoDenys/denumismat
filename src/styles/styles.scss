@@ -1,5 +1,8 @@
 /* Global Styles */
 @use 'normalize' as *;
+@use 'flag-icons/sass/flag-icons' with (
+  $flag-icons-use-square: false
+);
 
 /* Component Styles (single entry) */
 @use 'components/index' as *;
