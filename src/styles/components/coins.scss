@@ -75,6 +75,57 @@
   height: 100%;
 }
 
+.coin-card__lupa {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(31, 41, 55, 0.5); /* dark, 50% transparent */
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  z-index: 10;
+  color: #f9fafb;
+  pointer-events: none; /* Prevent click unless hovered */
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.coin-card__slider:hover .coin-card__image:hover ~ .coin-card__lupa {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.coin-card__nav:hover ~ .coin-card__lupa {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.coin-card:hover .coin-card__lupa {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+body.theme-dark .coin-card__lupa {
+  background: rgba(17, 24, 39, 0.2); /* darker, 50% transparent */
+  color: #f9fafb;
+}
+
+body.theme-dark .coin-card__lupa:hover {
+  background: rgba(17, 24, 39, 0.3);
+  color: #fff;
+}
+
 .coin-card__image {
   width: 100%;
   height: 100%;

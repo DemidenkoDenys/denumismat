@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, output, effect, inject, untracked, PLATFORM_ID } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, output, effect, inject, untracked, PLATFORM_ID, EventEmitter, Output } from '@angular/core';
 import type { OnInit } from '@angular/core';
 import { input, computed } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -23,7 +23,8 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
             [selected]="selectedIds().includes(c.id)"
             [conversionRate]="conversionRate()"
             [currencyFormat]="currencyFormat()"
-            (selectedChange)="onSelect(c.id, $event)">
+            (selectedChange)="onSelect(c.id, $event)"
+            (openSliderModal)="openSliderModal.emit($event)">
           </app-coin-card>
         }
       </div>
@@ -130,6 +131,8 @@ export class CoinGridComponent implements OnInit {
   paginatedCoins = computed(() => {
     return this.visibleCoins().slice(0, this.displayLimit());
   });
+
+  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string }>();
 
   constructor() {
     effect(() => {

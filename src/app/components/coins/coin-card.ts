@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed, effect, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
@@ -109,6 +109,17 @@ export interface Coin {
               }
             </div>
           }
+
+          <button
+            type="button"
+            class="coin-card__lupa"
+            (click)="$event.stopPropagation(); onLupaClick()"
+            [attr.aria-label]="'Zoom image'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
         </div>
 
         @if (coin().tags && coin().tags!.length > 0) {
@@ -172,6 +183,7 @@ export class CoinCardComponent {
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
   selectedChange = output<boolean>();
+  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string }>();
 
   // Signal to store the image keys from S3
   private imageKeys = signal<string[]>([]);
@@ -440,5 +452,18 @@ export class CoinCardComponent {
     if (img.src !== this.placeholderImageUrl) {
       img.src = this.placeholderImageUrl;
     }
+  }
+
+  showImageSliderModal = signal(false);
+  sliderImages = signal<string[]>([]);
+  sliderAltText = signal('Coin image');
+
+  onLupaClick() {
+    const alt = this.coin().deno + ' ' + this.coin().year;
+    this.openSliderModal.emit({ coinId: this.coin().id, alt });
+  }
+
+  closeImageSliderModal = () => {
+    this.showImageSliderModal.set(false);
   }
 }

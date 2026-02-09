@@ -9,6 +9,7 @@ import { SelectionBarComponent } from './components/selection-bar/selection-bar'
 import { FooterComponent } from './components/footer/footer';
 import { MessageTooltipComponent } from './components/message-tooltip/message-tooltip';
 import { OrderModalComponent } from './components/order-modal/order-modal';
+import { ImageSliderModalComponent } from './components/coins/image-slider-modal';
 import * as CurrencyActions from './state/currency.actions';
 import * as CountriesActions from './state/countries.actions';
 import * as CoinsActions from './state/coins.actions';
@@ -46,7 +47,8 @@ import { PingService } from './services/ping.service';
         [conversionRate]="conversionRate()"
         [currencyFormat]="currencyFormat()"
         (selectedSummary)="handleSelectionSummary($event)"
-        (priceBoundsChange)="handlePriceBoundsChange($event)">
+        (priceBoundsChange)="handlePriceBoundsChange($event)"
+        (openSliderModal)="openImageSliderModal($event)">
       </app-coin-grid>
       <app-selection-bar
         [count]="selectedCount()"
@@ -69,6 +71,14 @@ import { PingService } from './services/ping.service';
         (onSubmit)="handleOrderSubmit($event)">
       </app-order-modal>
     }
+
+    @if (showImageSliderModal()) {
+      <app-image-slider-modal
+        [coinId]="sliderCoinId()"
+        [altText]="sliderAltText()"
+        (close)="closeImageSliderModal()">
+      </app-image-slider-modal>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -80,7 +90,8 @@ import { PingService } from './services/ping.service';
     SelectionBarComponent,
     FooterComponent,
     MessageTooltipComponent,
-    OrderModalComponent
+    OrderModalComponent,
+    ImageSliderModalComponent
   ]
 })
 export class App implements OnInit {
@@ -97,6 +108,10 @@ export class App implements OnInit {
   priceBounds = signal<[number, number]>([0, 10000]);
   priceRange = signal<[number, number]>([0, 10000]);
   isOrderModalOpen = signal(false);
+  showImageSliderModal = signal(false);
+  sliderImages = signal<string[]>([]);
+  sliderAltText = signal('Coin image');
+  sliderCoinId = signal<string>('');
 
   private currencyRates = toSignal(this.store.select(selectCurrencyRates), { initialValue: null });
   private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), { initialValue: null });
@@ -248,5 +263,17 @@ export class App implements OnInit {
     this.handleReset();
     // Here you would typically dispatch an action or call a service to process the order
     alert(`Thank you ${data.name}! We received your order for ${data.coins.length} coins.`);
+  }
+
+  openImageSliderModal(event: { coinId: string, alt: string }) {
+    this.sliderCoinId.set(event.coinId);
+    this.sliderAltText.set(event.alt);
+    this.showImageSliderModal.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeImageSliderModal = () => {
+    this.showImageSliderModal.set(false);
+    document.body.style.overflow = '';
   }
 }
