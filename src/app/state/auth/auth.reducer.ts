@@ -1,9 +1,18 @@
 import { createReducer, on } from '@ngrx/store';
-import { AuthState } from './auth.models';
+import { AuthState, User } from './auth.models';
 import * as AuthActions from './auth.actions';
 
+const getUserFromStorage = (): User | null => {
+  try {
+    const storedUser = localStorage.getItem('auth_user_profile');
+    return storedUser ? JSON.parse(storedUser) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const initialState: AuthState = {
-  user: null,
+  user: getUserFromStorage(),
   loading: false,
   error: null
 };

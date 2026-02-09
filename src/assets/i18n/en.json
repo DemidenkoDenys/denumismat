@@ -63,7 +63,7 @@
   },
   "orderModal": {
     "title": "Complete your order",
-    "selectedCoins": "Selected coins",
+    "confirmEachCoin": "Confirm every coin to complete order",
     "total": "Total",
     "name": "Name",
     "namePlaceholder": "Your name",

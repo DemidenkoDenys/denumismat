@@ -1,7 +1,10 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, inject, ViewChild, OnInit, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, ChangeDetectionStrategy, input, output, signal, computed, inject, ViewChild, OnInit, OnDestroy, PLATFORM_ID, ChangeDetectorRef, effect, Renderer2 } from '@angular/core';
+import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { Store } from '@ngrx/store';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { selectUser } from '../../state/auth/auth.selectors';
 import { Coin } from '../coins/coin-card';
 import { PricePipe } from '../../pipes/price.pipe';
 
@@ -11,8 +14,8 @@ import { PricePipe } from '../../pipes/price.pipe';
   imports: [CommonModule, FormsModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="modal-overlay" (click)="close()">
-      <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-overlay" (mousedown)="onBackdropMouseDown($event)" (mouseup)="onBackdropMouseUp($event)">
+      <div class="modal-container" (mousedown)="$event.stopPropagation()">
         <div class="modal-header">
           <h2>{{ 'orderModal.title' | translate }}</h2>
           <button class="close-btn" (click)="close()">&times;</button>
@@ -20,10 +23,13 @@ import { PricePipe } from '../../pipes/price.pipe';
 
         <div class="modal-body">
           <div class="selected-coins-list">
-            <h3>{{ 'orderModal.selectedCoins' | translate }}</h3>
-            <ul class="coin-list">
+            <h3>{{ 'orderModal.confirmEachCoin' | translate }}</h3>
+            <ul class="coin-list" [class.has-selection]="hasSelection()" [class.submitted]="submitted()">
               @for (coin of coins(); track coin.id) {
-                <li class="coin-item">
+                <li class="coin-item" (click)="toggleCoin(coin.id)" [class.excluded]="!isSelected(coin.id)">
+                  <div class="coin-check">
+                    <input type="checkbox" [checked]="isSelected(coin.id)" (click)="toggleCoin(coin.id, $event)">
+                  </div>
                   <span class="coin-name">{{ coin.country_name }} - {{ coin.deno }} - {{ coin.year }}</span>
                   <span class="coin-price">{{ coin.price | price }}</span>
                 </li>
@@ -44,6 +50,7 @@ import { PricePipe } from '../../pipes/price.pipe';
                 name="name"
                 [ngModel]="name"
                 (ngModelChange)="onNameChange($event)"
+                [disabled]="!!currentUser()?.displayName"
                 required
                 placeholder="{{ 'orderModal.namePlaceholder' | translate }}"
                 #nameInput="ngModel"
@@ -63,6 +70,7 @@ import { PricePipe } from '../../pipes/price.pipe';
                 name="email"
                 [ngModel]="email"
                 (ngModelChange)="onEmailChange($event)"
+                [disabled]="!!currentUser()?.email"
                 required
                 email
                 pattern="^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,4}$"
@@ -100,10 +108,62 @@ import { PricePipe } from '../../pipes/price.pipe';
     </div>
   `
 })
-export class OrderModalComponent implements OnInit {
+export class OrderModalComponent implements OnInit, OnDestroy {
   @ViewChild('orderForm') orderForm!: NgForm;
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
+  private store = inject(Store);
+  private renderer = inject(Renderer2);
+  private document = inject(DOCUMENT);
+
+  currentUser = toSignal(this.store.select(selectUser));
+  excludedIds = signal<Set<string>>(new Set());
+
+  constructor() {
+    effect(() => {
+      const user = this.currentUser();
+      if (user?.email) {
+        this.email = user.email;
+        if (user.displayName) {
+          this.name = user.displayName;
+        }
+        this.cdr.markForCheck();
+      }
+    });
+
+     // Reset excluded coins when the coins list changes
+    effect(() => {
+      const c = this.coins();
+      // Start with all coins excluded (unchecked)
+      this.excludedIds.set(new Set(c.map(coin => coin.id)));
+    }, { allowSignalWrites: true });
+  }
+
+  toggleCoin(id: string, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.submitted.set(false);
+    this.excludedIds.update(set => {
+      const newSet = new Set(set);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }
+
+  isSelected(id: string): boolean {
+    return !this.excludedIds().has(id);
+  }
+
+  hasSelection = computed(() => {
+    const excluded = this.excludedIds();
+    return this.coins().some(c => !excluded.has(c.id));
+  });
+
   private readonly storageKeyEmail = 'denumismat.email';
   private readonly storageKeyName = 'denumismat.name';
 
@@ -117,9 +177,26 @@ export class OrderModalComponent implements OnInit {
   name = '';
   email = '';
   isSubmitting = signal(false);
+  submitted = signal(false);
+  private isBackdropMouseDown = false;
+
+  onBackdropMouseDown(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.isBackdropMouseDown = true;
+    }
+  }
+
+  onBackdropMouseUp(event: MouseEvent) {
+    if (this.isBackdropMouseDown && event.target === event.currentTarget) {
+      this.close();
+    }
+    this.isBackdropMouseDown = false;
+  }
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
+      this.renderer.setStyle(this.document.body, 'overflow', 'hidden');
+
       const savedEmail = localStorage.getItem(this.storageKeyEmail);
       const savedName = localStorage.getItem(this.storageKeyName);
 
@@ -129,6 +206,12 @@ export class OrderModalComponent implements OnInit {
       if (savedEmail || savedName) {
         this.cdr.markForCheck();
       }
+    }
+  }
+
+  ngOnDestroy() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.renderer.removeStyle(this.document.body, 'overflow');
     }
   }
 
@@ -147,7 +230,9 @@ export class OrderModalComponent implements OnInit {
   }
 
   totalAmount = computed(() => {
-    return this.coins().reduce((sum, coin) => sum + coin.price, 0);
+    return this.coins()
+      .filter(c => !this.excludedIds().has(c.id))
+      .reduce((sum, coin) => sum + coin.price, 0);
   });
 
   close() {
@@ -155,10 +240,19 @@ export class OrderModalComponent implements OnInit {
   }
 
   submitOrder() {
+    this.submitted.set(true);
+
     if (this.orderForm.invalid) {
       this.orderForm.form.markAllAsTouched();
       return;
     }
+
+    // Require all coins to be selected/confirmed
+    if (this.excludedIds().size > 0) {
+      return;
+    }
+
+    const finalCoins = this.coins(); // All items must be selected at this point
 
     this.isSubmitting.set(true);
 
@@ -167,7 +261,7 @@ export class OrderModalComponent implements OnInit {
       this.onSubmit.emit({
         name: this.name,
         email: this.email,
-        coins: this.coins()
+        coins: finalCoins
       });
       this.isSubmitting.set(false);
     }, 500);

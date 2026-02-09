@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../services/auth.service';
 import * as AuthActions from './auth.actions';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { User } from './auth.models';
 
@@ -31,12 +31,29 @@ export class AuthEffects {
     )
   );
 
+  syncStorage$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.loginSuccess, AuthActions.setAuthUser),
+      tap(({ user }) => {
+        if (user) {
+          localStorage.setItem('auth_user_profile', JSON.stringify(user));
+        } else {
+          localStorage.removeItem('auth_user_profile');
+        }
+      })
+    ),
+    { dispatch: false }
+  );
+
   logout$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logout),
       switchMap(() =>
         this.authService.logout().pipe(
-          map(() => AuthActions.logoutSuccess()),
+          map(() => {
+             localStorage.removeItem('auth_user_profile');
+             return AuthActions.logoutSuccess();
+          }),
           catchError((error) => of(AuthActions.logoutFailure({ error: error.message })))
         )
       )

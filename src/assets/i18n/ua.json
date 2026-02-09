@@ -63,7 +63,7 @@
   },
   "orderModal": {
     "title": "Оформіть замовлення",
-    "selectedCoins": "Вибрані монети",
+    "confirmEachCoin": "Підтвердіть кожну монету щоб замовити",
     "total": "Разом",
     "name": "Ім'я",
     "namePlaceholder": "Ваше ім'я",
