@@ -1,5 +1,5 @@
 .header {
-  background-color: #ffffff;
+  background-color: #fffde9;
   border-bottom: 1px solid #e5e7eb;
   padding: 0;
   position: fixed;
@@ -122,6 +122,55 @@
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
+}
+
+.header__auth-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover .header__tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+  }
+}
+
+.header__tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background-color: #1f2937;
+  color: #f9fafb;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  white-space: normal;
+  width: max-content;
+  max-width: 200px;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1050;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  // Triangle indicator
+  &::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+    background-color: #1f2937;
+  }
 }
 
 .header__icon-btn {
@@ -378,6 +427,19 @@ body.theme-dark {
     color: #6b7280;
   }
 
+  .header__tooltip {
+    background-color: #111827;
+    color: #f3f4f6;
+    border: 1px solid #374151;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 5px rgba(255, 255, 255, 0.05);
+
+    &::before {
+      background-color: #111827;
+      border-top: 1px solid #374151;
+      border-left: 1px solid #374151;
+    }
+  }
+
   .header__icon-btn {
     color: #9ca3af;
 
@@ -424,4 +486,16 @@ body.theme-dark {
       background-color: #374151;
     }
   }
+}
+
+.header__auth-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.header__auth-initials {
+    font-size: 0.8rem;
+    font-weight: bold;
 }

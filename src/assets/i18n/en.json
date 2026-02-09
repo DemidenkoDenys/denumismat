@@ -6,7 +6,10 @@
     "currency": "Currency",
     "currencyMore": "More countries",
     "languageMore": "More countries",
-    "themeToggle": "Toggle dark theme"
+    "themeToggle": "Toggle dark theme",
+    "auth": "Sign in with Google",
+    "logout": "Log out",
+    "authTooltip": "Authorization keeps your email always ready to any action in the app"
   },
   "coin": {
     "details": "Details",

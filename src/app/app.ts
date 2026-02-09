@@ -12,6 +12,7 @@ import { OrderModalComponent } from './components/order-modal/order-modal';
 import * as CurrencyActions from './state/currency.actions';
 import * as CountriesActions from './state/countries.actions';
 import * as CoinsActions from './state/coins.actions';
+import * as AuthActions from './state/auth/auth.actions';
 import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } from './state/currency.selectors';
 import { selectCountries } from './state/countries.selectors';
 import { PingService } from './services/ping.service';
@@ -187,6 +188,7 @@ export class App implements OnInit {
     this.store.dispatch(CountriesActions.loadCountries());
     this.store.dispatch(CountriesActions.loadExtinctCountries());
     this.store.dispatch(CoinsActions.loadCoins());
+    this.store.dispatch(AuthActions.checkAuth());
   }
 
   handleSearch(query: string): void {

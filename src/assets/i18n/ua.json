@@ -6,7 +6,10 @@
     "currency": "Валюта",
     "currencyMore": "Бiльше країн",
     "languageMore": "Бiльше країн",
-    "themeToggle": "Перемкнути темну тему"
+    "themeToggle": "Перемкнути темну тему",
+    "auth": "Увійти через Google",
+    "logout": "Вийти",
+    "authTooltip": "Авторизація зберігає ваш email готовим до будь-якої дії в додатку"
   },
   "coin": {
     "details": "Деталі",

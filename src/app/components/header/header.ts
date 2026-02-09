@@ -9,6 +9,8 @@ import { selectCurrenciesInfo } from '../../state/currency.selectors';
 import { setSelectedCurrency } from '../../state/currency.actions';
 import { setSelectedLanguage } from '../../state/countries.actions';
 import { CountriesMap } from '../../state/countries.models';
+import { selectUser } from '../../state/auth/auth.selectors';
+import { loginWithGoogle, logout } from '../../state/auth/auth.actions';
 
 export type Language = string;
 export type Currency = string;
@@ -75,6 +77,34 @@ export interface CurrencyOption {
 
         <!-- Actions -->
         <div class="header__actions">
+          <!-- Auth Google -->
+          <div class="header__auth-wrapper">
+            @if (currentUser(); as user) {
+              <button
+                type="button"
+                class="header__icon-btn header__auth-btn"
+                (click)="onLogout()"
+                [attr.aria-label]="user.displayName">
+                @if (user.photoURL) {
+                   <img [src]="user.photoURL" class="header__auth-avatar" [alt]="user.displayName">
+                } @else {
+                   <span class="header__auth-initials">{{ user.displayName?.charAt(0) || 'U' }}</span>
+                }
+              </button>
+            } @else {
+              <button
+                type="button"
+                class="header__icon-btn header__auth-btn"
+                (click)="onLogin()"
+                [attr.aria-label]="'header.auth' | translate">
+                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor">
+                  <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+                </svg>
+              </button>
+            }
+            <div class="header__tooltip" role="tooltip">{{ (currentUser() ? 'header.logout' : 'header.authTooltip') | translate }}</div>
+          </div>
+
           <!-- Currency Selector -->
           <div class="header__localization" #currencyContainer>
             <button
@@ -207,6 +237,16 @@ export class HeaderComponent {
 
   translate = inject(TranslateService);
   private store = inject(Store);
+
+  currentUser = toSignal(this.store.select(selectUser));
+
+  onLogin() {
+    this.store.dispatch(loginWithGoogle());
+  }
+
+  onLogout() {
+    this.store.dispatch(logout());
+  }
 
   @ViewChild('currencyContainer') currencyContainer?: ElementRef;
   @ViewChild('languageContainer') languageContainer?: ElementRef;

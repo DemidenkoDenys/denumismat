@@ -10,6 +10,8 @@ import { countriesReducer } from './state/countries.reducer';
 import { CountriesEffects } from './state/countries.effects';
 import { coinsReducer } from './state/coins.reducer';
 import { CoinsEffects } from './state/coins.effects';
+import { authReducer } from './state/auth/auth.reducer';
+import { AuthEffects } from './state/auth/auth.effects';
 
 import { routes } from './app.routes';
 
@@ -18,8 +20,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer }),
-    provideEffects([CurrencyEffects, CountriesEffects, CoinsEffects]),
+    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer }),
+    provideEffects([CurrencyEffects, CountriesEffects, CoinsEffects, AuthEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]
 };
