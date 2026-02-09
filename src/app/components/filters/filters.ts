@@ -13,35 +13,6 @@ export interface Filters {
   template: `
     <aside class="filters" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
-        <div class="filters__group filters__group--tags">
-          <div class="filters__tags">
-            @for (tag of availableTags(); track tag) {
-              <button
-                type="button"
-                class="filters__tag"
-                [class]="'filters__tag--' + tag.toLowerCase()"
-                [class.active]="tags().includes(tag)"
-                (click)="toggleTag(tag)">
-                {{ tag.toUpperCase() }}
-              </button>
-            }
-            @if (selectedCount() > 0) {
-              <button
-                type="button"
-                class="filters__tag filters__tag--selected"
-                [class.active]="showSelectedOnly()"
-                (click)="toggleSelectedOnly()">
-                <span class="filters__tag-icon" aria-hidden="true">
-                  <svg viewBox="0 0 16 16" role="img" aria-hidden="true">
-                    <path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </span>
-                {{ 'filters.tag.Selected' | translate }}
-              </button>
-            }
-          </div>
-        </div>
-
         <div class="filters__group filters__group--range">
           <div class="filters__range-values">
             <span class="filters__value">{{ formattedMinPrice() }} - {{ formattedMaxPrice() }}</span>
@@ -80,6 +51,37 @@ export interface Filters {
           </div>
         </div>
 
+        <div class="filters__group filters__group--tags">
+          <span class="filters__label" style="display: inline-block; margin-right: 0.5rem; align-self: center;">
+            {{ 'filters.leaveOnly' | translate }}
+          </span>
+          <div class="filters__tags">
+            @for (tag of availableTags(); track tag) {
+              <button
+                type="button"
+                class="filters__tag"
+                [class]="'filters__tag--' + tag.toLowerCase()"
+                [class.active]="tags().includes(tag)"
+                (click)="toggleTag(tag)">
+                {{ tag.toUpperCase() }}
+              </button>
+            }
+            @if (selectedCount() > 0) {
+              <button
+                type="button"
+                class="filters__tag filters__tag--selected"
+                [class.active]="showSelectedOnly()"
+                (click)="toggleSelectedOnly()">
+                <span class="filters__tag-icon" aria-hidden="true">
+                  <svg viewBox="0 0 16 16" role="img" aria-hidden="true">
+                    <path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </span>
+                {{ 'filters.tag.Selected' | translate }}
+              </button>
+            }
+          </div>
+        </div>
       </div>
     </aside>
   `,

@@ -23,19 +23,20 @@
 }
 
 .filters__group--range {
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   align-items: center;
 }
 
 .filters__group--tags {
   margin-left: auto;
+  flex-direction: row;
+  align-items: center;
 }
 
 .filters__label {
   font-size: 0.75rem;
   color: #6b7280;
   font-weight: 500;
-  text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 

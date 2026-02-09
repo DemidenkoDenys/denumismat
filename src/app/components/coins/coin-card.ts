@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { PricePipe } from '../../pipes/price.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 
@@ -44,7 +45,7 @@ export interface Coin {
 @Component({
   selector: 'app-coin-card',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <article
@@ -118,7 +119,7 @@ export interface Coin {
           </div>
         }
 
-        <span class="coin-card__price-badge">{{ 'coin.price' | translate:{ price: formattedPrice() } }}</span>
+        <span class="coin-card__price-badge">{{ 'coin.price' | translate:{ price: (coin().price | price) } }}</span>
       </div>
 
       <div class="coin-card__body">
@@ -355,14 +356,8 @@ export class CoinCardComponent {
   }
 
   formattedPrice = computed(() => {
-    const price = (this.coin().price * this.conversionRate()).toFixed(2);
-    const format = this.currencyFormat();
-    const currency = format.short;
-    // Add thousands separator (space)
-    const [intPart, decPart] = price.split('.');
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    const formattedPrice = `${formattedInt}.${decPart}`;
-    return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
+    // Deprecated: using pipe in template
+    return '';
   });
 
   detailsOpen = signal(false);

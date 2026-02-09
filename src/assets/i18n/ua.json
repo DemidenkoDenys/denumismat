@@ -42,6 +42,7 @@
   },
   "filters": {
     "countryPlaceholder": "Країна",
+    "leaveOnly": "Залишити тільки: ",
     "tag": {
       "UNC": "UNC",
       "Rare": "Рідкісне",
@@ -56,5 +57,20 @@
   "grid": {
     "ariaLabel": "Сітка монет",
     "showMore": "Показати більше"
+  },
+  "orderModal": {
+    "title": "Оформіть замовлення",
+    "selectedCoins": "Вибрані монети",
+    "total": "Разом",
+    "name": "Ім'я",
+    "namePlaceholder": "Ваше ім'я",
+    "nameRequiredError": "Ім'я обов'язкове",
+    "email": "Email",
+    "emailPlaceholder": "vash.email@example.com",
+    "emailError": "Email повинен містити домен (наприклад .com)",
+    "emailRequiredError": "Email обов'язковий",
+    "cancel": "Скасувати",
+    "submit": "Замовити",
+    "processing": "Обробка..."
   }
 }

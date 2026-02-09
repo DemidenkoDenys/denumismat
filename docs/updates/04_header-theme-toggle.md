@@ -13,7 +13,7 @@ Files changed
 - `src/styles/components/header.scss` (added styles for the toggle button and dark overrides)
 
 Behavior
-- On first load the header reads localStorage (`enumerate-dark-mode`) or falls back to `prefers-color-scheme`.
+- On first load the header reads localStorage (`denumismat.dark-mode`) or falls back to `prefers-color-scheme`.
 - Clicking the theme button toggles dark mode, persists the choice, and updates the UI immediately.
 
 Developer notes

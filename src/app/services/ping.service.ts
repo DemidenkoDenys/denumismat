@@ -15,7 +15,7 @@ export class PingService {
     @Inject(PLATFORM_ID) private platformId: Object,
     private zone: NgZone
   ) {
-    this.startPinging();
+    // this.startPinging();
   }
 
   private startPinging() {

@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, signal, output, effect, inject, untracked } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, output, effect, inject, untracked, PLATFORM_ID } from '@angular/core';
 import type { OnInit } from '@angular/core';
 import { input, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CoinCardComponent, Coin } from './coin-card';
@@ -39,7 +39,9 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
 })
 export class CoinGridComponent implements OnInit {
   private readonly storageKey = 'denumismat.selectedCoinIds';
+  private platformId = inject(PLATFORM_ID);
   private store = inject(Store);
+  private selectionRestored = false;
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
@@ -131,6 +133,16 @@ export class CoinGridComponent implements OnInit {
 
   constructor() {
     effect(() => {
+      const coins = this.coins();
+      if (coins && coins.length > 0 && !this.selectionRestored) {
+        untracked(() => {
+          this.restoreSelection();
+          this.selectionRestored = true;
+        });
+      }
+    });
+
+    effect(() => {
       if (this.resetTrigger() > 0) {
         this.clearSelection();
       }
@@ -155,7 +167,7 @@ export class CoinGridComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.restoreSelection();
+    // Selection restored via effect when coins are loaded
   }
 
   onSelect(id: string, selected: boolean) {
@@ -179,27 +191,32 @@ export class CoinGridComponent implements OnInit {
   }
 
   private restoreSelection() {
-    if (typeof localStorage === 'undefined') return;
+    if (!isPlatformBrowser(this.platformId)) return;
     const stored = localStorage.getItem(this.storageKey);
     if (!stored) return;
     try {
       const ids = JSON.parse(stored);
       if (!Array.isArray(ids)) return;
+
       const coins = this.coins();
-      if (!coins) return;
+      if (!coins || coins.length === 0) return;
+
+      // Filter to only include IDs that exist in the current coin set
       const validIds = ids.filter((id: unknown) =>
         typeof id === 'string' && coins.some(c => c.id === id)
       );
-      if (validIds.length === 0) return;
-      this.selectedIds.set(validIds);
-      this.emitSummary(validIds);
+
+      if (validIds.length > 0) {
+        this.selectedIds.set(validIds);
+        this.emitSummary(validIds);
+      }
     } catch {
       this.persistSelection([]);
     }
   }
 
   private persistSelection(ids: string[]) {
-    if (typeof localStorage === 'undefined') return;
+    if (!isPlatformBrowser(this.platformId)) return;
     localStorage.setItem(this.storageKey, JSON.stringify(ids));
   }
 
@@ -210,8 +227,7 @@ export class CoinGridComponent implements OnInit {
       return;
     }
     const selected = coins.filter(c => ids.includes(c.id));
-    const rate = this.conversionRate();
-    const totalPrice = selected.reduce((sum, c) => sum + (c.price || 0) * rate, 0);
+    const totalPrice = selected.reduce((sum, c) => sum + (c.price || 0), 0);
     this.selectedSummary.emit({ ids, totalWeight: 0, totalPrice });
   }
 

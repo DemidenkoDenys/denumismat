@@ -1,11 +1,12 @@
 import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { PricePipe } from '../../pipes/price.pipe';
 
 @Component({
   selector: 'app-selection-bar',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (count() > 0) {
@@ -14,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
           <div class="selection-bar__metrics">
             <span class="selection-bar__count">
               {{ 'selectionBar.selected' | translate:{ count: count() } }}
-              <span class="selection-bar__price">({{ formattedPrice() }})</span>
+              <span class="selection-bar__price">({{ totalPrice() | price }})</span>
             </span>
           </div>
 
@@ -32,18 +33,8 @@ export class SelectionBarComponent {
   count = input<number>(0);
   totalWeight = input<number>(0);
   totalPrice = input<number>(0);
+  conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
-
-  formattedPrice = computed(() => {
-    const price = this.totalPrice().toFixed(2);
-    const format = this.currencyFormat();
-    const currency = format.short;
-    // Add thousands separator (space)
-    const [intPart, decPart] = price.split('.');
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    const formattedPrice = `${formattedInt}.${decPart}`;
-    return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
-  });
 
   onBook = output<void>();
   onOrder = output<void>();

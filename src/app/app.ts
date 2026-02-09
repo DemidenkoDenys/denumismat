@@ -8,6 +8,7 @@ import { CoinGridComponent } from './components/coins/coin-grid';
 import { SelectionBarComponent } from './components/selection-bar/selection-bar';
 import { FooterComponent } from './components/footer/footer';
 import { MessageTooltipComponent } from './components/message-tooltip/message-tooltip';
+import { OrderModalComponent } from './components/order-modal/order-modal';
 import * as CurrencyActions from './state/currency.actions';
 import * as CountriesActions from './state/countries.actions';
 import * as CoinsActions from './state/coins.actions';
@@ -50,11 +51,23 @@ import { PingService } from './services/ping.service';
         [count]="selectedCount()"
         [totalWeight]="selectedWeight()"
         [totalPrice]="selectedPrice()"
+        [conversionRate]="conversionRate()"
         [currencyFormat]="currencyFormat()"
-        (onReset)="handleReset()"></app-selection-bar>
+        (onReset)="handleReset()"
+        (onOrder)="handleOrderClick()"></app-selection-bar>
     </main>
     <app-footer></app-footer>
     <app-message-tooltip></app-message-tooltip>
+
+    @if (isOrderModalOpen()) {
+      <app-order-modal
+        [coins]="selectedCoins()"
+        [conversionRate]="conversionRate()"
+        [currencyFormat]="currencyFormat()"
+        (onClose)="closeOrderModal()"
+        (onSubmit)="handleOrderSubmit($event)">
+      </app-order-modal>
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -65,7 +78,8 @@ import { PingService } from './services/ping.service';
     CoinGridComponent,
     SelectionBarComponent,
     FooterComponent,
-    MessageTooltipComponent
+    MessageTooltipComponent,
+    OrderModalComponent
   ]
 })
 export class App implements OnInit {
@@ -81,11 +95,29 @@ export class App implements OnInit {
   filters = signal<any>(null);
   priceBounds = signal<[number, number]>([0, 10000]);
   priceRange = signal<[number, number]>([0, 10000]);
+  isOrderModalOpen = signal(false);
 
   private currencyRates = toSignal(this.store.select(selectCurrencyRates), { initialValue: null });
   private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), { initialValue: null });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
+
+  selectedCoins = computed(() => {
+    // We need to get the actual coin objects, usually this would come from the store or coinGrid
+    if (this.coinGrid) {
+      const allCoins = this.coinGrid.coins() || [];
+      const selectedIds = this.coinGrid.selectedIds();
+      const countries = this.countries() || {};
+
+      return allCoins
+        .filter((c: any) => selectedIds.includes(c.id))
+        .map((c: any) => ({
+          ...c,
+          country_name: countries[c.country]?.name || c.country
+        }));
+    }
+    return [];
+  });
 
   conversionRate = computed(() => {
     const rates = this.currencyRates();
@@ -198,5 +230,21 @@ export class App implements OnInit {
     if (this.coinGrid) {
       this.coinGrid.resetTrigger.update((v: number) => v + 1);
     }
+  }
+
+  handleOrderClick() {
+    this.isOrderModalOpen.set(true);
+  }
+
+  closeOrderModal() {
+    this.isOrderModalOpen.set(false);
+  }
+
+  handleOrderSubmit(data: { name: string; email: string; coins: any[] }) {
+    console.log('Order submitted:', data);
+    this.isOrderModalOpen.set(false);
+    this.handleReset();
+    // Here you would typically dispatch an action or call a service to process the order
+    alert(`Thank you ${data.name}! We received your order for ${data.coins.length} coins.`);
   }
 }

@@ -405,7 +405,7 @@ export class HeaderComponent {
    * Initialize dark mode from localStorage or system preference
    */
   private initializeDarkMode(): void {
-    const stored = localStorage.getItem('enumerate-dark-mode');
+    const stored = localStorage.getItem('denumismat.dark-mode');
 
     if (stored !== null) {
       this.isDarkMode.set(stored === 'true');
@@ -429,7 +429,7 @@ export class HeaderComponent {
       body.classList.remove('theme-dark');
     }
 
-    localStorage.setItem('enumerate-dark-mode', isDark.toString());
+    localStorage.setItem('denumismat.dark-mode', isDark.toString());
   }
 
   /**

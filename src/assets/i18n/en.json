@@ -42,6 +42,7 @@
   },
   "filters": {
     "countryPlaceholder": "Country",
+    "leaveOnly": "Leave only: ",
     "tag": {
         "UNC": "UNC",
         "Rare": "Rare",
@@ -56,5 +57,20 @@
       "ariaLabel": "Coin grid",
       "showMore": "Show more"
     }
+  },
+  "orderModal": {
+    "title": "Complete your order",
+    "selectedCoins": "Selected coins",
+    "total": "Total",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "nameRequiredError": "Name is required",
+    "email": "Email",
+    "emailPlaceholder": "your.email@example.com",
+    "emailError": "Email must contain a domain (e.g. .com)",
+    "emailRequiredError": "Email is required",
+    "cancel": "Cancel",
+    "submit": "Order now",
+    "processing": "Processing..."
   }
 }
