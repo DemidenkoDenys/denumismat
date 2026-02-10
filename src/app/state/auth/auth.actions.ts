@@ -11,3 +11,4 @@ export const logoutFailure = createAction('[Auth] Logout Failure', props<{ error
 
 export const checkAuth = createAction('[Auth] Check Auth');
 export const setAuthUser = createAction('[Auth] Set Auth User', props<{ user: User | null }>());
+export const setIsAdmin = createAction('[Auth] Set Is Admin', props<{ isAdmin: boolean }>());

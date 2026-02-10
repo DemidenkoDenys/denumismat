@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -9,6 +9,9 @@ import { TranslateModule } from '@ngx-translate/core';
       <div class="introduction__content">
         <h1 id="intro-heading" class="introduction__title">
           {{ 'introduction.title' | translate }}
+          @if (isAdmin()) {
+            <span class="introduction__admin-badge">admin</span>
+          }
         </h1>
         <p class="introduction__subtitle">
           {{ 'introduction.subtitle' | translate }}
@@ -21,4 +24,6 @@ import { TranslateModule } from '@ngx-translate/core';
   standalone: true,
   imports: [CommonModule, TranslateModule],
 })
-export class IntroductionComponent {}
+export class IntroductionComponent {
+  isAdmin = input(false);
+}

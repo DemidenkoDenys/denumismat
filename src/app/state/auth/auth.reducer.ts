@@ -14,7 +14,8 @@ const getUserFromStorage = (): User | null => {
 export const initialState: AuthState = {
   user: getUserFromStorage(),
   loading: false,
-  error: null
+  error: null,
+  isAdmin: false
 };
 
 export const authReducer = createReducer(
@@ -27,5 +28,6 @@ export const authReducer = createReducer(
   on(AuthActions.logoutSuccess, (state) => ({ ...state, user: null, loading: false })),
   on(AuthActions.logoutFailure, (state, { error }) => ({ ...state, loading: false, error })),
 
-  on(AuthActions.setAuthUser, (state, { user }) => ({ ...state, user }))
+  on(AuthActions.setAuthUser, (state, { user }) => ({ ...state, user })),
+  on(AuthActions.setIsAdmin, (state, { isAdmin }) => ({ ...state, isAdmin }))
 );
