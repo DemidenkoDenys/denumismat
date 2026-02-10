@@ -19,7 +19,7 @@ export class CoinsEffects {
           map((coins: Coin[]) => {
             const coinsWithDiscount = coins.map((coin) => ({
               ...coin,
-              discountPrice: Math.round(coin.price * 0.9),
+              discountPrice: Math.round(coin.price * 90) / 100,
             }));
             return CoinsActions.loadCoinsSuccess({ coins: coinsWithDiscount });
           }),

@@ -75,5 +75,18 @@
     "cancel": "Скасувати",
     "submit": "Замовити",
     "processing": "Обробка..."
+  },
+  "authModal": {
+    "title": "Увійти",
+    "name": "Ім'я",
+    "namePlaceholder": "Ваше ім'я",
+    "nameRequiredError": "Ім'я обов'язкове",
+    "email": "Email",
+    "emailPlaceholder": "vash.email@example.com",
+    "emailError": "Email повинен містити домен (наприклад .com)",
+    "emailRequiredError": "Email обов'язковий",
+    "cancel": "Скасувати",
+    "submit": "Увійти",
+    "processing": "Вхід..."
   }
 }

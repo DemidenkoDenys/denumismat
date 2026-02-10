@@ -52,6 +52,8 @@ export class AuthEffects {
         this.authService.logout().pipe(
           map(() => {
              localStorage.removeItem('auth_user_profile');
+             localStorage.removeItem('denumismat.email');
+             localStorage.removeItem('denumismat.name');
              return AuthActions.logoutSuccess();
           }),
           catchError((error) => of(AuthActions.logoutFailure({ error: error.message })))

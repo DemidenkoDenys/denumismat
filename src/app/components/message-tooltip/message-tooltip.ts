@@ -1,7 +1,9 @@
-import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, HostListener } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, HostListener, output, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { Store } from '@ngrx/store';
+import { selectIsLoggedIn } from '../../state/auth/auth.selectors';
 
 @Component({
   selector: 'app-message-tooltip',
@@ -52,11 +54,36 @@ import { FormsModule } from '@angular/forms';
 export class MessageTooltipComponent {
   private http = inject(HttpClient);
   private elementRef = inject(ElementRef);
+  private store = inject(Store);
 
   isMessagerExpanded = signal(false);
   messageText = signal('');
   isTextareaDisabled = signal(false);
   isError = signal(false);
+  authRequired = signal(false);
+
+  onAuthRequired = output<void>();
+  authSuccessTrigger = input(0);
+
+  constructor() {
+    effect(() => {
+      const isLoggedIn = this.store.selectSignal(selectIsLoggedIn)();
+      // If user just logged in and we were waiting for auth, send the message
+      if (isLoggedIn && this.authRequired()) {
+        this.authRequired.set(false);
+        this.sendMessageAfterAuth();
+      }
+    });
+
+    effect(() => {
+      // Listen for auth success trigger changes
+      this.authSuccessTrigger();
+      if (this.authRequired()) {
+        this.authRequired.set(false);
+        this.sendMessageAfterAuth();
+      }
+    });
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -109,6 +136,18 @@ export class MessageTooltipComponent {
        return;
     }
 
+    // Check if user is logged in
+    const isLoggedIn = this.store.selectSignal(selectIsLoggedIn)();
+    if (!isLoggedIn) {
+      this.authRequired.set(true);
+      this.onAuthRequired.emit();
+      return;
+    }
+
+    this.sendMessageRequest(text);
+  }
+
+  private sendMessageRequest(text: string) {
     this.isTextareaDisabled.set(true);
     this.http.post('http://localhost:3000/send', {
       text: text,
@@ -127,5 +166,12 @@ export class MessageTooltipComponent {
         this.isError.set(true);
       }
     });
+  }
+
+  private sendMessageAfterAuth() {
+    const text = this.messageText();
+    if (text.trim()) {
+      this.sendMessageRequest(text);
+    }
   }
 }

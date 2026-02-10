@@ -32,6 +32,6 @@ export class PricePipe implements PipeTransform {
     const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     const displayPrice = `${formattedInt}.${decPart}`;
 
-    return withCurrency ? effectiveFormat.start ? `${currency} ${displayPrice}` : `${displayPrice} ${currency}` : displayPrice;
+    return withCurrency ? effectiveFormat.start ? `${currency}${currency === '$' ? '' : ' '}${displayPrice}` : `${displayPrice} ${currency}` : displayPrice;
   }
 }

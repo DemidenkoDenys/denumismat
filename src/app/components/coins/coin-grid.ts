@@ -20,7 +20,7 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
         @for (c of paginatedCoins(); track c.id) {
           <app-coin-card
             [coin]="c"
-            [selected]="selectedIds().includes(c.id)"
+            [selected]="selectedIdsSet().has(c.id)"
             [conversionRate]="conversionRate()"
             [currencyFormat]="currencyFormat()"
             (selectedChange)="onSelect(c.id, $event)"
@@ -67,6 +67,7 @@ export class CoinGridComponent implements OnInit {
   });
 
   selectedIds = signal<string[]>([]);
+  selectedIdsSet = computed(() => new Set(this.selectedIds()));
   selectedSummary = output<{ ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }>();
   priceBoundsChange = output<[number, number]>();
   resetTrigger = signal<number>(0);
@@ -107,7 +108,7 @@ export class CoinGridComponent implements OnInit {
 
       // Apply other filters
       if (f) {
-        if (f.selectedOnly && !this.selectedIds().includes(coin.id)) {
+        if (f.selectedOnly && !this.selectedIdsSet().has(coin.id)) {
           return false;
         }
 
@@ -198,15 +199,15 @@ export class CoinGridComponent implements OnInit {
     const stored = localStorage.getItem(this.storageKey);
     if (!stored) return;
     try {
-      const ids = JSON.parse(stored);
-      if (!Array.isArray(ids)) return;
+      const idsMap = JSON.parse(stored);
+      if (typeof idsMap !== 'object' || idsMap === null) return;
 
       const coins = this.coins();
       if (!coins || coins.length === 0) return;
 
-      // Filter to only include IDs that exist in the current coin set
-      const validIds = ids.filter((id: unknown) =>
-        typeof id === 'string' && coins.some(c => c.id === id)
+      // Convert map back to array of valid IDs
+      const validIds = Object.keys(idsMap).filter((id: string) =>
+        idsMap[id] === true && coins.some(c => c.id === id)
       );
 
       if (validIds.length > 0) {
@@ -220,7 +221,12 @@ export class CoinGridComponent implements OnInit {
 
   private persistSelection(ids: string[]) {
     if (!isPlatformBrowser(this.platformId)) return;
-    localStorage.setItem(this.storageKey, JSON.stringify(ids));
+    // Convert array to map for faster lookups
+    const idsMap = ids.reduce((map, id) => {
+      map[id] = true;
+      return map;
+    }, {} as Record<string, boolean>);
+    localStorage.setItem(this.storageKey, JSON.stringify(idsMap));
   }
 
   private emitSummary(ids: string[]) {
