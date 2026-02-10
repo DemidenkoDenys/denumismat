@@ -260,7 +260,7 @@ export class HeaderComponent {
   isCurrencyMenuOpen = signal(false);
   isCurrencyExpanded = signal(false);
   isLanguageExpanded = signal(false);
-  isDarkMode = signal(false);
+  isDarkMode = signal(true);
   isSearchFocused = signal(false);
   currentSearchValue = signal('');
 
@@ -448,12 +448,11 @@ export class HeaderComponent {
   private initializeDarkMode(): void {
     const stored = localStorage.getItem('denumismat.dark-mode');
 
-    if (stored !== null) {
+    if (stored) {
       this.isDarkMode.set(stored === 'true');
     } else {
-      // Detect system preference
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.isDarkMode.set(prefersDark);
+      this.isDarkMode.set(prefersDark || true);
     }
   }
 

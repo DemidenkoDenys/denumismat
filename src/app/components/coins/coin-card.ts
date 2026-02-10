@@ -110,16 +110,18 @@ export interface Coin {
             </div>
           }
 
-          <button
-            type="button"
-            class="coin-card__lupa"
-            (click)="$event.stopPropagation(); onLupaClick()"
-            [attr.aria-label]="'Zoom image'">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </button>
+          @if (!isPlaceholder()) {
+            <button
+              type="button"
+              class="coin-card__lupa"
+              (click)="$event.stopPropagation(); onLupaClick()"
+              [attr.aria-label]="'Zoom image'">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          }
         </div>
 
         @if (coin().tags && coin().tags!.length > 0) {

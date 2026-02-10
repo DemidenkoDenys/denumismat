@@ -71,7 +71,11 @@
 .image-slider-modal__nav svg {
   width: 48px;
   height: 48px;
-  stroke: #333;
+  fill: transparent;
+
+  path {
+    color: white;
+  }
 }
 
 .image-slider-modal__close {

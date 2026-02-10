@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, signal, output, inject, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, signal, output, inject, effect, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { S3Service } from '../../services/s3.service';
 
@@ -17,7 +17,7 @@ import { S3Service } from '../../services/s3.service';
           <svg viewBox="0 0 24 24" width="48" height="48"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
         <img [src]="images()[currentIndex()]" class="image-slider-modal__image" [alt]="altText()" (click)="closeModal()" />
-        <button class="image-slider-modal__nav image-slider-modal__nav--next" (click)="nextImage()" [disabled]="images().length < 2">
+        <button *ngIf="images().length > 0" class="image-slider-modal__nav image-slider-modal__nav--next" (click)="nextImage()" [disabled]="images().length < 2">
           <svg viewBox="0 0 24 24" width="48" height="48"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
@@ -81,5 +81,12 @@ export class ImageSliderModalComponent {
 
   closeModal() {
     this.close.emit();
+  }
+
+  @HostListener('window:keydown.escape', ['$event'])
+  onEscapePress(event: KeyboardEvent | Event) {
+    if (event instanceof KeyboardEvent) {
+      this.closeModal();
+    }
   }
 }

@@ -47,19 +47,19 @@
     "countryPlaceholder": "Country",
     "leaveOnly": "Leave only: ",
     "tag": {
-        "UNC": "UNC",
-        "Rare": "Rare",
-        "Sale": "Sale",
-        "Selected": "Selected"
-    },
-    "introduction": {
-      "title": "Explore historical and rare coins",
-      "subtitle": "Browse, filter and book coins from around the world"
-    },
-    "grid": {
-      "ariaLabel": "Coin grid",
-      "showMore": "Show more"
+      "UNC": "UNC",
+      "Rare": "Rare",
+      "Sale": "Sale",
+      "Selected": "Selected"
     }
+  },
+  "introduction": {
+    "title": "Explore historical and rare coins",
+    "subtitle": "Browse, filter and book coins from around the world"
+  },
+  "grid": {
+    "ariaLabel": "Coin grid",
+    "showMore": "Show more"
   },
   "orderModal": {
     "title": "Complete your order",
