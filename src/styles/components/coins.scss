@@ -250,6 +250,12 @@ body.theme-dark .coin-card__lupa:hover {
   z-index: 2;
 }
 
+.coin-card__original-price {
+  color: rgb(78, 207, 250);
+  text-decoration: line-through;
+  font-weight: 400;
+}
+
 .coin-card__tags {
   position: absolute;
   left: 8px;

@@ -16,7 +16,7 @@ export class PricePipe implements PipeTransform {
     initialValue: { symbol: '$', short: '$', start: true }
   });
 
-  transform(value: number | null | undefined): string {
+  transform(value: number | null | undefined, withCurrency = true): string {
     if (value === null || value === undefined) return '';
 
     const rate = this.conversionRate();
@@ -32,6 +32,6 @@ export class PricePipe implements PipeTransform {
     const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     const displayPrice = `${formattedInt}.${decPart}`;
 
-    return effectiveFormat.start ? `${currency} ${displayPrice}` : `${displayPrice} ${currency}`;
+    return withCurrency ? effectiveFormat.start ? `${currency} ${displayPrice}` : `${displayPrice} ${currency}` : displayPrice;
   }
 }

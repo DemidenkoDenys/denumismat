@@ -16,7 +16,13 @@ export class CoinsEffects {
       ofType(CoinsActions.loadCoins),
       switchMap(() =>
         this.firestoreService.listenToCollection('coins').pipe(
-          map((coins: Coin[]) => CoinsActions.loadCoinsSuccess({ coins })),
+          map((coins: Coin[]) => {
+            const coinsWithDiscount = coins.map((coin) => ({
+              ...coin,
+              discountPrice: Math.round(coin.price * 0.9),
+            }));
+            return CoinsActions.loadCoinsSuccess({ coins: coinsWithDiscount });
+          }),
           catchError((error) => {
             console.error('Error fetching coins:', error);
             return of(CoinsActions.loadCoinsFailure({ error }));

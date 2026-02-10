@@ -150,6 +150,12 @@ export class FiltersComponent {
   rangeLeftPct = computed(() => ((this.priceMin() - this.priceMinBound()) / this.rangeSpan()) * 100);
   rangeWidthPct = computed(() => ((this.priceMax() - this.priceMin()) / this.rangeSpan()) * 100);
 
+  // Adjust price range to use discountPrice
+  filteredCoins = computed(() => {
+    const [min, max] = this.priceRange();
+    return this.allCoins().filter(coin => coin.price >= min && coin.price <= max);
+  });
+
   constructor() {
     effect(() => {
       const [min, max] = this.priceRange();

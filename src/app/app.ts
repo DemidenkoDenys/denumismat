@@ -54,6 +54,7 @@ import { PingService } from './services/ping.service';
         [count]="selectedCount()"
         [totalWeight]="selectedWeight()"
         [totalPrice]="selectedPrice()"
+        [totalDiscountPrice]="selectedDiscountPrice()"
         [conversionRate]="conversionRate()"
         [currencyFormat]="currencyFormat()"
         (onReset)="handleReset()"
@@ -104,6 +105,7 @@ export class App implements OnInit {
   selectedCount = signal(0);
   selectedWeight = signal(0);
   selectedPrice = signal(0);
+  selectedDiscountPrice = signal(0);
   filters = signal<any>(null);
   priceBounds = signal<[number, number]>([0, 10000]);
   priceRange = signal<[number, number]>([0, 10000]);
@@ -228,10 +230,11 @@ export class App implements OnInit {
     }
   }
 
-  handleSelectionSummary(summary: { ids: string[]; totalWeight: number; totalPrice: number }) {
+  handleSelectionSummary(summary: { ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }) {
     this.selectedCount.set(summary.ids.length);
     this.selectedWeight.set(Math.round(summary.totalWeight));
     this.selectedPrice.set(Number(summary.totalPrice.toFixed(2)));
+    this.selectedDiscountPrice.set(Number(summary.totalDiscountPrice.toFixed(2)));
   }
 
   handlePriceBoundsChange(bounds: [number, number]) {

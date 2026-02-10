@@ -28,6 +28,7 @@ export interface Coin {
   imageFilenames?: string[]; // Array of image filenames in the coin folder (from Firestore)
   tags?: string[]; // Tags like 'UNC', 'RARE', 'SALE'
   title?: string; // Pre-computed searchable title: "Country - Deno - Year - Description"
+  discountPrice?: number; // 10% discounted price
 }
 
 /**
@@ -132,7 +133,10 @@ export interface Coin {
           </div>
         }
 
-        <span class="coin-card__price-badge">{{ 'coin.price' | translate:{ price: (coin().price | price) } }}</span>
+        <span class="coin-card__price-badge">
+          <span class="coin-card__original-price">{{ coin().price | price: false }}</span>&nbsp;
+          <span class="coin-card__discounted-price">{{ 'coin.price' | translate:{ price: (coin().discountPrice | price) } }}</span>
+        </span>
       </div>
 
       <div class="coin-card__body">

@@ -30,7 +30,16 @@
 
 .selection-bar__count {
   font-weight: 600;
-  color: #3b82f6;
+  font-size: 1rem;
+}
+
+.selection-bar__original-price {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.selection-bar__discounted-price {
+  color: #f97316;
 }
 
 .selection-bar__price {

@@ -67,7 +67,7 @@ export class CoinGridComponent implements OnInit {
   });
 
   selectedIds = signal<string[]>([]);
-  selectedSummary = output<{ ids: string[]; totalWeight: number; totalPrice: number }>();
+  selectedSummary = output<{ ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }>();
   priceBoundsChange = output<[number, number]>();
   resetTrigger = signal<number>(0);
   filters = input<any>(null);
@@ -190,7 +190,7 @@ export class CoinGridComponent implements OnInit {
   clearSelection() {
     this.selectedIds.set([]);
     this.persistSelection([]);
-    this.selectedSummary.emit({ ids: [], totalWeight: 0, totalPrice: 0 });
+    this.selectedSummary.emit({ ids: [], totalWeight: 0, totalPrice: 0, totalDiscountPrice: 0 });
   }
 
   private restoreSelection() {
@@ -226,12 +226,13 @@ export class CoinGridComponent implements OnInit {
   private emitSummary(ids: string[]) {
     const coins = this.coins();
     if (!coins) {
-      this.selectedSummary.emit({ ids: [], totalWeight: 0, totalPrice: 0 });
+      this.selectedSummary.emit({ ids: [], totalWeight: 0, totalPrice: 0, totalDiscountPrice: 0 });
       return;
     }
     const selected = coins.filter(c => ids.includes(c.id));
     const totalPrice = selected.reduce((sum, c) => sum + (c.price || 0), 0);
-    this.selectedSummary.emit({ ids, totalWeight: 0, totalPrice });
+    const totalDiscountPrice = selected.reduce((sum, c) => sum + (c.discountPrice || 0), 0);
+    this.selectedSummary.emit({ ids, totalWeight: 0, totalPrice, totalDiscountPrice });
   }
 
   private emitPriceBounds() {
