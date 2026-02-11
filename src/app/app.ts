@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -59,7 +59,7 @@ import { MainLayoutComponent } from './main-layout';
     ImageSliderModalComponent
   ]
 })
-export class App {
+export class App implements OnInit {
   private pingService = inject(PingService);
   private store = inject(Store);
   private activeLayoutComponent: MainLayoutComponent | null = null;
@@ -70,6 +70,7 @@ export class App {
   showImageSliderModal = signal(false);
   sliderAltText = signal('Coin image');
   sliderCoinId = signal<string>('');
+  isAuthFormValid = signal(false);
 
   private currencyRates = toSignal(this.store.select(selectCurrencyRates), { initialValue: null });
   private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), { initialValue: null });
@@ -78,6 +79,8 @@ export class App {
   private isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
 
   static ADTL = 'ZGVudW1pc21hdC1hZG1pbi10b29s';
+
+  ngOnInit() {}
 
   selectedCoins = computed(() => {
     if (this.activeLayoutComponent?.coinGrid) {

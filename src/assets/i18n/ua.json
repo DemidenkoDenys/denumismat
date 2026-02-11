@@ -87,6 +87,21 @@
     "emailRequiredError": "Email обов'язковий",
     "cancel": "Скасувати",
     "submit": "Увійти",
+    "googleSignIn": "Увійти через Google",
     "processing": "Вхід..."
+  },
+  "authForm": {
+    "name": "Ім'я",
+    "namePlaceholder": "Ваше ім'я",
+    "nameRequiredError": "Ім'я обов'язкове",
+    "email": "Email",
+    "emailPlaceholder": "vash.email@example.com",
+    "emailError": "Email повинен містити домен (наприклад .com)",
+    "emailRequiredError": "Email обов'язковий",
+    "verifyCode": "Код підтвердження",
+    "verifyCodePlaceholder": "XXX-XXX",
+    "verifyCodeRequiredError": "Код підтвердження обов'язковий",
+    "verifyCodeFormatError": "Будь ласка, введіть дійсний 6-значний код у форматі XXX-XXX",
+    "submit": "Надіслати"
   }
 }

@@ -253,6 +253,23 @@
         cursor: not-allowed;
       }
     }
+
+    &--google {
+      background: white;
+      background: #3c4043;
+      padding: 0 0.8rem;
+      margin-right: auto;
+
+      &:hover:not(:disabled) {
+        background: #f8f9fa;
+        border-color: #c4c7c5;
+        box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3);
+      }
+
+      svg {
+        flex-shrink: 0;
+      }
+    }
   }
 
   @keyframes fadeIn {

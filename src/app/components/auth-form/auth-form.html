@@ -1,0 +1,77 @@
+<form (ngSubmit)="onSubmit()" #authForm="ngForm" class="auth-form">
+  <div class="form-group">
+    <label for="name">{{ 'authForm.name' | translate }}</label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      [ngModel]="name()"
+      (ngModelChange)="onNameChange($event)"
+      [disabled]="!!currentUser()?.displayName"
+      required
+      placeholder="{{ 'authForm.namePlaceholder' | translate }}"
+      #nameInput="ngModel"
+    >
+    @if (nameInput.invalid && (nameInput.dirty || nameInput.touched || submitted()) && nameInput.errors?.['required']) {
+      <div class="error-message">
+        {{ 'authForm.nameRequiredError' | translate }}
+      </div>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="email">{{ 'authForm.email' | translate }}</label>
+    <input
+      type="email"
+      id="email"
+      name="email"
+      [ngModel]="email()"
+      (ngModelChange)="onEmailChange($event)"
+      [disabled]="emailDisabled() || !!currentUser()?.email"
+      required
+      email
+      pattern="^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,4}$"
+      placeholder="{{ 'authForm.emailPlaceholder' | translate }}"
+      #emailInput="ngModel"
+    >
+    @if (emailInput.invalid && (emailInput.dirty || emailInput.touched || submitted())) {
+      @if (emailInput.errors?.['required']) {
+        <div class="error-message">
+          {{ 'authForm.emailRequiredError' | translate }}
+        </div>
+      } @else if (emailInput.errors?.['pattern']) {
+        <div class="error-message">
+          {{ 'authForm.emailError' | translate }}
+        </div>
+      }
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="verifyCode">{{ 'authForm.verifyCode' | translate }}</label>
+    <input
+      type="text"
+      id="verifyCode"
+      name="verifyCode"
+      [ngModel]="verifyCode()"
+      (ngModelChange)="onVerifyCodeChange($event)"
+      (input)="onVerifyCodeInput($event)"
+      required
+      pattern="^\d{3}-\d{3}$"
+      maxlength="7"
+      placeholder="{{ 'authForm.verifyCodePlaceholder' | translate }}"
+      #verifyCodeInput="ngModel"
+    >
+    @if (verifyCodeInput.invalid && (verifyCodeInput.dirty || verifyCodeInput.touched || submitted())) {
+      @if (verifyCodeInput.errors?.['required']) {
+        <div class="error-message">
+          {{ 'authForm.verifyCodeRequiredError' | translate }}
+        </div>
+      } @else if (verifyCodeInput.errors?.['pattern']) {
+        <div class="error-message">
+          {{ 'authForm.verifyCodeFormatError' | translate }}
+        </div>
+      }
+    }
+  </div>
+</form>

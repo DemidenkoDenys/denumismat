@@ -8,6 +8,6 @@ export const routes: Routes = [
   },
   {
     path: 'denumismat-admin-tool',
-    component: MainLayoutComponent
+    component: MainLayoutComponent,
   }
 ];

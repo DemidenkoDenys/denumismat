@@ -7,11 +7,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
 import { Coin } from '../coins/coin-card';
 import { PricePipe } from '../../pipes/price.pipe';
+import { AuthForm } from '../auth-form/auth-form';
 
 @Component({
   selector: 'app-order-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, PricePipe],
+  imports: [CommonModule, FormsModule, TranslateModule, PricePipe, AuthForm],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="modal-overlay" (mousedown)="onBackdropMouseDown($event)" (mouseup)="onBackdropMouseUp($event)">
@@ -42,53 +43,15 @@ import { PricePipe } from '../../pipes/price.pipe';
           </div>
 
           <form (ngSubmit)="submitOrder()" #orderForm="ngForm" class="order-form">
-            <div class="form-group">
-              <label for="name">{{ 'orderModal.name' | translate }}</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                [ngModel]="name"
-                (ngModelChange)="onNameChange($event)"
-                [disabled]="!!currentUser()?.displayName"
-                required
-                placeholder="{{ 'orderModal.namePlaceholder' | translate }}"
-                #nameInput="ngModel"
-              >
-              @if (nameInput.invalid && (nameInput.dirty || nameInput.touched) && nameInput.errors?.['required']) {
-                <div class="error-message">
-                  {{ 'orderModal.nameRequiredError' | translate }}
-                </div>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="email">{{ 'orderModal.email' | translate }}</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                [ngModel]="email"
-                (ngModelChange)="onEmailChange($event)"
-                [disabled]="!!currentUser()?.email"
-                required
-                email
-                pattern="^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,4}$"
-                placeholder="{{ 'orderModal.emailPlaceholder' | translate }}"
-                #emailInput="ngModel"
-              >
-              @if (emailInput.invalid && (emailInput.dirty || emailInput.touched)) {
-                @if (emailInput.errors?.['required']) {
-                  <div class="error-message">
-                    {{ 'orderModal.emailRequiredError' | translate }}
-                  </div>
-                } @else if (emailInput.errors?.['pattern']) {
-                  <div class="error-message">
-                    {{ 'orderModal.emailError' | translate }}
-                  </div>
-                }
-              }
-            </div>
+            <app-auth-form
+              [name]="name"
+              [email]="email"
+              [emailDisabled]="!!currentUser()?.email"
+              (nameChange)="onNameChange($event)"
+              (emailChange)="onEmailChange($event)"
+              (formValid)="isFormValid.set($event)"
+              (submitForm)="onFormSubmit($event)"
+            ></app-auth-form>
 
             <div class="modal-actions">
               <button type="button" class="btn btn--ghost" (click)="close()">
@@ -97,7 +60,7 @@ import { PricePipe } from '../../pipes/price.pipe';
               <button
                 type="submit"
                 class="btn btn--primary"
-                [disabled]="isSubmitting()"
+                [disabled]="isSubmitting() || !isFormValid()"
               >
                 {{ isSubmitting() ? ('orderModal.processing' | translate) : ('orderModal.submit' | translate) }}
               </button>
@@ -109,7 +72,6 @@ import { PricePipe } from '../../pipes/price.pipe';
   `
 })
 export class OrderModalComponent implements OnInit, OnDestroy {
-  @ViewChild('orderForm') orderForm!: NgForm;
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
   private store = inject(Store);
@@ -164,9 +126,6 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     return this.coins().some(c => !excluded.has(c.id));
   });
 
-  private readonly storageKeyEmail = 'denumismat.email';
-  private readonly storageKeyName = 'denumismat.name';
-
   coins = input<Coin[]>([]);
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
@@ -178,6 +137,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   email = '';
   isSubmitting = signal(false);
   submitted = signal(false);
+  isFormValid = signal(false);
   private isBackdropMouseDown = false;
 
   onBackdropMouseDown(event: MouseEvent) {
@@ -196,16 +156,6 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.renderer.setStyle(this.document.body, 'overflow', 'hidden');
-
-      const savedEmail = localStorage.getItem(this.storageKeyEmail);
-      const savedName = localStorage.getItem(this.storageKeyName);
-
-      if (savedEmail) this.email = savedEmail;
-      if (savedName) this.name = savedName;
-
-      if (savedEmail || savedName) {
-        this.cdr.markForCheck();
-      }
     }
   }
 
@@ -217,16 +167,18 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
   onNameChange(value: string) {
     this.name = value;
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.storageKeyName, value);
-    }
+    // Don't save to localStorage - users should enter fresh data each time
   }
 
   onEmailChange(value: string) {
     this.email = value;
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem(this.storageKeyEmail, value);
-    }
+    // Don't save to localStorage - users should enter fresh data each time
+  }
+
+  onFormSubmit(formData: { name: string; email: string; verifyCode: string }) {
+    this.name = formData.name;
+    this.email = formData.email;
+    this.submitOrder();
   }
 
   totalAmount = computed(() => {
@@ -242,8 +194,8 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   submitOrder() {
     this.submitted.set(true);
 
-    if (this.orderForm.invalid) {
-      this.orderForm.form.markAllAsTouched();
+    if (!this.isFormValid()) {
+      // The auth-form component will handle showing validation errors
       return;
     }
 
