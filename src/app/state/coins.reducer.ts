@@ -4,12 +4,14 @@ import { Coin } from '../components/coins/coin-card';
 
 export interface CoinsState {
   coins: Coin[] | null;
+  selected: { [coinId: string]: Coin };
   loading: boolean;
   error: any | null;
 }
 
 export const initialState: CoinsState = {
   coins: null,
+  selected: {},
   loading: false,
   error: null
 };
@@ -31,5 +33,41 @@ export const coinsReducer = createReducer(
     ...state,
     loading: false,
     error
-  }))
+  })),
+  on(CoinsActions.selectCoin, (state, { coin }) => ({
+    ...state,
+    selected: {
+      ...state.selected,
+      [coin.id]: coin
+    }
+  })),
+  on(CoinsActions.deselectCoin, (state, { coinId }) => {
+    const { [coinId]: removed, ...remaining } = state.selected;
+    return {
+      ...state,
+      selected: remaining
+    };
+  }),
+  on(CoinsActions.clearSelection, (state) => ({
+    ...state,
+    selected: {}
+  })),
+  on(CoinsActions.toggleCoinSelection, (state, { coin }) => {
+    const isSelected = state.selected[coin.id];
+    if (isSelected) {
+      const { [coin.id]: removed, ...remaining } = state.selected;
+      return {
+        ...state,
+        selected: remaining
+      };
+    } else {
+      return {
+        ...state,
+        selected: {
+          ...state.selected,
+          [coin.id]: coin
+        }
+      };
+    }
+  })
 );

@@ -27,7 +27,9 @@
     "totalWeightUnit": "грамів",
     "reset": "Скинути",
     "book": "Бронювати",
-    "order": "Замовити"
+    "unbook": "Розбронювати",
+    "order": "Замовити",
+    "delete": "Видалити"
   },
   "pageFooter": {
     "aboutTitle": "Про мене",

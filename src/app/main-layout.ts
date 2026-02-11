@@ -6,7 +6,6 @@ import { HeaderComponent, type Language, type Currency } from './components/head
 import { IntroductionComponent } from './components/introduction/introduction';
 import { FiltersComponent } from './components/filters/filters';
 import { CoinGridComponent } from './components/coins/coin-grid';
-import { SelectionBarComponent } from './components/selection-bar/selection-bar';
 import { FooterComponent } from './components/footer/footer';
 import { MessageTooltipComponent } from './components/message-tooltip/message-tooltip';
 import * as CurrencyActions from './state/currency.actions';
@@ -17,9 +16,7 @@ import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } fro
 import { selectCountries } from './state/countries.selectors';
 import { selectIsLoggedIn, selectIsAdmin } from './state/auth/auth.selectors';
 import { PingService } from './services/ping.service';
-import { App } from './app';
-
-
+import { ADTL } from './app.constants';
 
 @Component({
   selector: 'app-main-layout',
@@ -54,7 +51,7 @@ import { App } from './app';
         (priceBoundsChange)="handlePriceBoundsChange($event)"
         (openSliderModal)="openSliderModal.emit($event)">
       </app-coin-grid>
-      <app-selection-bar
+      <!-- <app-selection-bar
         [count]="selectedCount()"
         [totalWeight]="selectedWeight()"
         [totalPrice]="selectedPrice()"
@@ -63,45 +60,7 @@ import { App } from './app';
         [currencyFormat]="currencyFormat()"
         (onReset)="handleReset()"
         (onBook)="onBookClick.emit()"
-        (onOrder)="onOrderClick.emit()"></app-selection-bar>
-
-      @if (isAdmin()) {
-        <section class="admin-panel">
-          <div class="admin-panel__container">
-            <h2 class="admin-panel__title">Admin Panel</h2>
-            <div class="admin-panel__grid">
-              <div class="admin-panel__card">
-                <h3>Data Management</h3>
-                <p>Manage coin database and user data</p>
-                <button class="admin-panel__button" (click)="handleAdminDataManagement()">
-                  Manage Data
-                </button>
-              </div>
-              <div class="admin-panel__card">
-                <h3>System Status</h3>
-                <p>View system health and performance</p>
-                <button class="admin-panel__button" (click)="handleAdminSystemStatus()">
-                  View Status
-                </button>
-              </div>
-              <div class="admin-panel__card">
-                <h3>User Analytics</h3>
-                <p>Analyze user behavior and engagement</p>
-                <button class="admin-panel__button" (click)="handleAdminAnalytics()">
-                  View Analytics
-                </button>
-              </div>
-              <div class="admin-panel__card">
-                <h3>Settings</h3>
-                <p>Configure application settings</p>
-                <button class="admin-panel__button" (click)="handleAdminSettings()">
-                  Configure
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-      }
+        (onOrder)="onOrderClick.emit()"></app-selection-bar> -->
     </main>
     <app-footer></app-footer>
     <app-message-tooltip (onAuthRequired)="onAuthRequired.emit()" [authSuccessTrigger]="authSuccessTrigger()"></app-message-tooltip>
@@ -113,7 +72,6 @@ import { App } from './app';
     IntroductionComponent,
     FiltersComponent,
     CoinGridComponent,
-    SelectionBarComponent,
     FooterComponent,
     MessageTooltipComponent
   ]
@@ -195,7 +153,7 @@ export class MainLayoutComponent implements OnInit {
     this.store.dispatch(CountriesActions.loadExtinctCountries());
     this.store.dispatch(CoinsActions.loadCoins());
     this.store.dispatch(AuthActions.checkAuth());
-    this.store.dispatch(AuthActions.setIsAdmin({ isAdmin: this.router.url.includes(atob(App.ADTL)) }));
+    this.store.dispatch(AuthActions.setIsAdmin({ isAdmin: this.router.url.includes(atob(ADTL)) }));
 
     this.initializeUserFromLocalStorage();
   }

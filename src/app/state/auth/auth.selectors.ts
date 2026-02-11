@@ -7,4 +7,4 @@ export const selectUser = createSelector(selectAuthState, (state) => state.user)
 export const selectIsLoggedIn = createSelector(selectAuthState, (state) => !!state.user);
 export const selectAuthLoading = createSelector(selectAuthState, (state) => state.loading);
 export const selectAuthError = createSelector(selectAuthState, (state) => state.error);
-export const selectIsAdmin = createSelector(selectAuthState, (state) => state.isAdmin);
+export const selectIsAdmin = createSelector(selectAuthState, (state) => state.isAdmin && state.user?.uid === '4jv5yogz1AhqUb6ZojV6fScI9ZD2');

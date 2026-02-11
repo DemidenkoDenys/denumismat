@@ -1,13 +1,23 @@
 import { Routes } from '@angular/router';
-import { MainLayoutComponent } from './main-layout';
+import { AdminComponent } from './components/admin/admin';
+import { AdminService } from './services/admin.service';
+import { UserService } from './services/user.service';
+import { ADTL } from './app.constants';
+import { UserWrapperComponent } from './components/user-wrapper/user-wrapper.component';
+import { AdminAuthResolver } from './resolvers/admin-auth-resolver';
+import { UserAuthResolver } from './resolvers/user-auth-resolver';
 
 export const routes: Routes = [
   {
     path: '',
-    component: MainLayoutComponent
+    component: UserWrapperComponent,
+    providers: [AdminService],
+    resolve: { resolve: UserAuthResolver }
   },
   {
-    path: 'denumismat-admin-tool',
-    component: MainLayoutComponent,
+    path: atob(ADTL),
+    component: AdminComponent,
+    providers: [UserService],
+    resolve: { resolve: AdminAuthResolver }
   }
 ];

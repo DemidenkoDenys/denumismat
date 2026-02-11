@@ -114,6 +114,39 @@
   }
 }
 
+.btn--danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: white !important;
+}
+
+.btn--danger:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+}
+
+.btn--danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: white !important;
+}
+
+.btn--danger:hover {
+  background-color: #c82333 !important;
+  border-color: #bd2130 !important;
+}
+
+.btn--secondary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: white !important;
+}
+
+.btn--secondary:hover {
+  background-color: #5a6268 !important;
+  border-color: #545b62 !important;
+}
+
 /* Slide-up animation */
 @keyframes slideUp {
   from {

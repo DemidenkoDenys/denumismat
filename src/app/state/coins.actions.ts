@@ -14,3 +14,22 @@ export const loadCoinsFailure = createAction(
   '[Coins] Load Coins Failure',
   props<{ error: any }>()
 );
+
+export const selectCoin = createAction(
+  '[Coins] Select Coin',
+  props<{ coin: Coin }>()
+);
+
+export const deselectCoin = createAction(
+  '[Coins] Deselect Coin',
+  props<{ coinId: string }>()
+);
+
+export const clearSelection = createAction(
+  '[Coins] Clear Selection'
+);
+
+export const toggleCoinSelection = createAction(
+  '[Coins] Toggle Coin Selection',
+  props<{ coin: Coin }>()
+);

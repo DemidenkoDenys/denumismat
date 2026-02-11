@@ -6,7 +6,8 @@ import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CoinCardComponent, Coin } from './coin-card';
 import { TranslateModule } from '@ngx-translate/core';
-import { selectCoins } from '../../state/coins.selectors';
+import { selectCoins, selectSelectedCoins, selectSelectedCoinIds } from '../../state/coins.selectors';
+import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 
 @Component({
@@ -46,6 +47,8 @@ export class CoinGridComponent implements OnInit {
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
+  selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: {} });
+  selectedIds = toSignal(this.store.select(selectSelectedCoinIds), { initialValue: [] });
 
   displayLimit = signal(20);
 
@@ -66,7 +69,6 @@ export class CoinGridComponent implements OnInit {
     }));
   });
 
-  selectedIds = signal<string[]>([]);
   selectedIdsSet = computed(() => new Set(this.selectedIds()));
   selectedSummary = output<{ ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }>();
   priceBoundsChange = output<[number, number]>();
@@ -175,13 +177,22 @@ export class CoinGridComponent implements OnInit {
   }
 
   onSelect(id: string, selected: boolean) {
-    const set = new Set(this.selectedIds());
-    if (selected) set.add(id);
-    else set.delete(id);
-    const ids = Array.from(set);
-    this.selectedIds.set(ids);
-    this.persistSelection(ids);
-    this.emitSummary(ids);
+    const coin = this.coins()?.find(c => c.id === id);
+    if (!coin) return;
+
+    if (selected) {
+      this.store.dispatch(CoinsActions.selectCoin({ coin }));
+    } else {
+      this.store.dispatch(CoinsActions.deselectCoin({ coinId: id }));
+    }
+
+    // Emit summary for UI updates
+    const currentSelectedIds = this.selectedIds();
+    const newIds = selected
+      ? [...currentSelectedIds, id]
+      : currentSelectedIds.filter(selectedId => selectedId !== id);
+
+    this.emitSummary(newIds);
   }
 
   showMore() {
@@ -189,8 +200,7 @@ export class CoinGridComponent implements OnInit {
   }
 
   clearSelection() {
-    this.selectedIds.set([]);
-    this.persistSelection([]);
+    this.store.dispatch(CoinsActions.clearSelection());
     this.selectedSummary.emit({ ids: [], totalWeight: 0, totalPrice: 0, totalDiscountPrice: 0 });
   }
 
@@ -205,17 +215,24 @@ export class CoinGridComponent implements OnInit {
       const coins = this.coins();
       if (!coins || coins.length === 0) return;
 
-      // Convert map back to array of valid IDs
+      // Convert map back to array of valid IDs and dispatch select actions
       const validIds = Object.keys(idsMap).filter((id: string) =>
         idsMap[id] === true && coins.some(c => c.id === id)
       );
 
       if (validIds.length > 0) {
-        this.selectedIds.set(validIds);
+        // Dispatch select actions for each valid coin
+        validIds.forEach(id => {
+          const coin = coins.find(c => c.id === id);
+          if (coin) {
+            this.store.dispatch(CoinsActions.selectCoin({ coin }));
+          }
+        });
         this.emitSummary(validIds);
       }
     } catch {
-      this.persistSelection([]);
+      // Clear any corrupted data
+      this.store.dispatch(CoinsActions.clearSelection());
     }
   }
 

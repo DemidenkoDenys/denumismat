@@ -1,20 +1,23 @@
-import { Component, ChangeDetectionStrategy, input, output, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { PricePipe } from '../../pipes/price.pipe';
+import { isCoinSelected, selectSelectedCoinsCount, selectSelectedCoinsDiscountPrice, selectSelectedCoinsPrice } from '../../state/coins.selectors';
+import { Store } from '@ngrx/store';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-selection-bar',
+  selector: 'user-selection-bar',
   standalone: true,
   imports: [CommonModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (count() > 0) {
+    @if (isCoinSelected()) {
       <div class="selection-bar" role="region" aria-live="polite">
         <div class="selection-bar__inner">
           <div class="selection-bar__metrics">
             <span class="selection-bar__count">
-              {{ 'selectionBar.selected' | translate:{ count: count() } }}&nbsp;&nbsp;&nbsp;
+              {{ 'selectionBar.selected' | translate:{ count: selectedCoinsCount() } }}&nbsp;&nbsp;&nbsp;
               <span class="selection-bar__price">
                 <span class="selection-bar__original-price">{{ totalPrice() | price: false }}</span>&nbsp;&nbsp;
                 <span class="selection-bar__discounted-price">{{ 'coin.price' | translate:{ price: (totalDiscountPrice() | price) } }}</span>
@@ -32,13 +35,16 @@ import { PricePipe } from '../../pipes/price.pipe';
     }
   `,
 })
-export class SelectionBarComponent {
-  count = input<number>(0);
-  totalWeight = input<number>(0);
-  totalPrice = input<number>(0);
-  totalDiscountPrice = input<number>(0);
+export class UserSelectionBarComponent {
+  private store = inject(Store);
+
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
+
+  totalPrice = toSignal(this.store.select(selectSelectedCoinsPrice), { initialValue: 0 });
+  isCoinSelected = toSignal(this.store.select(isCoinSelected), { initialValue: false });
+  totalDiscountPrice = toSignal(this.store.select(selectSelectedCoinsDiscountPrice), { initialValue: 0 });
+  selectedCoinsCount = toSignal(this.store.select(selectSelectedCoinsCount), { initialValue: 0 });
 
   onBook = output<void>();
   onOrder = output<void>();

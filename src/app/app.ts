@@ -6,9 +6,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { OrderModalComponent } from './components/order-modal/order-modal';
 import { AuthModalComponent } from './components/auth-modal/auth-modal';
 import { ImageSliderModalComponent } from './components/coins/image-slider-modal';
-import * as CurrencyActions from './state/currency.actions';
-import * as CountriesActions from './state/countries.actions';
-import * as CoinsActions from './state/coins.actions';
 import * as AuthActions from './state/auth/auth.actions';
 import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } from './state/currency.selectors';
 import { selectCountries } from './state/countries.selectors';
@@ -78,8 +75,6 @@ export class App implements OnInit {
   private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
   private isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
 
-  static ADTL = 'ZGVudW1pc21hdC1hZG1pbi10b29s';
-
   ngOnInit() {}
 
   selectedCoins = computed(() => {
@@ -138,13 +133,6 @@ export class App implements OnInit {
 
   onRouteActivate(component: MainLayoutComponent) {
     this.activeLayoutComponent = component;
-    // Connect the component's outputs to our handlers
-    if (component) {
-      component.onOrderClick.subscribe(() => this.handleOrderClick());
-      component.onBookClick.subscribe(() => this.handleBookClick());
-      component.onAuthRequired.subscribe(() => this.handleAuthRequired());
-      component.openSliderModal.subscribe((event: any) => this.openImageSliderModal(event));
-    }
   }
 
   handleOrderClick() {
