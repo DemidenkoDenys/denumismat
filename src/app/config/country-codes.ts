@@ -10,5 +10,5 @@ export const ALPHA3_TO_ALPHA2: Record<string, string> = {
   PLW: 'pw', PSE: 'ps', PAN: 'pa', PNG: 'pg', PRY: 'py', PER: 'pe', PHL: 'ph', PCN: 'pn', POL: 'pl', PRT: 'pt', PRI: 'pr', QAT: 'qa', ROU: 'ro', RUS: 'ru', RWA: 'rw', REU: 're', BLM: 'bl', SHN: 'sh', KNA: 'kn', LCA: 'lc', MAF: 'mf', SPM: 'pm',
   VCT: 'vc', WSM: 'ws', SMR: 'sm', STP: 'st', SAU: 'sa', SEN: 'sn', SRB: 'rs', SYC: 'sc', SLE: 'sl', SGP: 'sg', SXM: 'sx', SVK: 'sk', SVN: 'si', SLB: 'sb', SOM: 'so', ZAF: 'za', SGS: 'gs', SSD: 'ss', ESP: 'es', LKA: 'lk', SDN: 'sd', SUR: 'sr',
   SJM: 'sj', SWE: 'se', CHE: 'ch', SYR: 'sy', TWN: 'tw', TJK: 'tj', TZA: 'tz', THA: 'th', TLS: 'tl', TGO: 'tg', TKL: 'tk', TON: 'to', TTO: 'tt', TUN: 'tn', TUR: 'tr', TKM: 'tm', TCA: 'tc', TUV: 'tv', UGA: 'ug', UKR: 'ua', ARE: 'ae', GBR: 'gb',
-  USA: 'us', UMI: 'um', URY: 'uy', UZB: 'uz', VUT: 'vu', VEN: 've', VNM: 'vn', VND: 'vn', VGB: 'vg', VIR: 'vi', WLF: 'wf', ESH: 'eh', YEM: 'ye', ZMB: 'zm', ZWE: 'zw', ALA: 'ax'
+  USA: 'us', UMI: 'um', URY: 'uy', UZB: 'uz', VUT: 'vu', VEN: 've', VNM: 'vn', VND: 'vn', VGB: 'vg', VIR: 'vi', WLF: 'wf', ESH: 'eh', YEM: 'ye', ZMB: 'zm', ZWE: 'zw', ALA: 'ax', AND: 'an', GRN: 'en-GD', IQA: 'ar-IQ', NZD: 'NZ', SLO: 'sl-SI'
 };

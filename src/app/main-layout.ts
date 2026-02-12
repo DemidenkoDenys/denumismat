@@ -23,9 +23,7 @@ import { ADTL } from './app.constants';
   template: `
     <app-header
       [searchQuery]="searchQuery()"
-      [currentLanguage]="currentLanguage()"
       (onSearchChange)="handleSearch($event)"
-      (onLanguageChange)="handleLanguageChange($event)"
       (onCurrencyChange)="handleCurrencyChange($event)">
     </app-header>
 
@@ -51,18 +49,10 @@ import { ADTL } from './app.constants';
         (priceBoundsChange)="handlePriceBoundsChange($event)"
         (openSliderModal)="openSliderModal.emit($event)">
       </app-coin-grid>
-      <!-- <app-selection-bar
-        [count]="selectedCount()"
-        [totalWeight]="selectedWeight()"
-        [totalPrice]="selectedPrice()"
-        [totalDiscountPrice]="selectedDiscountPrice()"
-        [conversionRate]="conversionRate()"
-        [currencyFormat]="currencyFormat()"
-        (onReset)="handleReset()"
-        (onBook)="onBookClick.emit()"
-        (onOrder)="onOrderClick.emit()"></app-selection-bar> -->
     </main>
+
     <app-footer></app-footer>
+
     <app-message-tooltip (onAuthRequired)="onAuthRequired.emit()" [authSuccessTrigger]="authSuccessTrigger()"></app-message-tooltip>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,12 +80,9 @@ export class MainLayoutComponent implements OnInit {
   @ViewChild('coinGrid') coinGrid: CoinGridComponent | undefined;
 
   searchQuery = signal('');
-  currentLanguage = signal<Language>('en');
   currentCurrency = signal<Currency>('USD');
   selectedCount = signal(0);
-  selectedWeight = signal(0);
   selectedPrice = signal(0);
-  selectedDiscountPrice = signal(0);
   filters = signal<any>(null);
   priceBounds = signal<[number, number]>([0, 10000]);
   priceRange = signal<[number, number]>([0, 10000]);
@@ -180,10 +167,6 @@ export class MainLayoutComponent implements OnInit {
     this.searchQuery.set(query);
   }
 
-  handleLanguageChange(lang: Language): void {
-    this.currentLanguage.set(lang);
-  }
-
   handleCurrencyChange(currency: Currency): void {
     this.currentCurrency.set(currency);
     console.log('Currency changed to:', currency);
@@ -198,9 +181,7 @@ export class MainLayoutComponent implements OnInit {
 
   handleSelectionSummary(summary: { ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }) {
     this.selectedCount.set(summary.ids.length);
-    this.selectedWeight.set(Math.round(summary.totalWeight));
     this.selectedPrice.set(Number(summary.totalPrice.toFixed(2)));
-    this.selectedDiscountPrice.set(Number(summary.totalDiscountPrice.toFixed(2)));
   }
 
   handlePriceBoundsChange(bounds: [number, number]) {

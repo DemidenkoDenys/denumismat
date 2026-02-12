@@ -7,10 +7,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { selectCountries } from '../../state/countries.selectors';
 import { selectCurrenciesInfo } from '../../state/currency.selectors';
 import { setSelectedCurrency } from '../../state/currency.actions';
-import { setSelectedLanguage } from '../../state/countries.actions';
 import { CountriesMap } from '../../state/countries.models';
 import { selectUser } from '../../state/auth/auth.selectors';
 import { loginWithGoogle, logout } from '../../state/auth/auth.actions';
+import { CountryDropdownComponent } from '../country-dropdown/country-dropdown.component';
+import { setSelectedLanguage } from '../../state/countries.actions';
 import { ALPHA3_TO_ALPHA2 } from '../../config/country-codes';
 
 export type Language = string;
@@ -157,54 +158,7 @@ export interface CurrencyOption {
           </div>
 
           <!-- Language Selector -->
-          <div class="header__localization" #languageContainer>
-            <button
-              type="button"
-              class="header__icon-btn"
-              (click)="toggleLanguageMenu()"
-              [attr.aria-expanded]="isLanguageMenuOpen()"
-              [attr.aria-label]="'header.language' | translate">
-              <span class="fi fi-{{ getFlagCode(getCurrentLanguageCountryCode()) }}"></span>
-            </button>
-            @if (isLanguageMenuOpen()) {
-              <div class="header__dropdown" role="menu">
-                @for (lang of mustLanguages(); track lang.key) {
-                  <button
-                    type="button"
-                    class="header__dropdown-item"
-                    [class.active]="(currentLanguageCountryKey() === lang.key)"
-                    (click)="selectLanguage(lang.key)"
-                    role="menuitem">
-                    <span class="fi fi-{{ getFlagCode(lang.countryCode) }}"></span>
-                    <span>{{ lang.countryName }} ({{ lang.languageCode.toUpperCase() }})</span>
-                  </button>
-                }
-                <button
-                  type="button"
-                  class="header__dropdown-toggle"
-                  (click)="toggleLanguageExpanded()"
-                  [attr.aria-expanded]="isLanguageExpanded()"
-                  [attr.aria-label]="'header.languageMore' | translate">
-                  <svg class="header__dropdown-toggle-icon" [class.is-open]="isLanguageExpanded()" viewBox="0 0 20 20" fill="none">
-                    <path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </button>
-                @if (isLanguageExpanded()) {
-                  @for (lang of otherLanguages(); track lang.key) {
-                    <button
-                      type="button"
-                      class="header__dropdown-item"
-                      [class.active]="(currentLanguageCountryKey() === lang.key)"
-                      (click)="selectLanguage(lang.key)"
-                      role="menuitem">
-                      <span class="fi fi-{{ getFlagCode(lang.countryCode) }}"></span>
-                      <span>{{ lang.countryName }} ({{ lang.languageCode.toUpperCase() }})</span>
-                    </button>
-                  }
-                }
-              </div>
-            }
-          </div>
+          <country-dropdown [defaultTo]="'en'" (onCountryChanged)="onCountryChanged($event)"></country-dropdown>
 
           <!-- Theme Toggle -->
           <button
@@ -230,7 +184,7 @@ export interface CurrencyOption {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, CountryDropdownComponent],
 })
 export class HeaderComponent {
   searchQuery = input('');
@@ -250,16 +204,13 @@ export class HeaderComponent {
   }
 
   @ViewChild('currencyContainer') currencyContainer?: ElementRef;
-  @ViewChild('languageContainer') languageContainer?: ElementRef;
 
   onSearchChange = output<string>();
-  onLanguageChange = output<Language>();
   onCurrencyChange = output<Currency>();
 
-  isLanguageMenuOpen = signal(false);
   isCurrencyMenuOpen = signal(false);
   isCurrencyExpanded = signal(false);
-  isLanguageExpanded = signal(false);
+
   isDarkMode = signal(true);
   isSearchFocused = signal(false);
   currentSearchValue = signal('');
@@ -269,15 +220,12 @@ export class HeaderComponent {
     return !this.isSearchFocused() && this.currentSearchValue() !== '';
   });
   currentCurrencyKey = signal('');
-  currentLanguageCountryKey = signal('');
+
 
   private countries = toSignal<CountriesMap | null>(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal<any>(this.store.select(selectCurrenciesInfo), { initialValue: null });
 
-  private readonly languageByCountry: Record<string, Language> = {
-    USA: 'en',
-    UKR: 'ua',
-  };
+
 
   readonly mustCurrencies = computed<CurrencyOption[]>(() => {
     const map = this.countries();
@@ -351,43 +299,9 @@ export class HeaderComponent {
     ...this.otherCurrencies(),
   ]);
 
-  readonly mustLanguages = computed<LanguageOption[]>(() => {
-    const map = this.countries();
-    if (!map) return [];
-    return Object.values(map)
-      .filter((country) => country.must)
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((country) => ({
-        key: country.code,
-        countryCode: country.code,
-        countryName: country.name,
-        languageCode: this.getLanguageForCountry(country.code),
-      }));
-  });
-
-  readonly otherLanguages = computed<LanguageOption[]>(() => {
-    const map = this.countries();
-    if (!map) return [];
-    return Object.values(map)
-      .filter((country) => !country.must)
-      .sort((a, b) => a.name.localeCompare(b.name))
-      .map((country) => ({
-        key: country.code,
-        countryCode: country.code,
-        countryName: country.name,
-        languageCode: this.getLanguageForCountry(country.code),
-      }));
-  });
-
-  readonly allLanguages = computed<LanguageOption[]>(() => [
-    ...this.mustLanguages(),
-    ...this.otherLanguages(),
-  ]);
-
   constructor() {
     this.initializeDarkMode();
     this.initializeCurrency();
-    this.initializeLanguageSelection();
 
     // Apply dark mode class whenever isDarkMode signal changes
     effect(() => {
@@ -408,15 +322,6 @@ export class HeaderComponent {
       if (!currencyElement.contains(target)) {
         this.isCurrencyMenuOpen.set(false);
         this.isCurrencyExpanded.set(false);
-      }
-    }
-
-    // Check if click is outside language dropdown
-    if (this.isLanguageMenuOpen() && this.languageContainer) {
-      const languageElement = this.languageContainer.nativeElement;
-      if (!languageElement.contains(target)) {
-        this.isLanguageMenuOpen.set(false);
-        this.isLanguageExpanded.set(false);
       }
     }
   }
@@ -493,99 +398,27 @@ export class HeaderComponent {
     this.isSearchFocused.set(false);
   }
 
-  toggleLanguageMenu(): void {
-    this.isLanguageMenuOpen.update(open => !open);
-  }
-
-  toggleLanguageExpanded(): void {
-    this.isLanguageExpanded.update((open) => !open);
-  }
-
-  toggleCurrencyExpanded(): void {
-    this.isCurrencyExpanded.update((open) => !open);
-  }
-
-  async selectLanguage(countryCode: string): Promise<void> {
-    const lang = this.getLanguageForCountry(countryCode);
-    this.currentLanguageCountryKey.set(countryCode);
+  async onCountryChanged(countryCode: string) {
+    const lang = ALPHA3_TO_ALPHA2[countryCode];
+    console.log("🚀 ~ lang:", lang)
     this.store.dispatch(setSelectedLanguage({ countryKey: countryCode }));
 
     try {
       await this.translate.use(lang as any).toPromise();
       localStorage.setItem('denumismat-lang', lang);
       localStorage.setItem('denumismat-lang-country', countryCode);
-      this.onLanguageChange.emit(lang);
     } catch (error) {
-      // Translation file doesn't exist, fall back to USA/en
-      console.warn(`Translation file for '${lang}' not found, falling back to English`);
       const fallbackCountry = 'USA';
       const fallbackLang = 'en';
-      this.currentLanguageCountryKey.set(fallbackCountry);
       this.store.dispatch(setSelectedLanguage({ countryKey: fallbackCountry }));
       await this.translate.use(fallbackLang as any).toPromise();
       localStorage.setItem('denumismat-lang', fallbackLang);
       localStorage.setItem('denumismat-lang-country', fallbackCountry);
-      this.onLanguageChange.emit(fallbackLang);
     }
-
-    this.isLanguageMenuOpen.set(false);
   }
 
-  getCurrentLanguageCountryCode(): string {
-    const current = this.currentLanguageCountryKey();
-    if (current) return current;
-    const lang = this.translate.currentLang || this.translate.getDefaultLang();
-    return this.getDefaultCountryForLanguage(lang as Language);
-  }
-
-  private initializeLanguageSelection(): void {
-    const storedCountry = localStorage.getItem('denumismat-lang-country');
-    if (storedCountry) {
-      const storedLang = localStorage.getItem('denumismat-lang');
-      const langToCheck = storedLang || this.getLanguageForCountry(storedCountry);
-
-      // Verify translation file exists
-      this.translate.use(langToCheck as any).subscribe({
-        next: () => {
-          this.currentLanguageCountryKey.set(storedCountry);
-          this.store.dispatch(setSelectedLanguage({ countryKey: storedCountry }));
-        },
-        error: () => {
-          // Translation doesn't exist, fall back to USA/en
-          console.warn(`Translation file for '${langToCheck}' not found, falling back to English`);
-          const fallbackCountry = 'USA';
-          const fallbackLang = 'en';
-          this.currentLanguageCountryKey.set(fallbackCountry);
-          this.store.dispatch(setSelectedLanguage({ countryKey: fallbackCountry }));
-          this.translate.use(fallbackLang);
-          localStorage.setItem('denumismat-lang', fallbackLang);
-          localStorage.setItem('denumismat-lang-country', fallbackCountry);
-        }
-      });
-    } else {
-      const lang = this.translate.currentLang || this.translate.getDefaultLang();
-      const countryKey = this.getDefaultCountryForLanguage(lang as Language);
-      this.currentLanguageCountryKey.set(countryKey);
-      this.store.dispatch(setSelectedLanguage({ countryKey }));
-    }
-    effect(() => {
-      const list = this.allLanguages();
-      if (!list.length) return;
-      const current = this.currentLanguageCountryKey();
-      const match = list.find((option) => option.key === current);
-      if (!match) {
-        this.currentLanguageCountryKey.set(list[0].key);
-        this.store.dispatch(setSelectedLanguage({ countryKey: list[0].key }));
-      }
-    });
-  }
-
-  private getLanguageForCountry(countryCode: string): Language {
-    return this.languageByCountry[countryCode] || 'en';
-  }
-
-  private getDefaultCountryForLanguage(language: Language): string {
-    return language === 'ua' ? 'UKR' : 'USA';
+  toggleCurrencyExpanded(): void {
+    this.isCurrencyExpanded.update((open) => !open);
   }
 
   toggleCurrencyMenu(): void {
@@ -614,9 +447,5 @@ export class HeaderComponent {
       symbol: usdInfo?.symbol || '$',
       rate: 0,
     };
-  }
-
-  getFlagCode(countryCode: string): string {
-    return ALPHA3_TO_ALPHA2[countryCode] || countryCode.toLowerCase().slice(0, 2);
   }
 }

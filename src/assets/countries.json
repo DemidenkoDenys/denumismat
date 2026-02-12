@@ -27,7 +27,6 @@
   "KOR": { "code": "KOR", "name": "South Korea", "original": "대한민국", "rate": 89, "currency": "KRW" },
   "MEX": { "code": "MEX", "name": "Mexico", "original": "México", "rate": 84, "currency": "MXN" },
   "NOR": { "code": "NOR", "name": "Norway", "original": "Norge", "rate": 78, "currency": "NOK" },
-  "PLN": { "code": "PLN", "name": "Poland", "original": "Polska", "rate": 74, "currency": "PLN" },
   "ROU": { "code": "ROU", "name": "Romania", "original": "România", "rate": 52, "must": true, "currency": "RON" },
   "SAU": { "code": "SAU", "name": "Saudi Arabia", "original": "السعودية", "rate": 79, "currency": "SAR" },
   "SWE": { "code": "SWE", "name": "Sweden", "original": "Sverige", "rate": 81, "currency": "SEK" },

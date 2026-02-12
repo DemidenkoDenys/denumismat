@@ -1,0 +1,65 @@
+<div class="header__localization" #languageContainer>
+  <button
+    type="button"
+    class="header__icon-btn"
+    (click)="toggleLanguageMenu()"
+    [attr.aria-expanded]="isLanguageMenuOpen()"
+    [attr.aria-label]="'header.language' | translate"
+  >
+    <span class="fi fi-{{ getFlagCode(getCurrentLanguageCountryCode()) }}"></span>
+  </button>
+
+  @if (isLanguageMenuOpen()) {
+    <div class="header__dropdown" role="menu" [style.left.0]="!isLeft()" [style.right.0]="isLeft()">
+      @for (lang of mustLanguages(); track lang.key) {
+        <button
+          type="button"
+          class="header__dropdown-item"
+          [class.active]="currentLanguageCountryKey() === lang.key"
+          (click)="selectLanguage(lang.key)"
+          role="menuitem"
+        >
+          <span class="fi fi-{{ getFlagCode(lang.countryCode) }}"></span>
+          <span>{{ lang.countryName }} ({{ lang.languageCode.toUpperCase() }})</span>
+        </button>
+      }
+      <button
+        type="button"
+        class="header__dropdown-toggle"
+        (click)="toggleLanguageExpanded()"
+        [attr.aria-expanded]="isLanguageExpanded()"
+        [attr.aria-label]="'header.languageMore' | translate"
+      >
+        <svg
+          class="header__dropdown-toggle-icon"
+          [class.is-open]="isLanguageExpanded()"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M5 7l5 5 5-5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </button>
+
+      @if (isLanguageExpanded()) {
+        @for (lang of otherLanguages(); track lang.key) {
+          <button
+            type="button"
+            class="header__dropdown-item"
+            [class.active]="currentLanguageCountryKey() === lang.key"
+            (click)="selectLanguage(lang.key)"
+            role="menuitem"
+          >
+            <span class="fi fi-{{ getFlagCode(lang.countryCode) }}"></span>
+            <span>{{ lang.countryName }} ({{ lang.languageCode?.toUpperCase() }})</span>
+          </button>
+        }
+      }
+    </div>
+  }
+</div>

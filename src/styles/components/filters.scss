@@ -22,8 +22,14 @@
   flex: 0 1 auto;
 }
 
+.filters__group--country {
+  flex-direction: row;
+  align-items: center;
+}
+
 .filters__group--range {
   flex: 0 1 auto;
+  margin-left: auto;
   align-items: center;
 }
 

@@ -7,6 +7,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { APP_INITIALIZER } from '@angular/core';
+import { ALPHA3_TO_ALPHA2 } from './app/config/country-codes';
 
 // factory for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -28,9 +29,8 @@ bootstrapApplication(App, {
       provide: APP_INITIALIZER,
       useFactory: (translate: TranslateService) => {
         return () => {
-          translate.addLangs(['en', 'ua']);
+          translate.addLangs(Object.values(ALPHA3_TO_ALPHA2));
           translate.setDefaultLang('en');
-          // prefer persisted language, then browser, then English
           let use = 'en';
           try {
             const stored = localStorage.getItem('denumismat-lang');
