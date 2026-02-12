@@ -8,7 +8,7 @@ Denumismat is a high-performance, single-page Angular application for browsing, 
 
 - **Framework**: Angular 19+ (Standalone Components)
 - **State Management**: NgRx Store (Signal-based)
-- **Styling**: SCSS (Mobile-first, Responsive)
+- **Styling**: SCSS (Mobile-first, Responsive) - Global styles only in `src/styles/` folder
 - **Change Detection**: `OnPush` Strategy
 - **Backend**:
   - **Database**: Firebase Cloud Firestore

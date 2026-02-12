@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, computed, inject, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -6,12 +6,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { OrderModalComponent } from './components/order-modal/order-modal';
 import { AuthModalComponent } from './components/auth-modal/auth-modal';
 import { ImageSliderModalComponent } from './components/coins/image-slider-modal';
-import * as AuthActions from './state/auth/auth.actions';
 import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } from './state/currency.selectors';
 import { selectCountries } from './state/countries.selectors';
 import { selectIsLoggedIn } from './state/auth/auth.selectors';
 import { PingService } from './services/ping.service';
 import { MainLayoutComponent } from './main-layout';
+import { AuthModalService } from './services/auth-modal.service';
+import { setAuthUser } from './state/auth/auth.actions';
 
 @Component({
   selector: 'app-root',
@@ -30,7 +31,7 @@ import { MainLayoutComponent } from './main-layout';
       </app-order-modal>
     }
 
-    @if (isAuthModalOpen()) {
+    @if (authModalService.isAuthModalVisible()) {
       <app-auth-modal
         (onClose)="closeAuthModal()"
         (onSubmit)="handleAuthSubmit($event)"
@@ -51,15 +52,16 @@ import { MainLayoutComponent } from './main-layout';
   imports: [
     CommonModule,
     RouterOutlet,
-    OrderModalComponent,
     AuthModalComponent,
+    OrderModalComponent,
     ImageSliderModalComponent
   ]
 })
-export class App implements OnInit {
+export class App {
   private pingService = inject(PingService);
   private store = inject(Store);
   private activeLayoutComponent: MainLayoutComponent | null = null;
+  public authModalService = inject(AuthModalService);
 
   isOrderModalOpen = signal(false);
   isAuthModalOpen = signal(false);
@@ -74,8 +76,6 @@ export class App implements OnInit {
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
   private isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
-
-  ngOnInit() {}
 
   selectedCoins = computed(() => {
     if (this.activeLayoutComponent?.coinGrid) {
@@ -141,7 +141,7 @@ export class App implements OnInit {
 
   handleBookClick() {
     if (!this.isLoggedIn()) {
-      this.isAuthModalOpen.set(true);
+      this.authModalService.showAuthModal();
     } else {
       this.handleBooking();
     }
@@ -156,7 +156,7 @@ export class App implements OnInit {
   }
 
   handleAuthRequired() {
-    this.isAuthModalOpen.set(true);
+    this.authModalService.showAuthModal();
   }
 
   handleAuthSuccess() {
@@ -169,6 +169,7 @@ export class App implements OnInit {
 
   closeAuthModal() {
     this.isAuthModalOpen.set(false);
+    this.authModalService.hideAuthModal();
   }
 
   handleOrderSubmit(data: { name: string; email: string; coins: any[] }) {
@@ -181,7 +182,7 @@ export class App implements OnInit {
   }
 
   handleAuthSubmit(data: { name: string; email: string }) {
-    this.isAuthModalOpen.set(false);
+    this.authModalService.hideAuthModal();
 
     const storedName = localStorage.getItem('denumismat.name') || data.name;
     const storedEmail = localStorage.getItem('denumismat.email') || data.email;
@@ -192,7 +193,7 @@ export class App implements OnInit {
       email: storedEmail,
       photoURL: null
     };
-    this.store.dispatch(AuthActions.setAuthUser({ user }));
+    this.store.dispatch(setAuthUser({ user }));
 
     this.handleBooking();
   }

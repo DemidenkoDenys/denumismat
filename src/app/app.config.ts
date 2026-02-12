@@ -12,6 +12,8 @@ import { coinsReducer } from './state/coins.reducer';
 import { CoinsEffects } from './state/coins.effects';
 import { authReducer } from './state/auth/auth.reducer';
 import { AuthEffects } from './state/auth/auth.effects';
+import { orderReducer } from './state/order.reducer';
+import { OrderEffects } from './state/order.effects';
 
 import { routes } from './app.routes';
 
@@ -20,8 +22,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer }),
-    provideEffects([CurrencyEffects, CountriesEffects, CoinsEffects, AuthEffects]),
+    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer, order: orderReducer }),
+    provideEffects([CurrencyEffects, CountriesEffects, CoinsEffects, AuthEffects, OrderEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]
 };

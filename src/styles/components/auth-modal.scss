@@ -1,0 +1,134 @@
+// Auth Modal Component Styles
+// Styles for the authentication modal component
+
+.auth-modal-content {
+  width: 100%;
+}
+
+.admin-notice {
+  background-color: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+
+  p {
+    margin: 0;
+    color: #92400e;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+
+    &:hover:not(:disabled) {
+      background-color: #2563eb;
+      border-color: #2563eb;
+    }
+  }
+
+  &--ghost {
+    background-color: transparent;
+    color: #6b7280;
+    border-color: #d1d5db;
+
+    &:hover {
+      background-color: #f9fafb;
+      border-color: #9ca3af;
+    }
+  }
+
+  &--google {
+    background-color: #4285f4;
+    color: white;
+    border-color: #4285f4;
+    padding: 8px 12px;
+
+    &:hover {
+      background-color: #3367d6;
+      border-color: #3367d6;
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Dark theme overrides
+@media (prefers-color-scheme: dark) {
+  .admin-notice {
+    background-color: #451a03;
+    border-color: #92400e;
+
+    p {
+      color: #fbbf24;
+    }
+  }
+
+  .modal-actions {
+    border-top-color: #374151;
+  }
+
+  .btn {
+    &--ghost {
+      color: #9ca3af;
+      border-color: #4b5563;
+
+      &:hover {
+        background-color: #1f2937;
+        border-color: #6b7280;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 640px) {
+  .modal-actions {
+    flex-direction: column;
+
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  .admin-notice {
+    padding: 10px 14px;
+
+    p {
+      font-size: 13px;
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { AuthService } from '../../services/auth.service';
 import * as AuthActions from './auth.actions';
@@ -10,8 +11,9 @@ import { User } from './auth.models';
 export class AuthEffects {
   private actions$ = inject(Actions);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
-  login$ = createEffect(() =>
+  loginWithGoogle$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.loginWithGoogle),
       switchMap(() =>
@@ -60,6 +62,16 @@ export class AuthEffects {
         )
       )
     )
+  );
+
+  logoutSuccess$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.logoutSuccess),
+      tap(() => {
+        this.router.navigate(['/']);
+      })
+    ),
+    { dispatch: false }
   );
 
   checkAuth$ = createEffect(() =>

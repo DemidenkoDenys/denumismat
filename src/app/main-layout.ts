@@ -14,7 +14,7 @@ import * as CoinsActions from './state/coins.actions';
 import * as AuthActions from './state/auth/auth.actions';
 import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } from './state/currency.selectors';
 import { selectCountries } from './state/countries.selectors';
-import { selectIsLoggedIn, selectIsAdmin } from './state/auth/auth.selectors';
+import { selectIsLoggedIn } from './state/auth/auth.selectors';
 import { PingService } from './services/ping.service';
 import { ADTL } from './app.constants';
 
@@ -30,7 +30,7 @@ import { ADTL } from './app.constants';
     </app-header>
 
     <main>
-      <app-introduction [isAdmin]="isAdmin()"></app-introduction>
+      <app-introduction></app-introduction>
       <app-filters
         [selectedCount]="selectedCount()"
         [priceBounds]="priceBounds()"
@@ -101,7 +101,6 @@ export class MainLayoutComponent implements OnInit {
   priceRange = signal<[number, number]>([0, 10000]);
   authSuccessTrigger = signal(0);
 
-  public isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   private currencyRates = toSignal(this.store.select(selectCurrencyRates), { initialValue: null });
   private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), { initialValue: null });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });

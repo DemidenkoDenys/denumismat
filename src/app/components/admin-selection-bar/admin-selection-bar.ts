@@ -9,7 +9,7 @@ import { isCoinSelected, selectSelectedCoinsCount, selectSelectedCoinsDiscountPr
 @Component({
   selector: 'admin-selection-bar',
   standalone: true,
-  imports: [CommonModule, TranslateModule, PricePipe],
+  imports: [CommonModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (isCoinSelected()) {
@@ -18,10 +18,6 @@ import { isCoinSelected, selectSelectedCoinsCount, selectSelectedCoinsDiscountPr
           <div class="selection-bar__metrics">
             <span class="selection-bar__count">
               {{ 'selectionBar.selected' | translate:{ count: selectedCoinsCount() } }}&nbsp;&nbsp;&nbsp;
-              <!-- <span class="selection-bar__price"> -->
-                <!-- <span class="selection-bar__original-price">{{ totalPrice() | price: false }}</span>&nbsp;&nbsp;
-                <span class="selection-bar__discounted-price">{{ 'coin.price' | translate:{ price: (totalDiscountPrice() | price) } }}</span> -->
-              <!-- </span> -->
             </span>
           </div>
 
@@ -38,8 +34,8 @@ import { isCoinSelected, selectSelectedCoinsCount, selectSelectedCoinsDiscountPr
 export class AdminSelectionBarComponent {
   private store = inject(Store);
 
-  isCoinSelected = toSignal(this.store.select(isCoinSelected), { initialValue: false });
   selectedCoinsCount = toSignal(this.store.select(selectSelectedCoinsCount), { initialValue: 0 });
+  isCoinSelected = toSignal(this.store.select(isCoinSelected), { initialValue: false });
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
