@@ -7,13 +7,15 @@ export interface CoinsState {
   selected: { [coinId: string]: Coin };
   loading: boolean;
   error: any | null;
+  countries: Record<string, Coin>;
 }
 
 export const initialState: CoinsState = {
   coins: null,
   selected: {},
   loading: false,
-  error: null
+  error: null,
+  countries: {}
 };
 
 export const coinsReducer = createReducer(
@@ -69,5 +71,9 @@ export const coinsReducer = createReducer(
         }
       };
     }
-  })
+  }),
+  on(CoinsActions.setCoinCountries, (state, { countries }) => ({
+    ...state,
+    countries
+  }))
 );

@@ -79,7 +79,7 @@ export class CoinGridComponent implements OnInit {
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   visibleCoins = computed(() => {
-    const f = this.filters();
+    const filters = this.filters();
     const allCoins = this.enrichedCoins();
     const search = this.searchQuery();
 
@@ -109,21 +109,25 @@ export class CoinGridComponent implements OnInit {
       }
 
       // Apply other filters
-      if (f) {
-        if (f.selectedOnly && !this.selectedIdsSet().has(coin.id)) {
+      if (filters) {
+        if (filters.selectedOnly && !this.selectedIdsSet().has(coin.id)) {
           return false;
         }
 
-        if (f.priceRange) {
-          const [min, max] = f.priceRange;
+        if (filters.priceRange) {
+          const [min, max] = filters.priceRange;
           if (coin.price < min || coin.price > max) return false;
         }
 
-        if (f.tags && f.tags.length > 0) {
+        if (filters.tags && filters.tags.length > 0) {
           // Coin must have at least one of the selected tags
           const coinTags = coin.tags || [];
-          const hasMatchingTag = f.tags.some((tag: string) => coinTags.includes(tag));
+          const hasMatchingTag = filters.tags.some((tag: string) => coinTags.includes(tag));
           if (!hasMatchingTag) return false;
+        }
+
+        if (filters.country) {
+          if (coin.country !== filters.country) return false;
         }
       }
 

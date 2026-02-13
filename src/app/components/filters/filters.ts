@@ -1,10 +1,12 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { CountryDropdownComponent } from '../country-dropdown/country-dropdown.component';
 
 export interface Filters {
-  priceRange: [number, number];
   tags: string[];
+  country?: string | null;
+  priceRange: [number, number];
   selectedOnly?: boolean;
 }
 
@@ -13,6 +15,19 @@ export interface Filters {
   template: `
     <aside class="filters" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
+        <div class="filters__group filters__group--country">
+          @if (selectedCountry()) {
+            <span>{{ 'filters.onlyCoinsOf' | translate }}&nbsp;&nbsp;{{ 'countries.' + selectedCountry()  | translate }}</span>
+          } @else {
+            <span>{{ 'filters.selectCountry' | translate}}</span>
+          }
+          <country-dropdown [value]="selectedCountry() || ''" (onCountryChanged)="onCountryChange($event)"></country-dropdown>
+
+          @if (selectedCountry()) {
+            <button class="filters__group--country-reset" (click)="onCountryChange(null)">{{ 'filters.reset' | translate }}</button>
+          }
+        </div>
+
         <div class="filters__group filters__group--range">
           <div class="filters__range-values">
             <span class="filters__value">{{ formattedMinPrice() }} - {{ formattedMaxPrice() }}</span>
@@ -87,7 +102,7 @@ export interface Filters {
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, CountryDropdownComponent],
 })
 export class FiltersComponent {
   priceRange = input<[number, number]>([0, 10000]);
@@ -179,8 +194,9 @@ export class FiltersComponent {
 
   private emit() {
     this.filterChange.emit({
-      priceRange: [this.priceMin(), this.priceMax()],
       tags: this.tags(),
+      country: this.selectedCountry(),
+      priceRange: [this.priceMin(), this.priceMax()],
       selectedOnly: this.showSelectedOnly(),
     });
   }
@@ -214,6 +230,12 @@ export class FiltersComponent {
     if (v >= this.priceMin()) {
       this.priceMax.set(v);
     }
+    this.emit();
+  }
+
+  selectedCountry = signal<string | null>(null);
+  onCountryChange(event: any) {
+    this.selectedCountry.set(event);
     this.emit();
   }
 

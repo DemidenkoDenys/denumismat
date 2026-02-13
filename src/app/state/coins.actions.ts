@@ -33,3 +33,8 @@ export const toggleCoinSelection = createAction(
   '[Coins] Toggle Coin Selection',
   props<{ coin: Coin }>()
 );
+
+export const setCoinCountries = createAction(
+  '[Coins] Set Coin Countries',
+  props<{ countries: Record<string, Coin> }>()
+);

@@ -8,6 +8,11 @@ export const selectCoins = createSelector(
   (state) => state.coins
 );
 
+export const selectCoinsCountries = createSelector(
+  selectCoinsState,
+  (state) => state.countries
+);
+
 export const selectCoinsLoading = createSelector(
   selectCoinsState,
   (state) => state.loading

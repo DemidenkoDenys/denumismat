@@ -1,0 +1,32 @@
+<div class="header__localization" #languageContainer>
+  <button
+    type="button"
+    class="header__icon-btn"
+    (click)="toggleLanguageMenu()"
+    [attr.aria-label]="'header.language' | translate"
+    [attr.aria-expanded]="isMenuOpen()"
+  >
+    @if (getFlagCode(selectedCountry())) {
+      <span class="fi fi-{{ getFlagCode(selectedCountry()) }}"></span>
+    } @else {
+      <img src="./assets/no-country.png" alt="" />
+    }
+  </button>
+
+  @if (isMenuOpen()) {
+    <div class="header__dropdown" role="menu" [style.left.0]="true">
+      @for (country of countryList(); track country.code) {
+        <button
+          type="button"
+          class="header__dropdown-item"
+          [class.active]="selectedCountry() === country.code"
+          (click)="selectCountry(country.code)"
+          role="menuitem"
+        >
+          <span class="fi fi-{{ getFlagCode(country.code) }}"></span>
+          <span>{{ 'countries.' + country.code | translate }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

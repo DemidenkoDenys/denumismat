@@ -12,7 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [CommonModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (isCoinSelected()) {
+    @if (selectedCoinsCount()) {
       <div class="selection-bar" role="region" aria-live="polite">
         <div class="selection-bar__inner">
           <div class="selection-bar__metrics">
@@ -42,7 +42,6 @@ export class UserSelectionBarComponent {
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   totalPrice = toSignal(this.store.select(selectSelectedCoinsPrice), { initialValue: 0 });
-  isCoinSelected = toSignal(this.store.select(isCoinSelected), { initialValue: false });
   totalDiscountPrice = toSignal(this.store.select(selectSelectedCoinsDiscountPrice), { initialValue: 0 });
   selectedCoinsCount = toSignal(this.store.select(selectSelectedCoinsCount), { initialValue: 0 });
 
