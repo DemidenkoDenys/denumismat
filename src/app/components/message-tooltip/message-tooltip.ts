@@ -4,11 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { selectIsLoggedIn } from '../../state/auth/auth.selectors';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-message-tooltip',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="messager-container" [class.expanded]="isMessagerExpanded()">
@@ -44,7 +45,7 @@ import { selectIsLoggedIn } from '../../state/auth/auth.selectors';
       @if (isMessagerExpanded()) {
         <div class="messager-content">
           <div class="send-message">
-            <textarea [(ngModel)]="messageText" placeholder="Enter your question" maxlength="500" [disabled]="isTextareaDisabled()"></textarea>
+            <textarea [(ngModel)]="messageText" [placeholder]="'messageTooltip.enterYourQuestion' | translate" maxlength="500" [disabled]="isTextareaDisabled()"></textarea>
           </div>
         </div>
       }

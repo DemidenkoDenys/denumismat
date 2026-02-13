@@ -301,5 +301,8 @@
     "ZAR": "Zaire",
     "RHO": "Rhodesia",
     "AUH": "Austro-Hungarian Empire"
+  },
+  "messageTooltip": {
+    "enterYourQuestion": "Enter your question"
   }
 }

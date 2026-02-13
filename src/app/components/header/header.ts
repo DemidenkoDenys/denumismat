@@ -274,11 +274,6 @@ export class HeaderComponent {
   private countries = toSignal<CountriesMap | null>(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal<any>(this.store.select(selectCurrenciesInfo), { initialValue: null });
 
-  private readonly languageByCountry: Record<string, Language> = {
-    USA: 'en',
-    UKR: 'ua',
-  };
-
   readonly mustCurrencies = computed<CurrencyOption[]>(() => {
     const map = this.countries();
     const currInfo = this.currenciesInfo();
@@ -581,7 +576,7 @@ export class HeaderComponent {
   }
 
   private getLanguageForCountry(countryCode: string): Language {
-    return this.languageByCountry[countryCode] || 'en';
+    return ALPHA3_TO_ALPHA2[countryCode] || 'en';
   }
 
   private getDefaultCountryForLanguage(language: Language): string {

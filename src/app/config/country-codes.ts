@@ -12,3 +12,5 @@ export const ALPHA3_TO_ALPHA2: Record<string, string> = {
   SJM: 'sj', SWE: 'se', CHE: 'ch', SYR: 'sy', TWN: 'tw', TJK: 'tj', TZA: 'tz', THA: 'th', TLS: 'tl', TGO: 'tg', TKL: 'tk', TON: 'to', TTO: 'tt', TUN: 'tn', TUR: 'tr', TKM: 'tm', TCA: 'tc', TUV: 'tv', UGA: 'ug', UKR: 'ua', ARE: 'ae', GBR: 'gb',
   USA: 'us', UMI: 'um', URY: 'uy', UZB: 'uz', VUT: 'vu', VEN: 've', VNM: 'vn', VND: 'vn', VGB: 'vg', VIR: 'vi', WLF: 'wf', ESH: 'eh', YEM: 'ye', ZMB: 'zm', ZWE: 'zw', ALA: 'ax', AND: 'an', GRN: 'en-GD', IQA: 'ar-IQ', NZD: 'NZ', SLO: 'sl-SI'
 };
+
+export const LANGUAGE_CODES = Object.values(ALPHA3_TO_ALPHA2).filter((value) => !!value);

@@ -7,7 +7,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClient } from '@angular/common/http';
 import { APP_INITIALIZER } from '@angular/core';
-import { ALPHA3_TO_ALPHA2 } from './app/config/country-codes';
+import { ALPHA3_TO_ALPHA2, LANGUAGE_CODES } from './app/config/country-codes';
 
 // factory for TranslateHttpLoader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -37,7 +37,7 @@ bootstrapApplication(App, {
             if (stored) use = stored;
             else {
               const browser = translate.getBrowserLang();
-              if (browser && ['en', 'ua'].includes(browser)) use = browser;
+              if (browser && LANGUAGE_CODES.includes(browser)) use = browser;
             }
           } catch {
             // ignore localStorage errors
