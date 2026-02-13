@@ -37,7 +37,7 @@
   user-select: none;
   overflow: hidden;
 
-  &:hover {
+  &:not(.coin-card--booked):hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
     transform: translateY(-2px);
   }
@@ -59,6 +59,37 @@
     border-width: 1px;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15), 0 0 0 2px #3b82f6;
   }
+}
+
+/* Booked / disabled visual state */
+.coin-card--booked {
+  opacity: 0.55;
+  filter: grayscale(0.22);
+  box-shadow: none;
+}
+
+.coin-card--booked .coin-card__toggle {
+  // pointer-events: none;
+  opacity: 0.65;
+}
+
+.coin-card--booked .coin-card__select {
+  display: none;
+}
+
+.coin-card__booked-badge {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 6;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 0.65rem;
+  padding: 0.18rem 0.5rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.03em;
 }
 
 .coin-card__media {

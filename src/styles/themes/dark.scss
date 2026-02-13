@@ -223,7 +223,7 @@ body.theme-dark {
     border-color: #334155;
     border-width: 1px;
 
-    &:hover {
+    &:not(.coin-card--booked):hover {
       box-shadow: 0 4px 12px rgba(59, 130, 246, 0.45);
     }
 

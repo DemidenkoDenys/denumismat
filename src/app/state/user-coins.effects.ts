@@ -8,7 +8,7 @@ import { Coin } from '../components/coins/coin-card';
 import { IndexedDbService } from '../services/indexed-db.service';
 
 @Injectable()
-export class CoinsEffects {
+export class UserCoinsEffects {
   private actions$ = inject(Actions);
   private indexedDb = inject(IndexedDbService);
   private firestoreService = inject(FirestoreService);
@@ -44,5 +44,63 @@ export class CoinsEffects {
         )
       )
     )
+  );
+
+  selectCoin$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CoinsActions.selectCoin),
+        map(action => {
+          const selectedCoin = action.coin;
+          const storageKey = 'denumismat.coins';
+          let storedCoinsMap: Record<string, boolean> = {};
+          try {
+            const raw = localStorage.getItem(storageKey);
+            if (raw) {
+              storedCoinsMap = JSON.parse(raw);
+            }
+          } catch {}
+          if (!storedCoinsMap[selectedCoin.id]) {
+            storedCoinsMap[selectedCoin.id] = true;
+            localStorage.setItem(storageKey, JSON.stringify(storedCoinsMap));
+          }
+        })
+      ),
+    { dispatch: false }
+  );
+
+  deselectCoin$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CoinsActions.deselectCoin),
+        map(action => {
+          const deselectedCoinId = action.coinId;
+          const storageKey = 'denumismat.coins';
+          let storedCoinsMap: Record<string, boolean> = {};
+          try {
+            const raw = localStorage.getItem(storageKey);
+            if (raw) {
+              storedCoinsMap = JSON.parse(raw);
+            }
+          } catch {}
+          if (storedCoinsMap[deselectedCoinId]) {
+            delete storedCoinsMap[deselectedCoinId];
+            localStorage.setItem(storageKey, JSON.stringify(storedCoinsMap));
+          }
+        })
+      ),
+    { dispatch: false }
+  );
+
+  clearSelection$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(CoinsActions.clearSelection),
+        map(() => {
+          const storageKey = 'denumismat.coins';
+          localStorage.removeItem(storageKey);
+        })
+      ),
+    { dispatch: false }
   );
 }

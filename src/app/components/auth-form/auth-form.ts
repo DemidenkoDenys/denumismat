@@ -24,18 +24,19 @@ export class AuthForm {
   readonly emailDisabled = input<boolean>(false);
 
   // Outputs
+  readonly formValid = output<boolean>();
   readonly nameChange = output<string>();
+  readonly submitForm = output<{ name: string; email: string; verifyCode: string }>();
   readonly emailChange = output<string>();
   readonly verifyCodeChange = output<string>();
-  readonly formValid = output<boolean>();
   readonly triggerValidation = output<void>();
-  readonly submitForm = output<{ name: string; email: string; verifyCode: string }>();
 
   // Internal signals
   protected readonly submitted = signal(false);
 
   // Computed validity signal
   private readonly isFormValid = computed(() => {
+
     if (!this.authForm) return false;
     return this.authForm.valid;
   });

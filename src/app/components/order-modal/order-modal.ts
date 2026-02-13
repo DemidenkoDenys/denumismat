@@ -8,6 +8,7 @@ import { selectUser } from '../../state/auth/auth.selectors';
 import { Coin } from '../coins/coin-card';
 import { PricePipe } from '../../pipes/price.pipe';
 import { AuthForm } from '../auth-form/auth-form';
+import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 
 @Component({
   selector: 'app-order-modal',
@@ -31,7 +32,7 @@ import { AuthForm } from '../auth-form/auth-form';
                   <div class="coin-check">
                     <input type="checkbox" [checked]="isSelected(coin.id)" (click)="toggleCoin(coin.id, $event)">
                   </div>
-                  <span class="coin-name">{{ coin.country_name }} - {{ coin.deno }} - {{ coin.year }}</span>
+                  <span class="coin-name">{{ countries()[coin.country]?.name }} - {{ coin.deno }} - {{ coin.year }}</span>
                   <span class="coin-price">{{ coin.price | price }}</span>
                 </li>
               }
@@ -57,11 +58,8 @@ import { AuthForm } from '../auth-form/auth-form';
               <button type="button" class="btn btn--ghost" (click)="close()">
                 {{ 'orderModal.cancel' | translate }}
               </button>
-              <button
-                type="submit"
-                class="btn btn--primary"
-                [disabled]="isSubmitting() || !isFormValid()"
-              >
+
+              <button type="submit" class="btn btn--primary">
                 {{ isSubmitting() ? ('orderModal.processing' | translate) : ('orderModal.submit' | translate) }}
               </button>
             </div>
@@ -81,6 +79,12 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   currentUser = toSignal(this.store.select(selectUser));
   excludedIds = signal<Set<string>>(new Set());
 
+  existsCountries = toSignal(this.store.select(selectCountries));
+  extinctCountries = toSignal(this.store.select(selectExtinctCountries));
+  countries = computed(() => {
+    return { ...this.existsCountries(), ...this.extinctCountries() };
+  });
+
   constructor() {
     effect(() => {
       const user = this.currentUser();
@@ -93,7 +97,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
       }
     });
 
-     // Reset excluded coins when the coins list changes
+    // Reset excluded coins when the coins list changes
     effect(() => {
       const c = this.coins();
       // Start with all coins excluded (unchecked)

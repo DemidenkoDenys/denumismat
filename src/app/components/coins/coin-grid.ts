@@ -11,6 +11,7 @@ import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { ObserveVisibilityDirective } from '../../directives/in-viewport.directive';
 import { IndexedDbService } from '../../services/indexed-db.service';
+import { selectIsAdmin } from '../../state/auth/auth.selectors';
 
 @Component({
   selector: 'app-coin-grid',
@@ -48,7 +49,9 @@ export class CoinGridComponent implements OnInit {
   private store = inject(Store);
   private indexedDb = inject(IndexedDbService);
   private selectionRestored = false;
+
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
+  isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
   selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: {} });
@@ -187,6 +190,9 @@ export class CoinGridComponent implements OnInit {
   onSelect(id: string, selected: boolean) {
     const coin = this.coins()?.find(c => c.id === id);
     if (!coin) return;
+
+    // prevent selecting booked coins
+    if (!this.isAdmin() && coin.booked_at) return;
 
     if (selected) {
       this.store.dispatch(CoinsActions.selectCoin({ coin }));

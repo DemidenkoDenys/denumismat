@@ -6,18 +6,21 @@ import { AdminComponent } from './components/admin/admin';
 import { authAdminGuard } from './guards/admin-auth.guard';
 import { UserAuthResolver } from './resolvers/user-auth-resolver';
 import { UserWrapperComponent } from './components/user-wrapper/user-wrapper.component';
+import { provideEffects } from '@ngrx/effects';
+import { UserCoinsEffects } from './state/user-coins.effects';
+import { AdminCoinsEffects } from './state/admin-coins.effects';
 
 export const routes: Routes = [
   {
     path: '',
     component: UserWrapperComponent,
-    providers: [UserService],
+    providers: [UserService, [provideEffects(UserCoinsEffects)]],
     resolve: { resolve: UserAuthResolver }
   },
   {
     path: atob(ADTL),
     component: AdminComponent,
-    providers: [AdminService],
+    providers: [AdminService, [provideEffects(AdminCoinsEffects)]],
     canActivate: [authAdminGuard],
   }
 ];

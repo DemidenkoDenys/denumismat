@@ -1,21 +1,12 @@
-import { Injectable, inject } from '@angular/core';
-import { FirestoreService } from './firestore.service';
+import { Injectable } from '@angular/core';
+import { doc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../config/firebase.config';
+import { from, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AdminService {
-  private firestoreService = inject(FirestoreService);
-
-  constructor() {}
-
-  /**
-   * Create a document in Firebase Firestore
-   * @param collectionName The name of the collection
-   * @param data The document data to create
-   * @returns Promise with the document reference
-   */
-  createDocument(collectionName: string, data: any) {
-    return this.firestoreService.addDocument(collectionName, data);
+  unbookCoin(coinId: string): Observable<any> {
+    const document = doc(firestore, 'coins', coinId);
+    return from(updateDoc(document, { booked_at: null, booked_by: null }));
   }
 }

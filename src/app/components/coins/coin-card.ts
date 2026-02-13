@@ -6,6 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PricePipe } from '../../pipes/price.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
+import { selectIsAdmin } from '../../state/auth/auth.selectors';
 
 export interface CoinImage {
   obverse: string | null;
@@ -20,6 +21,8 @@ export interface Coin {
   deno: string;
   year: number;
   price: number;
+  booked_at?: string | null; // ISO timestamp (if set, coin is booked/reserved)
+  booked_by?: string | null; // User ID of the person who booked the coin
   description?: string; // Coin description
   imageUrl?: string; // CloudFront image URL
   thumbnailUrl?: string; // CloudFront thumbnail URL
@@ -52,22 +55,30 @@ export interface Coin {
     <article
       class="coin-card"
       [class.selected]="selected()"
+      [class.coin-card--booked]="isBooked()"
       (click)="toggleSelect()"
       role="button"
-      tabindex="0"
+      [attr.tabindex]="isBooked() ? -1 : 0"
       (keydown.space)="toggleSelect()"
       (keydown.enter)="toggleSelect()"
-      [attr.aria-pressed]="selected()">
-
-      <label class="coin-card__select" (click)="$event.stopPropagation()">
-        <input
-          type="checkbox"
-          [checked]="selected()"
-          (change)="$event.stopPropagation(); toggleSelect()"
-          [attr.aria-label]="'coin.select' | translate" />
-      </label>
+      [attr.aria-pressed]="selected()"
+      [attr.aria-disabled]="isBooked()">
 
       <div class="coin-card__media">
+        @if (!isBooked()) {
+          <label class="coin-card__select" (click)="$event.stopPropagation()">
+            <input
+              type="checkbox"
+              [checked]="selected()"
+              (change)="$event.stopPropagation(); toggleSelect()"
+              [attr.aria-label]="'coin.select' | translate" />
+          </label>
+        }
+
+        @if (isBooked()) {
+          <div class="coin-card__booked-badge">{{ 'booked' | translate }}</div>
+        }
+
         <div class="coin-card__slider" [class.coin-card__slider--placeholder]="isPlaceholder()">
           <img
             [src]="currentImageUrl()"
@@ -125,13 +136,13 @@ export interface Coin {
           }
         </div>
 
-        @if (coin().tags && coin().tags!.length > 0) {
-          <div class="coin-card__tags">
+        <div class="coin-card__tags">
+          @if (coin().tags && coin().tags!.length > 0) {
             @for (tag of coin().tags; track tag) {
               <span class="coin-card__tag" [class]="'coin-card__tag--' + tag.toLowerCase()">{{ tag.toUpperCase() }}</span>
             }
-          </div>
-        }
+          }
+        </div>
 
         <span class="coin-card__price-badge">
           <span class="coin-card__original-price">{{ coin().price | price: false }}</span>&nbsp;
@@ -172,6 +183,7 @@ export class CoinCardComponent {
   private store = inject(Store);
 
   // Get countries from store
+  private isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
 
@@ -274,10 +286,34 @@ export class CoinCardComponent {
     return url === this.placeholderImageUrl || url.includes('assets/placeholder') || url.includes('placeholder-image');
   });
 
+  // Whether this coin is booked/reserved (truthy `booked_at` means booked)
+  isBooked = computed(() => !this.isAdmin() && !!this.coin().booked_at);
+
   // Computed signal for image URL (backward compatibility)
   imageUrl = computed(() => this.currentImageUrl());
 
   constructor() {
+    effect(() => {
+      const coin = this.coin();
+      if (!coin || !coin.id) return;
+
+      // Only select if not booked and present in localStorage map
+      if (!coin.booked_at) {
+        try {
+          const stored = localStorage.getItem('denumismat.coins');
+          if (stored) {
+            const coinsMap = JSON.parse(stored);
+            if (coinsMap && typeof coinsMap === 'object' && coinsMap[coin.id]) {
+              // Only emit if not already selected
+              if (!this.selected()) {
+                this.selectedChange.emit(true);
+              }
+            }
+          }
+        } catch {}
+      }
+    });
+
     // Get list of image keys when coin changes
     if (this.useSignedUrls && this.LOAD_IMAGES_FROM_S3) {
       effect(() => {

@@ -9,7 +9,6 @@ import { CurrencyEffects } from './state/currency.effects';
 import { countriesReducer } from './state/countries.reducer';
 import { CountriesEffects } from './state/countries.effects';
 import { coinsReducer } from './state/coins.reducer';
-import { CoinsEffects } from './state/coins.effects';
 import { authReducer } from './state/auth/auth.reducer';
 import { AuthEffects } from './state/auth/auth.effects';
 import { orderReducer } from './state/order.reducer';
@@ -23,7 +22,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer, order: orderReducer }),
-    provideEffects([CurrencyEffects, CountriesEffects, CoinsEffects, AuthEffects, OrderEffects]),
+    provideEffects([CurrencyEffects, CountriesEffects, AuthEffects, OrderEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]
 };
