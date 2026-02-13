@@ -28,7 +28,7 @@ export class CoinsEffects {
                   }
                   return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
                 });
-                const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: coin }), {} as Record<string, Coin>);
+                const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
                 return [
                   CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
                   CoinsActions.setCoinCountries({ countries: coinCountriesMap }),

@@ -7,7 +7,7 @@ export interface CoinsState {
   selected: { [coinId: string]: Coin };
   loading: boolean;
   error: any | null;
-  countries: Record<string, Coin>;
+  countries: Record<string, boolean>;
 }
 
 export const initialState: CoinsState = {

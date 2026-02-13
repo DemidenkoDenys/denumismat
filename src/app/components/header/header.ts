@@ -78,6 +78,7 @@ export interface CurrencyOption {
 
         <!-- Actions -->
         <div class="header__actions">
+
           <!-- Auth Google -->
           <div class="header__auth-wrapper">
             @if (currentUser(); as user) {
@@ -297,7 +298,7 @@ export class HeaderComponent {
     const usaEntry: CurrencyOption[] = usaCountry && usaCountry.must && usdInfo ? [{
       key: usaCountry.code,
       countryCode: usaCountry.code,
-      countryName: usaCountry.name,
+      countryName: usaCountry.original,
       currencyCode: usaCountry.currency,
       symbol: usdInfo.symbol,
       rate: usaCountry.rate,
@@ -311,7 +312,7 @@ export class HeaderComponent {
         return {
           key: country.code,
           countryCode: country.code,
-          countryName: country.name,
+          countryName: country.original,
           currencyCode: country.currency,
           symbol: info?.symbol || '$',
           rate: country.rate,
@@ -333,7 +334,7 @@ export class HeaderComponent {
         return {
           key: country.code,
           countryCode: country.code,
-          countryName: country.name,
+          countryName: country.original,
           currencyCode: country.currency,
           symbol: info?.symbol || '$',
           rate: country.rate,
@@ -355,7 +356,7 @@ export class HeaderComponent {
       .map((country) => ({
         key: country.code,
         countryCode: country.code,
-        countryName: country.name,
+        countryName: country.original,
         languageCode: this.getLanguageForCountry(country.code),
       }));
   });
@@ -369,7 +370,7 @@ export class HeaderComponent {
       .map((country) => ({
         key: country.code,
         countryCode: country.code,
-        countryName: country.name,
+        countryName: country.original,
         languageCode: this.getLanguageForCountry(country.code),
       }));
   });

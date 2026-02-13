@@ -66,7 +66,6 @@ export class CountryDropdownComponent {
   onDocumentClick(event: MouseEvent): void {
     const target = event.target as HTMLElement;
 
-    // Check if click is outside language dropdown
     if (this.isMenuOpen() && this.languageContainer) {
       const languageElement = this.languageContainer.nativeElement;
       if (!languageElement.contains(target)) {
