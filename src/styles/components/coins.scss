@@ -292,6 +292,13 @@ body.theme-dark .coin-card__lupa:hover {
   background: #22c55e;
 }
 
+.coin-card__tag--new {
+  color: blue;
+  border: 2px solid blue;
+  background: violet;
+  font-weight: bold;
+}
+
 .coin-card:hover .coin-card__image:not(.coin-card__image--placeholder) {
   transform: scale(1.05);
 }

@@ -134,7 +134,7 @@ export class MessageTooltipComponent {
   sendMessage() {
     const text = this.messageText();
     if (!text.trim()) {
-       return;
+      return;
     }
 
     // Check if user is logged in

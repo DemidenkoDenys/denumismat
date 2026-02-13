@@ -9,22 +9,25 @@ import { TranslateModule } from '@ngx-translate/core';
 import { selectCoins, selectSelectedCoins, selectSelectedCoinIds } from '../../state/coins.selectors';
 import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
+import { ObserveVisibilityDirective } from '../../directives/in-viewport.directive';
+import { IndexedDbService } from '../../services/indexed-db.service';
 
 @Component({
   selector: 'app-coin-grid',
   standalone: true,
-  imports: [CommonModule, CoinCardComponent, TranslateModule],
+  imports: [CommonModule, CoinCardComponent, TranslateModule, ObserveVisibilityDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
       <div class="coin-grid__list">
-        @for (c of paginatedCoins(); track c.id) {
+        @for (coin of paginatedCoins(); track coin.id) {
           <app-coin-card
-            [coin]="c"
-            [selected]="selectedIdsSet().has(c.id)"
+            appObserveVisibility (visible)="onInViewport(coin)"
+            [coin]="coin"
+            [selected]="selectedIdsSet().has(coin.id)"
             [conversionRate]="conversionRate()"
             [currencyFormat]="currencyFormat()"
-            (selectedChange)="onSelect(c.id, $event)"
+            (selectedChange)="onSelect(coin.id, $event)"
             (openSliderModal)="openSliderModal.emit($event)">
           </app-coin-card>
         }
@@ -43,6 +46,7 @@ export class CoinGridComponent implements OnInit {
   private readonly storageKey = 'denumismat.selectedCoinIds';
   private platformId = inject(PLATFORM_ID);
   private store = inject(Store);
+  private indexedDb = inject(IndexedDbService);
   private selectionRestored = false;
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
@@ -197,6 +201,12 @@ export class CoinGridComponent implements OnInit {
       : currentSelectedIds.filter(selectedId => selectedId !== id);
 
     this.emitSummary(newIds);
+  }
+
+  onInViewport(coin: any) {
+    if (!coin || !coin.id) return;
+    // persist viewed coin id into IndexedDB via service
+    this.indexedDb.markViewed(coin.id).catch(err => console.error('indexedDb.markViewed failed', err));
   }
 
   showMore() {
