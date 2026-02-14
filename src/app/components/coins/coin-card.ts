@@ -79,10 +79,6 @@ export interface Coin {
           </label>
         }
 
-        @if (isBooked()) {
-          <div class="coin-card__booked-badge">{{ 'booked' | translate }}</div>
-        }
-
         <div class="coin-card__slider" [class.coin-card__slider--placeholder]="isPlaceholder()">
           <img
             [src]="currentImageUrl()"

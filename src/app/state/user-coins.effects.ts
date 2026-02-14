@@ -29,6 +29,9 @@ export class UserCoinsEffects {
                   if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
                     tags.unshift('new');
                   }
+                  if (coin.booked_at) {
+                    tags.unshift('booked');
+                  }
                   return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
                 });
                 const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);

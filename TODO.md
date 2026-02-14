@@ -12,6 +12,6 @@
 
 ## Book not nore than 50 items (include booked)
 ## Confirmation code to email on authorization
-## Compress images
+## deselect coin when it become booked
 
 ## ? Subscribe checkbox on auth modal
