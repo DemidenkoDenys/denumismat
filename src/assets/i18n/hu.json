@@ -109,6 +109,10 @@
     "verifyCodeFormatError": "Kérjük, adjon meg egy érvényes 6 számjegyű kódot XXX-XXX formátumban",
     "submit": "Elküld"
   },
+  "toast": {
+    "welcome": "Üdvözlünk a Denumismat-nál. Örülök, hogy itt vagy! Ez az én érmekatalógusom, amely eladásra készen áll.",
+    "selectionLimitExceeded": "Egyszerre legfeljebb 50 érmét választhat."
+  },
   "countries": {
     "AFG": "Afganisztán",
     "ALB": "Albánia",

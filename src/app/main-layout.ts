@@ -8,6 +8,7 @@ import { FiltersComponent } from './components/filters/filters';
 import { CoinGridComponent } from './components/coins/coin-grid';
 import { FooterComponent } from './components/footer/footer';
 import { MessageTooltipComponent } from './components/message-tooltip/message-tooltip';
+import { ToastComponent } from './components/toast/toast';
 import * as CurrencyActions from './state/currency.actions';
 import * as CountriesActions from './state/countries.actions';
 import * as CoinsActions from './state/coins.actions';
@@ -16,7 +17,9 @@ import { selectCurrencyRates, selectSelectedCurrency, selectCurrenciesInfo } fro
 import { selectCountries } from './state/countries.selectors';
 import { selectIsLoggedIn } from './state/auth/auth.selectors';
 import { PingService } from './services/ping.service';
+import { ToastService } from './services/toast.service';
 import { ADTL } from './app.constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-main-layout',
@@ -54,6 +57,7 @@ import { ADTL } from './app.constants';
     <app-footer></app-footer>
 
     <app-message-tooltip (onAuthRequired)="onAuthRequired.emit()" [authSuccessTrigger]="authSuccessTrigger()"></app-message-tooltip>
+    <app-toast></app-toast>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -63,13 +67,16 @@ import { ADTL } from './app.constants';
     FiltersComponent,
     CoinGridComponent,
     FooterComponent,
-    MessageTooltipComponent
+    MessageTooltipComponent,
+    ToastComponent
   ]
 })
 export class MainLayoutComponent implements OnInit {
   private pingService = inject(PingService);
   private store = inject(Store);
   private router = inject(Router);
+  private toast = inject(ToastService);
+  private translate = inject(TranslateService);
 
   // Outputs for modal management
   onOrderClick = output<void>();
@@ -142,6 +149,11 @@ export class MainLayoutComponent implements OnInit {
     this.store.dispatch(AuthActions.setIsAdmin({ isAdmin: this.router.url.includes(atob(ADTL)) }));
 
     this.initializeUserFromLocalStorage();
+
+    if (!localStorage.getItem('denumismat.welcome')) {
+      this.toast.info('toast.welcome', 3000);
+      localStorage.setItem('denumismat.welcome', Date.now().toString());
+    }
   }
 
   private initializeUserFromLocalStorage(): void {

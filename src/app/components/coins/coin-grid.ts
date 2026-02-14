@@ -6,12 +6,14 @@ import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CoinCardComponent, Coin } from './coin-card';
 import { TranslateModule } from '@ngx-translate/core';
-import { selectCoins, selectSelectedCoins, selectSelectedCoinIds } from '../../state/coins.selectors';
+import { selectCoins, selectSelectedCoins, selectSelectedCoinIds, selectIsSelectionLimitReached } from '../../state/coins.selectors';
 import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { ObserveVisibilityDirective } from '../../directives/in-viewport.directive';
 import { IndexedDbService } from '../../services/indexed-db.service';
 import { selectIsAdmin } from '../../state/auth/auth.selectors';
+import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-coin-grid',
@@ -47,6 +49,7 @@ export class CoinGridComponent implements OnInit {
   private readonly storageKey = 'denumismat.selectedCoinIds';
   private platformId = inject(PLATFORM_ID);
   private store = inject(Store);
+  private toast = inject(ToastService);
   private indexedDb = inject(IndexedDbService);
   private selectionRestored = false;
 
@@ -54,6 +57,7 @@ export class CoinGridComponent implements OnInit {
   isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
+  selectionLimit = toSignal(this.store.select(selectIsSelectionLimitReached), { initialValue: false });
   selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: {} });
   selectedIds = toSignal(this.store.select(selectSelectedCoinIds), { initialValue: [] });
 
@@ -183,6 +187,12 @@ export class CoinGridComponent implements OnInit {
         this.emitPriceBounds();
       }
     });
+
+    effect(() => {
+      if (this.selectionLimit()) {
+        this.toast.show('toast.selectionLimitExceeded', { type: 'warning', duration: 2000 });
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -198,8 +208,7 @@ export class CoinGridComponent implements OnInit {
 
     // Enforce maximum selection limit in the UI (reducer also enforces defensively)
     const currentCount = this.selectedIds().length;
-    if (selected && currentCount >= 50) {
-      // show a temporary warning to the user and do not dispatch
+    if (selected && currentCount >= MAX_SELECTED_COINS) {
       this.selectionLimitExceeded.set(true);
       setTimeout(() => this.selectionLimitExceeded.set(false), 2500);
       return;

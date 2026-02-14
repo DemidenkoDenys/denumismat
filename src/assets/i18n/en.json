@@ -109,6 +109,10 @@
     "verifyCodeFormatError": "Please enter a valid 6-digit code in XXX-XXX format",
     "submit": "Submit"
   },
+  "toast": {
+    "welcome": "Welcome to Denumismat. I happy to see you here! It's my coins catalog that I ready to sell.",
+    "selectionLimitExceeded": "You can select only 50 coins maximum"
+  },
   "countries": {
     "AFG": "Afghanistan",
     "ALB": "Albania",
