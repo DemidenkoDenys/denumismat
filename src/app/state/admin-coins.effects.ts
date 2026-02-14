@@ -28,6 +28,9 @@ export class AdminCoinsEffects {
               if (coin.ordered_at) {
                 tags.unshift('ordered: ' + (coin.ordered_by ?? '??'));
               }
+              if (coin.is_deleted) {
+                tags.unshift('deleted');
+              }
               return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
             });
             const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);

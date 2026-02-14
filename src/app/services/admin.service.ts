@@ -11,6 +11,12 @@ export class AdminService {
   }
 
   deleteCoin(coinId: string): Observable<any> {
-    return from(deleteDoc(doc(firestore, 'coins', coinId)));
+    const document = doc(firestore, 'coins', coinId);
+    return from(updateDoc(document, { is_deleted: new Date().toISOString() }));
+  }
+
+  restoreCoin(coinId: string): Observable<any> {
+    const document = doc(firestore, 'coins', coinId);
+    return from(updateDoc(document, { is_deleted: null, booked_at: null, booked_by: null, ordered_at: null, ordered_by: null }));
   }
 }

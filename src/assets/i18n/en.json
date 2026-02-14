@@ -27,9 +27,9 @@
     "totalWeightUnit": "gramm",
     "reset": "Reset",
     "book": "Book",
-    "unbook": "Unbook",
     "order": "Order",
-    "delete": "Delete"
+    "delete": "Delete",
+    "restore": "Restore"
   },
   "pageFooter": {
     "aboutTitle": "About me",

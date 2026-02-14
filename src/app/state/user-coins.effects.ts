@@ -18,7 +18,7 @@ export class UserCoinsEffects {
     this.actions$.pipe(
       ofType(CoinsActions.loadCoins),
       switchMap(() => {
-        const restrictions: any[] = [where("ordered_at", "==", null)];
+        const restrictions: any[] = [where("ordered_at", "==", null), where("is_deleted", "==", null)];
 
         return this.firestoreService.listenToCollection('coins', restrictions).pipe(
           concatMap((coins: Coin[]) => {

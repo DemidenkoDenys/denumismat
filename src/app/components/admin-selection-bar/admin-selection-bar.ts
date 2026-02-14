@@ -23,7 +23,7 @@ import { deselectCoin } from '../../state/coins.actions';
 
           <div class="selection-bar__actions">
             <button class="btn btn--ghost" (click)="handleReset()" [disabled]="!isCoinSelected()">{{ 'selectionBar.reset' | translate }}</button>
-            <button class="btn btn--ghost btn--secondary" (click)="handleUnbook()" [disabled]="!isCoinSelected()">{{ 'selectionBar.unbook' | translate }}</button>
+            <button class="btn btn--ghost btn--secondary" (click)="handleRestore()" [disabled]="!isCoinSelected()">{{ 'selectionBar.restore' | translate }}</button>
             <button class="btn btn--primary btn--danger" (click)="handleDelete()" [disabled]="!isCoinSelected()">{{ 'selectionBar.delete' | translate }}</button>
           </div>
         </div>
@@ -44,14 +44,12 @@ export class AdminSelectionBarComponent {
   onOrder = output<void>();
   onReset = output<void>();
 
-  handleUnbook() {
+  handleRestore() {
     const coins = this.selectedCoins();
 
     for (const id in coins) {
-      if (coins[id].booked_at) {
-        this.adminService.unbookCoin(id);
-        this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
-      }
+      this.adminService.restoreCoin(id);
+      this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
     }
   }
 

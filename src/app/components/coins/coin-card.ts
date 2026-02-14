@@ -26,6 +26,7 @@ export interface Coin {
   booked_by?: string | null; // User ID of the person who booked the coin
   ordered_at?: string | null; // ISO timestamp (if set, coin is ordered)
   ordered_by?: string | null; // User ID of the person who ordered the coin
+  is_deleted?: string | null; // ISO timestamp (if set, coin is deleted)
   description?: string; // Coin description
   imageUrl?: string; // CloudFront image URL
   thumbnailUrl?: string; // CloudFront thumbnail URL
@@ -142,7 +143,11 @@ export interface Coin {
         <div class="coin-card__tags">
           @if (coin().tags && coin().tags!.length > 0) {
             @for (tag of coin().tags; track tag) {
-              <span class="coin-card__tag" [class]="'coin-card__tag--' + tag.toLowerCase()">{{ tag.toUpperCase() }}</span>
+              <span
+                class="coin-card__tag"
+                [class]="'coin-card__tag--' + (tag.toLowerCase().includes('booked') ? 'booked' : tag.toLowerCase())">
+                {{ tag.toUpperCase() }}
+              </span>
             }
           }
         </div>

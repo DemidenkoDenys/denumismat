@@ -323,6 +323,14 @@ body.theme-dark .coin-card__lupa:hover {
   background: #22c55e;
 }
 
+.coin-card__tag--booked {
+  background: rgba(128, 128, 128, 0.4);
+}
+
+.coin-card__tag--deleted {
+  background: red;
+}
+
 .coin-card__tag--new {
   color: blue;
   border: 2px solid blue;
