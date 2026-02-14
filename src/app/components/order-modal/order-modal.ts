@@ -54,6 +54,26 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
               (submitForm)="onFormSubmit($event)"
             ></app-auth-form>
 
+            <div class="form-row visibility-accept">
+              <label class="checkbox">
+                <input
+                  type="checkbox"
+                  ngModel
+                  name="visibilityAccepted"
+                  required
+                  #visibilityAcceptedModel="ngModel"
+                  aria-required="true"
+                />
+                <span>{{ 'orderModal.confirmCheckbox' | translate }}</span>
+              </label>
+
+              @if (visibilityAcceptedModel.invalid && (visibilityAcceptedModel.touched || submitted())) {
+                <div class="field-error">
+                  {{ 'orderModal.confirmCheckboxRequired' | translate }}
+                </div>
+              }
+            </div>
+
             <div class="modal-actions">
               <button type="button" class="btn btn--ghost" (click)="close()">
                 {{ 'orderModal.cancel' | translate }}

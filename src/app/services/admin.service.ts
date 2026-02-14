@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../config/firebase.config';
+import { doc, updateDoc } from 'firebase/firestore';
 import { from, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })

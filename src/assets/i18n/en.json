@@ -79,7 +79,9 @@
     "emailRequiredError": "Email is required",
     "cancel": "Cancel",
     "submit": "Order now",
-    "processing": "Processing..."
+    "processing": "Processing...",
+    "confirmCheckbox": "Coins will not be visible to other users for 1 hour unless paid",
+    "confirmCheckboxRequired": "You must accept the visibility terms"
   },
   "authModal": {
     "title": "Sign In",
@@ -111,6 +113,7 @@
   },
   "toast": {
     "welcome": "Welcome to Denumismat. I happy to see you here! It's my coins catalog that I ready to sell.",
+    "bookInfo": "Coins will be booked for 1 day and restored afterward in case of no payment.",
     "selectionLimitExceeded": "You can select only 50 coins maximum"
   },
   "countries": {

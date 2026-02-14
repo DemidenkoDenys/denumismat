@@ -11,5 +11,4 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
   isAdmin: boolean;
-  verified: boolean;
 }

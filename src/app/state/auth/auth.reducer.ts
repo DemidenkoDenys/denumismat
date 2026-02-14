@@ -16,7 +16,6 @@ export const initialState: AuthState = {
   loading: false,
   error: null,
   isAdmin: false,
-  verified: false,
 };
 
 export const authReducer = createReducer(

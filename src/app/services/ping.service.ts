@@ -31,8 +31,8 @@ export class PingService {
             map(() => this.document.visibilityState),
             switchMap(visibilityState => {
                 if (visibilityState === 'visible') {
-                    // Start immediately (0) and repeat every 2 minutes (120000ms)
-                    return timer(0, 120000).pipe(
+                    // Start immediately (0) and repeat every 1 minute (60000ms)
+                    return timer(0, 60000).pipe(
                         switchMap(() => this.http.get('http://localhost:3000/ping').pipe(
                             // Catch error to prevent infinite stream termination
                             catchError(err => {

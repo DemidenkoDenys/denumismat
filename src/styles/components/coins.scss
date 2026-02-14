@@ -310,11 +310,11 @@ body.theme-dark .coin-card__lupa:hover {
   background: #22c55e;
 }
 
-.coin-card__tag--booked {
+.user-wrapper .coin-card__tag--booked {
   background: rgba(48, 41, 41, 0.4);
-  margin-left: 128px;
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.65);
-
+  margin-left: 128px;
+  border-radius: 12px;
 }
 
 .coin-card__tag--deleted {

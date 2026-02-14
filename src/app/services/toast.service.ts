@@ -40,7 +40,7 @@ export class ToastService {
       id,
       message,
       type: opts.type ?? 'info',
-      duration: typeof opts.duration === 'number' ? opts.duration : 4000,
+      duration: opts?.duration ?? 0,
       actionLabel: opts.actionLabel,
       action: opts.action
     };

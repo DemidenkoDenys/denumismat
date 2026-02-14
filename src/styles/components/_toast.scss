@@ -78,6 +78,16 @@
 .toast--error {
   background: linear-gradient(180deg, rgba(249, 115, 22, 0.8), rgba(239, 68, 68, 0.8));
 }
+.toast__close {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
 
 @keyframes toast-in {
   from {

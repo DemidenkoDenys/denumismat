@@ -32,36 +32,40 @@ export interface Filters {
           <div class="filters__range-values">
             <span class="filters__value">{{ formattedMinPrice() }} - {{ formattedMaxPrice() }}</span>
           </div>
+
           <div class="filters__range-slider">
             <div class="filters__range-track"></div>
+
             <div
               class="filters__range-fill"
               [style.left.%]="rangeLeftPct()"
               [style.width.%]="rangeWidthPct()">
             </div>
+
             <input
               type="range"
-              [min]="priceMinBound()"
-              [max]="priceMaxBound()"
               step="0.05"
-              [value]="priceMin()"
-              (input)="onPriceMinInput($event)"
-              (pointerdown)="bringMinToFront()"
               class="filters__range-input filters__range-input--min"
-              [attr.aria-label]="'filters.priceMin' | translate"
-              [style.z-index]="minZ()"
-            />
-            <input
-              type="range"
               [min]="priceMinBound()"
               [max]="priceMaxBound()"
+              [value]="priceMin()"
+              [style.z-index]="minZ()"
+              [attr.aria-label]="'filters.priceMin' | translate"
+              (pointerdown)="bringMinToFront()"
+              (input)="onPriceMinInput($event)"
+            />
+
+            <input
+              type="range"
               step="0.05"
-              [value]="priceMax()"
-              (input)="onPriceMaxInput($event)"
-              (pointerdown)="bringMaxToFront()"
               class="filters__range-input filters__range-input--max"
-              [attr.aria-label]="'filters.priceMax' | translate"
+              [min]="priceMinBound()"
+              [max]="priceMaxBound()"
+              [value]="priceMax()"
               [style.z-index]="maxZ()"
+              [attr.aria-label]="'filters.priceMax' | translate"
+              (pointerdown)="bringMaxToFront()"
+              (input)="onPriceMaxInput($event)"
             />
           </div>
         </div>
@@ -70,6 +74,7 @@ export interface Filters {
           <span class="filters__label" style="display: inline-block; margin-right: 0.5rem; align-self: center;">
             {{ 'filters.leaveOnly' | translate }}
           </span>
+
           <div class="filters__tags">
             @for (tag of availableTags(); track tag) {
               <button
@@ -81,6 +86,7 @@ export interface Filters {
                 {{ tag.toUpperCase() }}
               </button>
             }
+
             @if (selectedCount() > 0) {
               <button
                 type="button"

@@ -69,6 +69,21 @@
     }
   }
 
+  .visibility-accept {
+    label span {
+      margin-left: 10px;
+    }
+
+    input.ng-invalid {
+      box-shadow: inset 0 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+
+    .field-error {
+      color: red;
+      font-size: 0.7rem;
+    }
+  }
+
   .coin-list {
     list-style: none;
     padding: 0 10px 0 0;

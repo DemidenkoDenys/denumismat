@@ -17,6 +17,7 @@ import { selectCountries } from '../../state/countries.selectors';
 import { selectSelectedCoins } from '../../state/coins.selectors';
 import { clearSelection, deselectCoin } from '../../state/coins.actions';
 import { UserService } from '../../services/user.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'user-wrapper',
@@ -67,6 +68,7 @@ import { UserService } from '../../services/user.service';
 })
 export class UserWrapperComponent implements OnInit {
   private store = inject(Store);
+  private toast = inject(ToastService);
   private router = inject(Router);
   private service = inject(UserService);
   public authModalService = inject(AuthModalService);
@@ -174,7 +176,7 @@ export class UserWrapperComponent implements OnInit {
     if (!this.isLoggedIn()) {
       this.authModalService.showAuthModal();
     } else {
-    this.handleBooking();
+      this.handleBooking();
     }
   }
 
@@ -190,6 +192,7 @@ export class UserWrapperComponent implements OnInit {
         console.log('Coin already booked:', coins[id].id);
       }
     }
+    this.toast.show('toast.bookInfo');
   }
 
   handleOrderSubmit(data: { name: string; email: string; coins: any[] }) {
