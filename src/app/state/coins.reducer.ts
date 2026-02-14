@@ -18,6 +18,8 @@ export const initialState: CoinsState = {
   countries: {}
 };
 
+export const MAX_SELECTED_COINS = 50;
+
 export const coinsReducer = createReducer(
   initialState,
   on(CoinsActions.loadCoins, (state) => ({
@@ -36,13 +38,20 @@ export const coinsReducer = createReducer(
     loading: false,
     error
   })),
-  on(CoinsActions.selectCoin, (state, { coin }) => ({
-    ...state,
-    selected: {
-      ...state.selected,
-      [coin.id]: coin
+  on(CoinsActions.selectCoin, (state, { coin }) => {
+    const selectedCount = Object.keys(state.selected).length;
+    if (selectedCount >= MAX_SELECTED_COINS) {
+      // limit reached — ignore additional selects
+      return state;
     }
-  })),
+    return {
+      ...state,
+      selected: {
+        ...state.selected,
+        [coin.id]: coin
+      }
+    };
+  }),
   on(CoinsActions.deselectCoin, (state, { coinId }) => {
     const { [coinId]: removed, ...remaining } = state.selected;
     return {
@@ -63,6 +72,10 @@ export const coinsReducer = createReducer(
         selected: remaining
       };
     } else {
+      const selectedCount = Object.keys(state.selected).length;
+      if (selectedCount >= MAX_SELECTED_COINS) {
+        return state; // ignore
+      }
       return {
         ...state,
         selected: {

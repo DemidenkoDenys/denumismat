@@ -20,6 +20,11 @@ import { selectIsAdmin } from '../../state/auth/auth.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
+
+      @if (selectionLimitExceeded()) {
+        <div class="coin-grid__limit-warning">Maximum 50 coins can be selected.</div>
+      }
+
       <div class="coin-grid__list">
         @for (coin of paginatedCoins(); track coin.id) {
           <app-coin-card
@@ -58,6 +63,8 @@ export class CoinGridComponent implements OnInit {
   selectedIds = toSignal(this.store.select(selectSelectedCoinIds), { initialValue: [] });
 
   displayLimit = signal(20);
+  // UI flag for selection limit exceeded (temporary warning)
+  selectionLimitExceeded = signal(false);
 
   // Enrich coins with pre-computed searchable title
   enrichedCoins = computed<Coin[]>(() => {
@@ -193,6 +200,15 @@ export class CoinGridComponent implements OnInit {
 
     // prevent selecting booked coins
     if (!this.isAdmin() && coin.booked_at) return;
+
+    // Enforce maximum selection limit in the UI (reducer also enforces defensively)
+    const currentCount = this.selectedIds().length;
+    if (selected && currentCount >= 50) {
+      // show a temporary warning to the user and do not dispatch
+      this.selectionLimitExceeded.set(true);
+      setTimeout(() => this.selectionLimitExceeded.set(false), 2500);
+      return;
+    }
 
     if (selected) {
       this.store.dispatch(CoinsActions.selectCoin({ coin }));

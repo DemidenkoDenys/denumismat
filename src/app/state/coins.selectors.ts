@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { CoinsState } from './coins.reducer';
+import { CoinsState, MAX_SELECTED_COINS } from './coins.reducer';
 
 export const selectCoinsState = createFeatureSelector<CoinsState>('coins');
 
@@ -46,6 +46,11 @@ export const selectSelectedCoinsCount = createSelector(
 export const selectIsCoinSelected = (coinId: string) => createSelector(
   selectSelectedCoins,
   (selected) => !!selected[coinId]
+);
+
+export const selectIsSelectionLimitReached = createSelector(
+  selectSelectedCoinsCount,
+  (count) => count >= MAX_SELECTED_COINS
 );
 
 export const selectSelectedCoinsPrice = createSelector(

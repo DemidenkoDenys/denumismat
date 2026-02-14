@@ -7,6 +7,7 @@ import { PricePipe } from '../../pipes/price.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectIsAdmin } from '../../state/auth/auth.selectors';
+import { selectIsSelectionLimitReached, selectSelectedCoinsCount } from '../../state/coins.selectors';
 
 export interface CoinImage {
   obverse: string | null;
@@ -66,7 +67,7 @@ export interface Coin {
 
       <div class="coin-card__media">
         @if (!isBooked()) {
-          <label class="coin-card__select" (click)="$event.stopPropagation()">
+          <label class="coin-card__select" (click)="$event.stopPropagation()" [class.coin-card__select-limit]="selectionLimitReached() && !selected()">
             <input
               type="checkbox"
               [checked]="selected()"
@@ -186,6 +187,9 @@ export class CoinCardComponent {
   private isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
+
+  // Watch global selected coins count to know when selection limit is reached
+  public selectionLimitReached = toSignal(this.store.select(selectIsSelectionLimitReached));
 
   // Placeholder image URL for coins without images
   readonly placeholderImageUrl = 'assets/placeholder-image.jpg';
@@ -421,6 +425,11 @@ export class CoinCardComponent {
   }
 
   toggleSelect() {
+    // Prevent selecting more than allowed (UI-level guard). Reducer is also defensive.
+    if (!this.selected() && this.selectionLimitReached()) {
+      return; // silently ignore toggle when limit reached
+    }
+
     const next = !this.selected();
     this.selectedChange.emit(next);
   }

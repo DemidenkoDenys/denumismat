@@ -463,6 +463,10 @@ body.theme-dark .coin-card__lupa:hover {
     background: rgba(255, 255, 255, 0.45);
     transform: scale(1.05);
   }
+
+  &.coin-card__select-limit {
+    display: none;
+  }
 }
 
 .coin-card__select input[type='checkbox'] {

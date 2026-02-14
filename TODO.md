@@ -11,5 +11,6 @@ Countries filter with localization
 ## In admin mode - add "ordered" "booked" buttons in filters component
 ## Viewed coins should be saved in indexDB and all no viewed marked as NEW
 ## Compress images
+## book not nore than 50 items (include booked)
 
 ## ? Subscribe checkbox on auth modal

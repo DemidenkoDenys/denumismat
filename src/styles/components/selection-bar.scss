@@ -33,6 +33,42 @@
   font-size: 1rem;
 }
 
+.selection-bar__limit-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  vertical-align: middle;
+  color: #92400E; /* amber/danger tint */
+  cursor: default;
+  position: relative; /* allow absolutely positioned tooltip */
+}
+.selection-bar__limit-icon svg {
+  display: block;
+}
+
+/* show header-like tooltip when hovering the limit icon (position it above the icon) */
+.selection-bar__limit-icon:hover .header__tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  visibility: visible;
+
+  /* place tooltip above the icon instead of below */
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* move tooltip arrow to point down toward the icon */
+.selection-bar__limit-icon:hover .header__tooltip::before {
+  top: auto;
+  bottom: -4px;
+  transform: translateX(-50%) rotate(45deg);
+}
+
 .selection-bar__original-price {
   text-decoration: line-through;
   color: #9ca3af;
