@@ -6,6 +6,7 @@ import * as CoinsActions from './coins.actions';
 import { FirestoreService } from '../services/firestore.service';
 import { Coin } from '../components/coins/coin-card';
 import { IndexedDbService } from '../services/indexed-db.service';
+import { where } from 'firebase/firestore';
 
 @Injectable()
 export class AdminCoinsEffects {
@@ -23,6 +24,9 @@ export class AdminCoinsEffects {
               const tags = [];
               if (coin.booked_at) {
                 tags.unshift('booked: ' + (coin.booked_by ?? '??'));
+              }
+              if (coin.ordered_at) {
+                tags.unshift('ordered: ' + (coin.ordered_by ?? '??'));
               }
               return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
             });

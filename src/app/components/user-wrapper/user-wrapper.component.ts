@@ -193,7 +193,17 @@ export class UserWrapperComponent implements OnInit {
   }
 
   handleOrderSubmit(data: { name: string; email: string; coins: any[] }) {
+    if (!data.email || !data.coins || data.coins.length === 0) {
+      return;
+    }
+
     this.isOrderModalOpen.set(false);
+
+    for (const coin of data.coins) {
+      this.service.orderCoin(coin.id, data.email).subscribe(() => {
+        this.store.dispatch(deselectCoin({ coinId: coin.id }));
+      });
+    }
   }
 
   private clearAuthData() {

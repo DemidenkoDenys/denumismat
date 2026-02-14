@@ -6,6 +6,7 @@ import * as CoinsActions from './coins.actions';
 import { FirestoreService } from '../services/firestore.service';
 import { Coin } from '../components/coins/coin-card';
 import { IndexedDbService } from '../services/indexed-db.service';
+import { where } from 'firebase/firestore';
 
 @Injectable()
 export class UserCoinsEffects {
@@ -16,8 +17,10 @@ export class UserCoinsEffects {
   loadCoins$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CoinsActions.loadCoins),
-      switchMap(() =>
-        this.firestoreService.listenToCollection('coins').pipe(
+      switchMap(() => {
+        const restrictions: any[] = [where("ordered_at", "==", null)];
+
+        return this.firestoreService.listenToCollection('coins', restrictions).pipe(
           concatMap((coins: Coin[]) => {
             return from(this.indexedDb.getViewedCoinsMap()).pipe(
               map((viewedMap: Record<string, boolean>) => {
@@ -42,6 +45,7 @@ export class UserCoinsEffects {
             return of(CoinsActions.loadCoinsFailure({ error }));
           })
         )
+      }
       )
     )
   );
@@ -59,7 +63,7 @@ export class UserCoinsEffects {
             if (raw) {
               storedCoinsMap = JSON.parse(raw);
             }
-          } catch {}
+          } catch { }
           if (!storedCoinsMap[selectedCoin.id]) {
             storedCoinsMap[selectedCoin.id] = true;
             localStorage.setItem(storageKey, JSON.stringify(storedCoinsMap));
@@ -82,7 +86,7 @@ export class UserCoinsEffects {
             if (raw) {
               storedCoinsMap = JSON.parse(raw);
             }
-          } catch {}
+          } catch { }
           if (storedCoinsMap[deselectedCoinId]) {
             delete storedCoinsMap[deselectedCoinId];
             localStorage.setItem(storageKey, JSON.stringify(storedCoinsMap));

@@ -20,11 +20,6 @@ import { selectIsAdmin } from '../../state/auth/auth.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
-
-      @if (selectionLimitExceeded()) {
-        <div class="coin-grid__limit-warning">Maximum 50 coins can be selected.</div>
-      }
-
       <div class="coin-grid__list">
         @for (coin of paginatedCoins(); track coin.id) {
           <app-coin-card

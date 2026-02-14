@@ -24,6 +24,8 @@ export interface Coin {
   price: number;
   booked_at?: string | null; // ISO timestamp (if set, coin is booked/reserved)
   booked_by?: string | null; // User ID of the person who booked the coin
+  ordered_at?: string | null; // ISO timestamp (if set, coin is ordered)
+  ordered_by?: string | null; // User ID of the person who ordered the coin
   description?: string; // Coin description
   imageUrl?: string; // CloudFront image URL
   thumbnailUrl?: string; // CloudFront thumbnail URL

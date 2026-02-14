@@ -13,7 +13,6 @@ import { deselectCoin } from '../../state/coins.actions';
   imports: [CommonModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    @if (isCoinSelected()) {
       <div class="selection-bar" role="region" aria-live="polite">
         <div class="selection-bar__inner">
           <div class="selection-bar__metrics">
@@ -23,13 +22,12 @@ import { deselectCoin } from '../../state/coins.actions';
           </div>
 
           <div class="selection-bar__actions">
-            <button class="btn btn--ghost" (click)="handleReset()">{{ 'selectionBar.reset' | translate }}</button>
-            <button class="btn btn--ghost btn--secondary" (click)="handleUnbook()">{{ 'selectionBar.unbook' | translate }}</button>
-            <button class="btn btn--primary btn--danger" (click)="handleOrder()">{{ 'selectionBar.delete' | translate }}</button>
+            <button class="btn btn--ghost" (click)="handleReset()" [disabled]="!isCoinSelected()">{{ 'selectionBar.reset' | translate }}</button>
+            <button class="btn btn--ghost btn--secondary" (click)="handleUnbook()" [disabled]="!isCoinSelected()">{{ 'selectionBar.unbook' | translate }}</button>
+            <button class="btn btn--primary btn--danger" (click)="handleDelete()" [disabled]="!isCoinSelected()">{{ 'selectionBar.delete' | translate }}</button>
           </div>
         </div>
       </div>
-    }
   `,
 })
 export class AdminSelectionBarComponent {
@@ -39,7 +37,7 @@ export class AdminSelectionBarComponent {
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
   selectedCoins = toSignal(this.store.select(selectSelectedCoins));
-  isCoinSelected = toSignal(this.store.select(isCoinSelected), { initialValue: false });
+  isCoinSelected = toSignal(this.store.select(selectSelectedCoinsCount));
   selectedCoinsCount = toSignal(this.store.select(selectSelectedCoinsCount), { initialValue: 0 });
 
   onBook = output<void>();
@@ -57,6 +55,14 @@ export class AdminSelectionBarComponent {
     }
   }
 
-  handleOrder() { this.onOrder.emit(); }
+  handleDelete() {
+    const coins = this.selectedCoins();
+
+    for (const id in coins) {
+      this.adminService.deleteCoin(id);
+      this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
+    }
+  }
+
   handleReset() { this.onReset.emit(); }
 }

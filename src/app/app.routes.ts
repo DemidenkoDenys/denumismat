@@ -11,16 +11,16 @@ import { UserCoinsEffects } from './state/user-coins.effects';
 import { AdminCoinsEffects } from './state/admin-coins.effects';
 
 export const routes: Routes = [
+    {
+    path: atob(ADTL),
+    component: AdminComponent,
+    providers: [AdminService, [provideEffects(AdminCoinsEffects)]],
+    canActivate: [authAdminGuard],
+  },
   {
     path: '',
     component: UserWrapperComponent,
     providers: [UserService, [provideEffects(UserCoinsEffects)]],
     resolve: { resolve: UserAuthResolver }
-  },
-  {
-    path: atob(ADTL),
-    component: AdminComponent,
-    providers: [AdminService, [provideEffects(AdminCoinsEffects)]],
-    canActivate: [authAdminGuard],
   }
 ];

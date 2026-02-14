@@ -10,6 +10,11 @@ export class UserService {
     return from(updateDoc(document, { booked_at: new Date().toISOString(), booked_by: email }));
   }
 
+  orderCoin(coinId: number, email: string): Observable<any> {
+    const document = doc(firestore, 'coins', coinId.toString());
+    return from(updateDoc(document, { ordered_at: new Date().toISOString(), ordered_by: email }));
+  }
+
   /**
    * Get user document by email (document id = email). Returns null if not found.
    */
