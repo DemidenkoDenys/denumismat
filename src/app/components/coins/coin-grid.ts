@@ -105,7 +105,7 @@ export class CoinGridComponent implements OnInit {
 
         // Extract year from search query (3-4 digit number starting with 18, 19, or 20)
         const yearMatch = searchText.match(/\b(18|19|20)\d{1,2}\b/);
-        const searchYear = yearMatch ? parseInt(yearMatch[0]) : null;
+        const searchYear = yearMatch ? parseInt(yearMatch[0], 10) : null;
 
         // Get remaining text (everything except the year)
         const remainingText = searchText.replace(/\b(18|19|20)\d{1,2}\b/g, '').trim().toLowerCase();
@@ -115,9 +115,23 @@ export class CoinGridComponent implements OnInit {
           return false;
         }
 
-        // Check text match in pre-computed title (if there's remaining text)
-        if (remainingText !== '' && !coin.title?.toLowerCase().includes(remainingText)) {
-          return false;
+        // If there's remaining text, split into tokens and validate each.
+        // Numeric tokens (that are not the year) must match as whole words in title.
+        // Non-numeric tokens are matched as substrings in the precomputed title.
+        if (remainingText !== '') {
+          const title = (coin.title || '').toLowerCase();
+          const tokens = remainingText.split(/\s+/).filter(Boolean);
+
+          for (const token of tokens) {
+            if (/^\d+$/.test(token)) {
+              // numeric token -> require exact whole-word match in title
+              const numRe = new RegExp(`\\b${token}\\b`);
+              if (!numRe.test(title)) return false;
+            } else {
+              // text token -> substring match
+              if (!title.includes(token)) return false;
+            }
+          }
         }
       }
 

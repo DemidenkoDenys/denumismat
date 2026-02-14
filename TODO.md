@@ -8,8 +8,7 @@
 <!-- ## Add create_date to coin and sort newest first -->
 <!-- ## Countries filter with localization -->
 <!-- ## implement toast -->
-
-## Match numbers in full equalilty when seasrch
+<!-- ## Match numbers in full equalilty when seasrch -->
 
 ## Book not nore than 50 items (include booked)
 ## Confirmation code to email on authorization
