@@ -35,7 +35,8 @@ export class AdminComponent {
       uid: `admin-${Date.now()}`,
       displayName: data.name,
       email: data.email,
-      photoURL: null
+      photoURL: null,
+      verified: true
     };
 
     this.store.dispatch(setAuthUser({ user }));

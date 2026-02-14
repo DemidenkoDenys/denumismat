@@ -155,7 +155,8 @@ export class MainLayoutComponent implements OnInit {
             uid: `local-${Date.now()}`,
             displayName: storedName,
             email: storedEmail,
-            photoURL: null
+            photoURL: null,
+            verified: false,
           };
           this.store.dispatch(AuthActions.setAuthUser({ user }));
         }

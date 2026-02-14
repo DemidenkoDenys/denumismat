@@ -3,6 +3,7 @@ export interface User {
   displayName: string | null;
   email: string | null;
   photoURL: string | null;
+  verified: boolean;
 }
 
 export interface AuthState {
@@ -10,4 +11,5 @@ export interface AuthState {
   loading: boolean;
   error: string | null;
   isAdmin: boolean;
+  verified: boolean;
 }

@@ -200,7 +200,7 @@ export class UserWrapperComponent implements OnInit {
     // Clear localStorage items
     localStorage.removeItem('denumismat.name');
     localStorage.removeItem('denumismat.email');
-    localStorage.removeItem('auth_user_profile');
+    localStorage.removeItem('auth_google_user');
 
     // Reset auth state in store
     this.store.dispatch(setAuthUser({ user: null }));
@@ -220,7 +220,8 @@ export class UserWrapperComponent implements OnInit {
       uid: `admin-${Date.now()}`,
       displayName: data.name,
       email: data.email,
-      photoURL: null
+      photoURL: null,
+      verified: false
     };
 
     this.store.dispatch(setAuthUser({ user }));

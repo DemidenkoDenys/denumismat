@@ -1,14 +1,15 @@
-import { Component, ChangeDetectionStrategy, output, signal, inject, ViewChild, OnInit, OnDestroy, PLATFORM_ID, ChangeDetectorRef, effect, Renderer2, HostListener } from '@angular/core';
-import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { Component, ChangeDetectionStrategy, output, signal, inject, ViewChild, PLATFORM_ID, ChangeDetectorRef, effect, Renderer2 } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
-import { loginWithGoogle, setIsAdmin } from '../../state/auth/auth.actions';
+import { loginWithGoogle } from '../../state/auth/auth.actions';
 import { AuthModalService } from '../../services/auth-modal.service';
 import { AuthForm } from '../auth-form/auth-form';
 import { BaseModalComponent } from '../base-modal/base-modal';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-auth-modal',
@@ -16,7 +17,7 @@ import { BaseModalComponent } from '../base-modal/base-modal';
   imports: [CommonModule, FormsModule, TranslateModule, AuthForm, BaseModalComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-base-modal [title]="getModalTitle()" (onClose)="close()">
+    <app-base-modal [title]="'authModal.title' | translate" (onClose)="close()">
       <div class="auth-modal-content">
         @if (isAdminMode()) {
           <div class="admin-notice">
@@ -29,15 +30,24 @@ import { BaseModalComponent } from '../base-modal/base-modal';
           [email]="email"
           [verifyCode]="verifyCode"
           [emailDisabled]="isEmailDisabled()"
-          (nameChange)="onNameChange($event)"
-          (emailChange)="onEmailChange($event)"
+          [showVerifyInput]="showVerifyInput()"
           (verifyCodeChange)="onVerifyCodeChange($event)"
-          (formValid)="isFormValid.set($event)"
+          (emailChange)="onEmailChange($event)"
+          (nameChange)="onNameChange($event)"
           (submitForm)="onFormSubmit($event)"
         ></app-auth-form>
 
+        @if (verifyError()) {
+          <div class="error-message auth-verify-error">{{ verifyError() }}</div>
+        }
+
         <div class="modal-actions">
+          <button type="button" class="btn btn--ghost" (click)="close()">
+            {{ 'authModal.cancel' | translate }}
+          </button>
+
           <button type="button" class="btn btn--google" (click)="signInWithGoogle()" title="{{ 'authModal.googleSignIn' | translate }}">
+            Google
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -45,9 +55,7 @@ import { BaseModalComponent } from '../base-modal/base-modal';
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
           </button>
-          <button type="button" class="btn btn--ghost" (click)="close()">
-            {{ 'authModal.cancel' | translate }}
-          </button>
+
           <button
             type="button"
             class="btn btn--primary"
@@ -61,7 +69,7 @@ import { BaseModalComponent } from '../base-modal/base-modal';
     </app-base-modal>
   `
 })
-export class AuthModalComponent implements OnInit, OnDestroy {
+export class AuthModalComponent {
   @ViewChild(AuthForm) authFormComponent!: AuthForm;
   private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
@@ -69,6 +77,7 @@ export class AuthModalComponent implements OnInit, OnDestroy {
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
   private modalService = inject(AuthModalService);
+  private userService = inject(UserService);
 
   currentUser = toSignal(this.store.select(selectUser));
 
@@ -84,16 +93,6 @@ export class AuthModalComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Watch for modal data changes to set admin mode
-    effect(() => {
-      const modalData = this.modalService.getAuthModalData();
-      if (modalData?.mode === 'admin') {
-        this.setAdminMode(true);
-      } else {
-        this.setAdminMode(false);
-      }
-    });
-
     // Watch for user changes and close modal when authorized by Google (but not in admin mode)
     effect(() => {
       const user = this.currentUser();
@@ -102,24 +101,6 @@ export class AuthModalComponent implements OnInit, OnDestroy {
         this.close();
       }
     });
-
-    // Watch for user changes in admin mode and handle admin authentication
-    effect(() => {
-      const user = this.currentUser();
-      if (user && this.isAdminMode()) {
-        // Check if the current user is admin
-        const isAdminUser = this.checkIfUserIsAdmin(user.email || '');
-        if (isAdminUser) {
-          // User is admin, dispatch admin status (don't close modal - let guard handle it)
-          this.store.dispatch(setIsAdmin({ isAdmin: true }));
-        }
-      }
-    });
-  }
-
-  private isValidEmail(email: string): boolean {
-    const emailPattern = /^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,4}$/;
-    return emailPattern.test(email);
   }
 
   onClose = output<void>();
@@ -129,22 +110,13 @@ export class AuthModalComponent implements OnInit, OnDestroy {
   name = '';
   email = '';
   verifyCode = '';
-  isSubmitting = signal(false);
-  isFormValid = signal(false);
-  isEmailDisabled = signal(false);
   isAdminMode = signal(false);
+  isSubmitting = signal(false);
+  isEmailDisabled = signal(false);
 
-  ngOnInit() {
-    // Base modal handles body scroll prevention
-  }
-
-  ngOnDestroy() {
-    // Base modal handles body scroll restoration
-  }
-
-  getModalTitle(): string {
-    return this.isAdminMode() ? 'Admin Authentication' : 'authModal.title';
-  }
+  // Show verify-code input when a stored code exists
+  showVerifyInput = signal(false);
+  verifyError = signal('');
 
   setAdminMode(adminMode: boolean) {
     this.isAdminMode.set(adminMode);
@@ -158,6 +130,9 @@ export class AuthModalComponent implements OnInit, OnDestroy {
   onEmailChange(value: string) {
     this.email = value;
     // Don't save to localStorage - users should enter fresh data each time
+    // Reset verification UI when the email is edited
+    this.showVerifyInput.set(false);
+    this.verifyError.set('');
   }
 
   onVerifyCodeChange(value: string) {
@@ -181,57 +156,113 @@ export class AuthModalComponent implements OnInit, OnDestroy {
 
   submit() {
     // Check if form is valid, if not, trigger validation display
-    if (!this.isFormValid()) {
+    console.log(this.authFormComponent.authForm);
+
+    if (this.authFormComponent.authForm.invalid) {
       this.authFormComponent.showValidationErrors();
       return;
     }
 
-    this.isSubmitting.set(true);
+    localStorage.setItem('denumismat.name', this.name);
+    localStorage.setItem('denumismat.email', this.email);
 
-    // Simulate API call or just event emit
-    setTimeout(() => {
-      this.onSubmit.emit({
-        name: this.name,
-        email: this.email,
-        verifyCode: this.verifyCode
+    this.isSubmitting.set(true);
+    this.verifyError.set('');
+
+    const email = this.email?.trim();
+    const payloadUser = {
+      uid: `local-${Date.now()}`,
+      email,
+      verified: false,
+      displayName: this.name,
+    };
+
+    // If verify-input is already visible, user is attempting to verify code
+    if (this.showVerifyInput()) {
+      this.userService.getUserByEmail(email).subscribe({
+        next: (doc) => {
+          console.log("🚀 ~ doc:", doc)
+          const storedCode = (doc && doc.code) ? String(doc.code) : null;
+          const entered = (this.verifyCode || '').replace(/\D/g, '');
+          if (!storedCode) {
+            this.verifyError.set('No verification code was found for this user.');
+            this.isSubmitting.set(false);
+            return;
+          }
+
+          if (storedCode === entered) {
+            // mark verified in Firestore and proceed
+            this.userService.markUserVerified(email).subscribe({
+              next: () => {
+                this.onSubmit.emit({ name: this.name, email: this.email, verifyCode: this.verifyCode });
+                this.onAuthSuccess.emit();
+                this.isSubmitting.set(false);
+              },
+              error: (err) => {
+                console.error('Failed to mark verified:', err);
+                this.verifyError.set('Failed to verify — try again later.');
+                this.isSubmitting.set(false);
+              }
+            });
+          } else {
+            this.verifyError.set('Verification code does not match.');
+            this.isSubmitting.set(false);
+          }
+        },
+        error: (err) => {
+          console.error('Error reading user doc:', err);
+          this.verifyError.set('Verification failed — please try again.');
+          this.isSubmitting.set(false);
+        }
       });
 
-      // If in admin mode, check if user becomes admin after authentication
-      if (this.isAdminMode()) {
-        // For demo purposes, we'll assume admin authentication succeeds
-        // In real implementation, this would check against admin credentials
-        this.handleAdminAuthentication();
-      } else {
-        this.onAuthSuccess.emit();
+      return;
+    }
+
+    // First submission attempt: check if user exists
+    this.userService.getUserByEmail(email).subscribe({
+      next: (doc) => {
+        console.log("🚀 ~ doc:", doc)
+        if (doc) {
+          // user exists — if they have a code, show verify input
+          if (doc.code) {
+            this.showVerifyInput.set(true);
+            this.isSubmitting.set(false);
+            return;
+          }
+
+          // exists but no verification code -> update/merge user doc and proceed
+          this.userService.saveUserByEmail(payloadUser, false).subscribe({
+            next: () => {
+              this.onSubmit.emit({ name: this.name, email: this.email, verifyCode: this.verifyCode });
+              this.onAuthSuccess.emit();
+              this.isSubmitting.set(false);
+            },
+            error: (err) => {
+              console.error('Failed to save existing user:', err);
+              this.isSubmitting.set(false);
+            }
+          });
+        } else {
+          // user does not exist -> create with verification code, then show verify input
+          this.userService.saveUserByEmail(payloadUser, true).subscribe({
+            next: (res: any) => {
+              // we created the user and generated a verification code — prompt for it
+              this.showVerifyInput.set(true);
+              this.isSubmitting.set(false);
+            },
+            error: (err) => {
+              console.error('Failed to create user:', err);
+              this.isSubmitting.set(false);
+            }
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Error checking user existence:', err);
+        this.isSubmitting.set(false);
       }
-
-      this.isSubmitting.set(false);
-    }, 500);
-  }
-
-  private handleAdminAuthentication() {
-    // Check if the authenticated user is admin
-    // This would typically involve checking user credentials against admin list
-    const isAdminUser = this.checkIfUserIsAdmin(this.email);
-
-    if (isAdminUser) {
-      // Dispatch admin authentication success
-      this.store.dispatch(setIsAdmin({ isAdmin: true }));
-      this.onAuthSuccess.emit();
-    } else {
-      // Show error for non-admin users
-      console.error('User is not authorized as admin');
-      // You could emit a different event or show an error message
-    }
-  }
-
-  private checkIfUserIsAdmin(email: string): boolean {
-    // Check if the current user has the admin UID
-    const user = this.currentUser();
-    if (user && user.uid === '4jv5yogz1AhqUb6ZojV6fScI9ZD2') {
-      return true;
-    }
-    return false;
+    });
   }
 
   // Additional methods for auth modal functionality
@@ -239,7 +270,6 @@ export class AuthModalComponent implements OnInit, OnDestroy {
     this.name = '';
     this.email = '';
     this.verifyCode = '';
-    this.isFormValid.set(false);
     this.isSubmitting.set(false);
   }
 
@@ -266,6 +296,6 @@ export class AuthModalComponent implements OnInit, OnDestroy {
   }
 
   isFormReady(): boolean {
-    return this.isFormValid() && !this.isSubmitting();
+    return Boolean(this.authFormComponent.authForm.valid && !this.isSubmitting());
   }
 }

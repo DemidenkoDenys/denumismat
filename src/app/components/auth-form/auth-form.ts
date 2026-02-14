@@ -22,6 +22,8 @@ export class AuthForm {
   readonly email = input<string>('');
   readonly verifyCode = input<string>('');
   readonly emailDisabled = input<boolean>(false);
+  readonly submittedInput = input<boolean>(false);
+  readonly showVerifyInput = input(false);
 
   // Outputs
   readonly formValid = output<boolean>();
@@ -47,6 +49,12 @@ export class AuthForm {
     // Emit form validity changes
     effect(() => {
       this.formValid.emit(this.isFormValid() ?? false);
+    });
+
+    effect(() => {
+      if (this.submittedInput()) {
+        this.submitted.set(true);
+      }
     });
   }
 

@@ -11,7 +11,7 @@ export const authAdminGuard: CanActivateFn = () => {
   return from(getDoc(doc(firestore, atob(AUTH)))).pipe(
     map(snapshot => {
       if (snapshot.exists()) {
-        const user = localStorage.getItem('auth_user_profile');
+        const user = localStorage.getItem('auth_google_user');
         return Boolean(user && JSON.parse(user).uid === atob(snapshot.data()['uid']));
       }
       router.navigate(['/']);

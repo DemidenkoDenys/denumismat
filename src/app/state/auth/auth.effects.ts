@@ -23,6 +23,7 @@ export class AuthEffects {
                uid: firebaseUser.uid,
                displayName: firebaseUser.displayName,
                email: firebaseUser.email,
+               verified: true,
                photoURL: firebaseUser.photoURL
              };
              return AuthActions.loginSuccess({ user });
@@ -38,9 +39,9 @@ export class AuthEffects {
       ofType(AuthActions.loginSuccess, AuthActions.setAuthUser),
       tap(({ user }) => {
         if (user) {
-          localStorage.setItem('auth_user_profile', JSON.stringify(user));
+          localStorage.setItem('auth_google_user', JSON.stringify(user));
         } else {
-          localStorage.removeItem('auth_user_profile');
+          localStorage.removeItem('auth_google_user');
         }
       })
     ),
@@ -53,7 +54,7 @@ export class AuthEffects {
       switchMap(() =>
         this.authService.logout().pipe(
           map(() => {
-             localStorage.removeItem('auth_user_profile');
+             localStorage.removeItem('auth_google_user');
              localStorage.removeItem('denumismat.email');
              localStorage.removeItem('denumismat.name');
              return AuthActions.logoutSuccess();
@@ -85,7 +86,8 @@ export class AuthEffects {
                    uid: firebaseUser.uid,
                    displayName: firebaseUser.displayName,
                    email: firebaseUser.email,
-                   photoURL: firebaseUser.photoURL
+                   verified: true,
+                   photoURL: firebaseUser.photoURL,
                  };
                  return AuthActions.setAuthUser({ user });
              } else {

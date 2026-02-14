@@ -116,15 +116,6 @@ export class AuthModalService {
     this.showAuthModal({ mode: 'login' });
   }
 
-  showAuthModalForAdmin() {
-    this.showAuthModal({
-      mode: 'admin',
-      title: 'Admin Authentication Required',
-      message: 'Please authenticate to access the admin panel.'
-    });
-  }
-
-  // Reset all modals
   resetAllModals() {
     this.hideAuthModal();
     this.hideOrderModal();
