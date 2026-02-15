@@ -39,7 +39,10 @@
   font-weight: 600;
   color: #111827;
   letter-spacing: -0.025em;
-  transition: color 0.2s ease, text-shadow 0.2s ease, background-size 0.4s ease;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease,
+    background-size 0.4s ease;
 }
 
 .header__brand-text:hover {
@@ -50,7 +53,9 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 0 0 10px rgba(59, 130, 246, 0.45), 0 0 16px rgba(249, 115, 22, 0.35);
+  text-shadow:
+    0 0 10px rgba(59, 130, 246, 0.45),
+    0 0 16px rgba(249, 115, 22, 0.35);
 }
 
 @keyframes brandShine {
@@ -114,11 +119,17 @@
 }
 
 @keyframes searchShine {
-  0%, 100% {
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4), 0 0 15px rgba(59, 130, 246, 0.2);
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px rgba(59, 130, 246, 0.4),
+      0 0 15px rgba(59, 130, 246, 0.2);
   }
   50% {
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6), 0 0 25px rgba(59, 130, 246, 0.3), 0 0 35px rgba(59, 130, 246, 0.15);
+    box-shadow:
+      0 0 15px rgba(59, 130, 246, 0.6),
+      0 0 25px rgba(59, 130, 246, 0.3),
+      0 0 35px rgba(59, 130, 246, 0.15);
   }
 }
 
@@ -136,14 +147,14 @@
   align-items: center;
   justify-content: center;
 
-  &:hover .header__tooltip {
+  &:hover .tooltip {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
     visibility: visible;
   }
 }
 
-.header__tooltip {
+.tooltip {
   position: absolute;
   top: 100%;
   left: 50%;
@@ -164,7 +175,9 @@
   transition: all 0.2s ease;
   z-index: 1050;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
   // Triangle indicator
   &::before {
@@ -176,6 +189,19 @@
     width: 8px;
     height: 8px;
     background-color: #1f2937;
+  }
+
+  &.top {
+    top: auto;
+    bottom: 100%;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+
+    &:before {
+      top: auto;
+      bottom: -4px;
+      transform: translateX(-50%) rotate(45deg);
+    }
   }
 }
 
@@ -229,11 +255,11 @@
 .fi {
   font-size: 1.125em; // 10% smaller than before
   border-radius: 2px;
-  box-shadow: 0 0 1px rgba(0,0,0,0.1); // Subtle border/shadow
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1); // Subtle border/shadow
   line-height: 1;
 
   .header__dropdown & {
-      margin-right: 5px;
+    margin-right: 5px;
   }
 }
 
@@ -280,7 +306,9 @@
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   overflow-y: auto;
   z-index: 1000;
@@ -418,7 +446,9 @@ body.theme-dark {
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    text-shadow: 0 0 12px rgba(59, 130, 246, 0.6), 0 0 18px rgba(249, 115, 22, 0.5);
+    text-shadow:
+      0 0 12px rgba(59, 130, 246, 0.6),
+      0 0 18px rgba(249, 115, 22, 0.5);
   }
 
   .header__search-input {
@@ -449,7 +479,9 @@ body.theme-dark {
     background-color: #111827;
     color: #f3f4f6;
     border: 1px solid #374151;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 5px rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.1),
+      0 0 5px rgba(255, 255, 255, 0.05);
 
     &::before {
       background-color: #111827;
@@ -485,7 +517,9 @@ body.theme-dark {
   .header__dropdown {
     background-color: #1f2937;
     border-color: #374151;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.3),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
   }
 
   .header__dropdown-item {
@@ -514,6 +548,6 @@ body.theme-dark {
 }
 
 .header__auth-initials {
-    font-size: 0.8rem;
-    font-weight: bold;
+  font-size: 0.8rem;
+  font-weight: bold;
 }

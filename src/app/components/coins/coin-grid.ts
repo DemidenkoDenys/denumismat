@@ -14,6 +14,7 @@ import { IndexedDbService } from '../../services/indexed-db.service';
 import { selectIsAdmin } from '../../state/auth/auth.selectors';
 import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
 import { ToastService } from '../../services/toast.service';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-coin-grid',
@@ -52,6 +53,7 @@ export class CoinGridComponent implements OnInit {
   private store = inject(Store);
   private toast = inject(ToastService);
   private indexedDb = inject(IndexedDbService);
+  private apiService = inject(ApiService);
   private selectionRestored = false;
 
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
@@ -250,9 +252,9 @@ export class CoinGridComponent implements OnInit {
     this.indexedDb.markViewed(coin.id).catch(err => console.error('indexedDb.markViewed failed', err));
   }
 
-  onCoinMessageSent(event: { coinId: string, message: string }) {
-    const { coinId, message } = event;
-    console.log(`Coin message sent for coinId: ${coinId}, message: ${message}`);
+  onCoinMessageSent(event: { coin: Coin, message: string }) {
+    const { coin, message } = event;
+    this.apiService.sendCoinQuestion(coin, message).subscribe();
   }
 
   showMore() {

@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, signal, inject, ElementRef, HostListener, output, effect, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { selectIsLoggedIn } from '../../state/auth/auth.selectors';
 import { TranslateModule } from '@ngx-translate/core';
+import { ApiService } from '../../services/api.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-message-tooltip',
@@ -13,7 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="messager-container" [class.expanded]="isMessagerExpanded()">
-      <button class="messager-button" (click)="handleMainBtnClick()" aria-label="Toggle Messager">
+      <button class="messager-button" (click)="handleMainBtnClick()" [disabled]="!isLoggedIn()" aria-label="Toggle Messager">
         @if (!isMessagerExpanded()) {
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -42,10 +43,22 @@ import { TranslateModule } from '@ngx-translate/core';
           }
         }
       </button>
+
+      @if (!isLoggedIn()) {
+        <div class="tooltip top" role="tooltip">
+          Auth required
+        </div>
+      }
+
       @if (isMessagerExpanded()) {
         <div class="messager-content">
           <div class="send-message">
-            <textarea [(ngModel)]="messageText" [placeholder]="'messageTooltip.enterYourQuestion' | translate" maxlength="500" [disabled]="isTextareaDisabled()"></textarea>
+            <textarea
+              maxlength="200"
+              [disabled]="isTextareaDisabled()"
+              [(ngModel)]="messageText"
+              [placeholder]="'messageTooltip.enterYourQuestion' | translate"
+              ></textarea>
           </div>
         </div>
       }
@@ -53,18 +66,20 @@ import { TranslateModule } from '@ngx-translate/core';
   `
 })
 export class MessageTooltipComponent {
-  private http = inject(HttpClient);
-  private elementRef = inject(ElementRef);
   private store = inject(Store);
+  private apiService = inject(ApiService);
+  private elementRef = inject(ElementRef);
 
-  isMessagerExpanded = signal(false);
-  messageText = signal('');
-  isTextareaDisabled = signal(false);
+
   isError = signal(false);
+  messageText = signal('');
   authRequired = signal(false);
-
-  onAuthRequired = output<void>();
+  isMessagerExpanded = signal(false);
+  isTextareaDisabled = signal(false);
   authSuccessTrigger = input(0);
+  onAuthRequired = output<void>();
+
+  public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
 
   constructor() {
     effect(() => {
@@ -150,13 +165,7 @@ export class MessageTooltipComponent {
 
   private sendMessageRequest(text: string) {
     this.isTextareaDisabled.set(true);
-
-    const apiUrl = 'https://denumismat-server.onrender.com'; // 'http://localhost:3000'
-    this.http.post(`${apiUrl}/send`, {
-      text: text,
-      from: 'test-email@gmail.com',
-      subject: 'Question: denumismat app',
-    }).subscribe({
+    this.apiService.sendMessage(text).subscribe({
       next: () => {
         this.messageText.set('');
         this.isTextareaDisabled.set(false);

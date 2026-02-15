@@ -1,6 +1,7 @@
 # TODO - Denumismat Application
 
 ## disabled buttons until ping success
+## shipping dropdown and address form
 
 <!-- ## In admin mode - show auth modal to submit, when cancelled - reset app without route -->
 <!-- ## In admin mode - hide "order" "book" buttons in selection-bar -->

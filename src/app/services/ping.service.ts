@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { fromEvent, timer, EMPTY } from 'rxjs';
 import { switchMap, startWith, map, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class PingService {
           if (visibilityState === 'visible') {
             // Start immediately (0) and repeat every 1 minute (60000ms)
             return timer(0, 60000).pipe(
-              switchMap(() => this.http.get('https://denumismat-server.onrender.com/ping').pipe(
+              switchMap(() => this.http.get(`${environment.apiUrl}/ping`).pipe(
                 catchError(err => {
                   console.error('Ping request failed', err);
                   return EMPTY;

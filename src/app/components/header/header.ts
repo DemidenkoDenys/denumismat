@@ -109,7 +109,7 @@ export interface CurrencyOption {
               </button>
             }
 
-            <div class="header__tooltip" role="tooltip">
+            <div class="tooltip" role="tooltip">
               @if (currentUser(); as user) {
                 {{ user.displayName }}<br>
                 {{ user.email }}<br><br>

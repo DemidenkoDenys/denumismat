@@ -193,12 +193,12 @@ export interface Coin {
           <div class="coin-card__details">
             <textarea
               id="coin-desc-{{coin().id}}"
-              class="coin-card__details-textarea"
               type="text"
+              class="coin-card__details-textarea"
+              maxlength="100"
               [value]="detailsText()"
               (click)="$event.stopPropagation()"
               (input)="$event.stopPropagation(); detailsText.set($any($event.target).value)"
-              (keydown.enter)="$event.stopPropagation(); detailsText() ? submitDetails() : null"
               [attr.placeholder]="('coin.askCoin' | translate)"
             ></textarea>
           </div>
@@ -453,7 +453,7 @@ export class CoinCardComponent {
 
   detailsOpen = signal(false);
   detailsText = signal('');
-  coinMessageSent = output<{ coinId: string; message: string }>();
+  coinMessageSent = output<{ coin: Coin; message: string }>();
 
   toggleDetails() {
     this.detailsOpen.update(v => !v);
@@ -465,7 +465,7 @@ export class CoinCardComponent {
 
     if (!coinId || !message) return;
 
-    this.coinMessageSent.emit({ coinId, message });
+    this.coinMessageSent.emit({ coin: this.coin(), message });
 
     // close editor after submit
     this.detailsOpen.set(false);

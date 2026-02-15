@@ -11,9 +11,9 @@ export interface Order {
 
 export interface Coin {
   id: string;
-  country_name: string;
   deno: string;
   year: number;
+  title?: string;
   price: number;
   discountPrice?: number;
 }

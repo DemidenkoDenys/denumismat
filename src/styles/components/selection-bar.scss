@@ -50,23 +50,10 @@
 }
 
 /* show header-like tooltip when hovering the limit icon (position it above the icon) */
-.selection-bar__limit-icon:hover .header__tooltip {
+.selection-bar__limit-icon:hover .tooltip {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
   visibility: visible;
-
-  /* place tooltip above the icon instead of below */
-  top: auto;
-  bottom: 100%;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-/* move tooltip arrow to point down toward the icon */
-.selection-bar__limit-icon:hover .header__tooltip::before {
-  top: auto;
-  bottom: -4px;
-  transform: translateX(-50%) rotate(45deg);
 }
 
 .selection-bar__original-price {

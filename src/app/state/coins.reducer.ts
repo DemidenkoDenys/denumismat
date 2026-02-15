@@ -1,7 +1,6 @@
 import { createReducer, on } from '@ngrx/store';
 import * as CoinsActions from './coins.actions';
 import { Coin } from '../components/coins/coin-card';
-import { selectBookedCoinsByEmail } from './coins.actions';
 
 export interface CoinsState {
   coins: Coin[] | null;
