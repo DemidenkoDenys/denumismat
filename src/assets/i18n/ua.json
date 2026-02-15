@@ -8,7 +8,7 @@
     "languageMore": "Бiльше країн",
     "themeToggle": "Перемкнути темну тему",
     "auth": "Увійти через Google",
-    "logout": "Вийти",
+    "logout": "Нажміть щоб вийти",
     "authTooltip": "Авторизація зберігає ваш email готовим до будь-якої дії в додатку"
   },
   "coin": {
@@ -77,7 +77,7 @@
     "emailPlaceholder": "vash.email@example.com",
     "emailError": "Email повинен містити домен (наприклад .com)",
     "emailRequiredError": "Email обов'язковий",
-    "cancel": "Скасувати",
+    "cancel": "Закрити",
     "submit": "Замовити",
     "processing": "Обробка..."
   },
@@ -90,7 +90,7 @@
     "emailPlaceholder": "vash.email@example.com",
     "emailError": "Email повинен містити домен (наприклад .com)",
     "emailRequiredError": "Email обов'язковий",
-    "cancel": "Скасувати",
+    "cancel": "Закрити",
     "submit": "Увійти",
     "googleSignIn": "Увійти через Google",
     "processing": "Вхід..."

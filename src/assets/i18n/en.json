@@ -8,7 +8,7 @@
     "languageMore": "More countries",
     "themeToggle": "Toggle dark theme",
     "auth": "Sign in with Google",
-    "logout": "Log out",
+    "logout": "Click to log out",
     "authTooltip": "Authorization keeps your email always ready to any action in the app"
   },
   "coin": {
@@ -109,6 +109,7 @@
     "verifyCodePlaceholder": "XXX-XXX",
     "verifyCodeRequiredError": "Verification code is required",
     "verifyCodeFormatError": "Please enter a valid 6-digit code in XXX-XXX format",
+    "verifyCodeInvalidError": "Invalid verification code",
     "submit": "Submit"
   },
   "toast": {

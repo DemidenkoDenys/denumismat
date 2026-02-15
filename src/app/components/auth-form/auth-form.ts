@@ -1,10 +1,11 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, inject, ViewChild, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormControl, FormsModule, NgForm } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-auth-form',
@@ -15,6 +16,7 @@ import { selectUser } from '../../state/auth/auth.selectors';
 })
 export class AuthForm {
   private readonly store = inject(Store);
+  private readonly authService = inject(AuthService);
   protected readonly currentUser = toSignal(this.store.select(selectUser));
 
   // Inputs
@@ -58,6 +60,10 @@ export class AuthForm {
     });
   }
 
+  ngAfterViewInit() {
+    this.authForm.form.addControl('verifyCode', new FormControl());
+  }
+
   protected onNameChange(value: string): void {
     this.nameChange.emit(value);
   }
@@ -86,8 +92,14 @@ export class AuthForm {
       value = value;
     }
 
+    if (!this.authService.isVerifyCodeValid(value)) {
+      const control = this.authForm.form.controls?.['verifyCode'];
+      control.setErrors({ invalid: true });
+    }
+
     input.value = value;
     this.onVerifyCodeChange(value);
+    this.submitted.set(false);
   }
 
   public showValidationErrors(): void {

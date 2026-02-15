@@ -5,11 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
-import { loginWithGoogle } from '../../state/auth/auth.actions';
+import { loginSuccess, loginWithGoogle } from '../../state/auth/auth.actions';
 import { AuthModalService } from '../../services/auth-modal.service';
 import { AuthForm } from '../auth-form/auth-form';
 import { BaseModalComponent } from '../base-modal/base-modal';
 import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-auth-modal',
@@ -37,10 +38,6 @@ import { UserService } from '../../services/user.service';
           (submitForm)="onFormSubmit($event)"
         ></app-auth-form>
 
-        @if (verifyError()) {
-          <div class="error-message auth-verify-error">{{ verifyError() }}</div>
-        }
-
         <div class="modal-actions">
           <button type="button" class="btn btn--ghost" (click)="close()">
             {{ 'authModal.cancel' | translate }}
@@ -56,13 +53,8 @@ import { UserService } from '../../services/user.service';
             </svg>
           </button>
 
-          <button
-            type="button"
-            class="btn btn--primary"
-            [disabled]="isSubmitting()"
-            (click)="submit()"
-          >
-            {{ isSubmitting() ? ('authModal.processing' | translate) : ('authModal.submit' | translate) }}
+          <button type="button" class="btn btn--primary" (click)="submit()">
+            {{ 'authModal.submit' | translate }}
           </button>
         </div>
       </div>
@@ -78,26 +70,23 @@ export class AuthModalComponent {
   private document = inject(DOCUMENT);
   private modalService = inject(AuthModalService);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
 
   currentUser = toSignal(this.store.select(selectUser));
 
   constructor() {
     effect(() => {
       const user = this.currentUser();
-      if (user?.email) {
-        this.email = user.email;
-        if (user.displayName) {
-          this.name = user.displayName;
-        }
-        this.cdr.markForCheck();
-      }
+      const storageEmailUser = this.authService.getEmailStorageUser();
+      this.name = user?.displayName ?? storageEmailUser?.name ?? '';
+      this.email = user?.email ?? storageEmailUser?.email ?? '';
+      this.cdr.markForCheck();
     });
 
     // Watch for user changes and close modal when authorized by Google (but not in admin mode)
     effect(() => {
       const user = this.currentUser();
       if (user && !this.isAdminMode()) {
-        // User is authorized by Google and not in admin mode, close the modal
         this.close();
       }
     });
@@ -110,13 +99,10 @@ export class AuthModalComponent {
   name = '';
   email = '';
   verifyCode = '';
-  isAdminMode = signal(false);
-  isSubmitting = signal(false);
-  isEmailDisabled = signal(false);
-
-  // Show verify-code input when a stored code exists
-  showVerifyInput = signal(false);
   verifyError = signal('');
+  isAdminMode = signal(false);
+  isEmailDisabled = signal(false);
+  showVerifyInput = signal(false);
 
   setAdminMode(adminMode: boolean) {
     this.isAdminMode.set(adminMode);
@@ -124,15 +110,11 @@ export class AuthModalComponent {
 
   onNameChange(value: string) {
     this.name = value;
-    // Don't save to localStorage - users should enter fresh data each time
   }
 
   onEmailChange(value: string) {
     this.email = value;
-    // Don't save to localStorage - users should enter fresh data each time
-    // Reset verification UI when the email is edited
     this.showVerifyInput.set(false);
-    this.verifyError.set('');
   }
 
   onVerifyCodeChange(value: string) {
@@ -146,6 +128,10 @@ export class AuthModalComponent {
     this.submit();
   }
 
+  get code(): string {
+    return this.verifyCode?.replace('-', '');
+  }
+
   close() {
     this.onClose.emit();
   }
@@ -155,122 +141,36 @@ export class AuthModalComponent {
   }
 
   submit() {
-    // Check if form is valid, if not, trigger validation display
-    console.log(this.authFormComponent.authForm);
-
     if (this.authFormComponent.authForm.invalid) {
       this.authFormComponent.showValidationErrors();
       return;
     }
 
-    localStorage.setItem('denumismat.name', this.name);
-    localStorage.setItem('denumismat.email', this.email);
-
-    this.isSubmitting.set(true);
-    this.verifyError.set('');
-
-    const email = this.email?.trim();
-    const payloadUser = {
-      uid: `local-${Date.now()}`,
-      email,
-      verified: false,
-      displayName: this.name,
-    };
-
-    // If verify-input is already visible, user is attempting to verify code
-    if (this.showVerifyInput()) {
-      this.userService.getUserByEmail(email).subscribe({
-        next: (doc) => {
-          console.log("🚀 ~ doc:", doc)
-          const storedCode = (doc && doc.code) ? String(doc.code) : null;
-          const entered = (this.verifyCode || '').replace(/\D/g, '');
-          if (!storedCode) {
-            this.verifyError.set('No verification code was found for this user.');
-            this.isSubmitting.set(false);
-            return;
-          }
-
-          if (storedCode === entered) {
-            // mark verified in Firestore and proceed
-            this.userService.markUserVerified(email).subscribe({
-              next: () => {
-                this.onSubmit.emit({ name: this.name, email: this.email, verifyCode: this.verifyCode });
-                this.onAuthSuccess.emit();
-                this.isSubmitting.set(false);
-              },
-              error: (err) => {
-                console.error('Failed to mark verified:', err);
-                this.verifyError.set('Failed to verify — try again later.');
-                this.isSubmitting.set(false);
-              }
-            });
-          } else {
-            this.verifyError.set('Verification code does not match.');
-            this.isSubmitting.set(false);
-          }
-        },
-        error: (err) => {
-          console.error('Error reading user doc:', err);
-          this.verifyError.set('Verification failed — please try again.');
-          this.isSubmitting.set(false);
-        }
-      });
-
+    if (this.authService.isEmailValid(this.email) && !this.showVerifyInput()) {
+      const code = this.authService.setVerifyCode();
+      this.showVerifyInput.set(!!code);
+      this.authService.setStorageEmailUser(this.name, this.email);
       return;
     }
 
-    // First submission attempt: check if user exists
-    this.userService.getUserByEmail(email).subscribe({
-      next: (doc) => {
-        console.log("🚀 ~ doc:", doc)
-        if (doc) {
-          // user exists — if they have a code, show verify input
-          if (doc.code) {
-            this.showVerifyInput.set(true);
-            this.isSubmitting.set(false);
-            return;
-          }
-
-          // exists but no verification code -> update/merge user doc and proceed
-          this.userService.saveUserByEmail(payloadUser, false).subscribe({
-            next: () => {
-              this.onSubmit.emit({ name: this.name, email: this.email, verifyCode: this.verifyCode });
-              this.onAuthSuccess.emit();
-              this.isSubmitting.set(false);
-            },
-            error: (err) => {
-              console.error('Failed to save existing user:', err);
-              this.isSubmitting.set(false);
-            }
-          });
-        } else {
-          // user does not exist -> create with verification code, then show verify input
-          this.userService.saveUserByEmail(payloadUser, true).subscribe({
-            next: (res: any) => {
-              // we created the user and generated a verification code — prompt for it
-              this.showVerifyInput.set(true);
-              this.isSubmitting.set(false);
-            },
-            error: (err) => {
-              console.error('Failed to create user:', err);
-              this.isSubmitting.set(false);
-            }
-          });
-        }
+    this.verifyError.set('');
+    this.authService.loginWithEmail(this.name, this.email).subscribe({
+      next: (user) => {
+        this.authService.resetVerifyCode();
+        this.store.dispatch(loginSuccess({ user }));
+        this.close();
       },
       error: (err) => {
-        console.error('Error checking user existence:', err);
-        this.isSubmitting.set(false);
+        console.error('Email login error:', err);
+        this.verifyError.set('Failed to login with email — please try again.');
       }
     });
   }
 
-  // Additional methods for auth modal functionality
   resetForm() {
     this.name = '';
     this.email = '';
     this.verifyCode = '';
-    this.isSubmitting.set(false);
   }
 
   prefillUserData(user: { name?: string; email?: string }) {
@@ -289,13 +189,5 @@ export class AuthModalComponent {
 
   disableEmailField() {
     this.isEmailDisabled.set(true);
-  }
-
-  isFormSubmitting(): boolean {
-    return this.isSubmitting();
-  }
-
-  isFormReady(): boolean {
-    return Boolean(this.authFormComponent.authForm.valid && !this.isSubmitting());
   }
 }

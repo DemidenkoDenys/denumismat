@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, ViewChild, OnInit, inject, computed, output, Injector, runInInjectionContext } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, ViewChild, OnInit, inject, computed, output, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -20,6 +20,7 @@ import { PingService } from './services/ping.service';
 import { ToastService } from './services/toast.service';
 import { ADTL } from './app.constants';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -71,12 +72,13 @@ import { TranslateService } from '@ngx-translate/core';
     ToastComponent
   ]
 })
-export class MainLayoutComponent implements OnInit {
+export class MainLayoutComponent implements OnInit, OnDestroy {
   private pingService = inject(PingService);
   private store = inject(Store);
   private router = inject(Router);
   private toast = inject(ToastService);
   private translate = inject(TranslateService);
+  private authService = inject(AuthService);
 
   // Outputs for modal management
   onOrderClick = output<void>();
@@ -146,7 +148,6 @@ export class MainLayoutComponent implements OnInit {
     this.store.dispatch(CountriesActions.loadExtinctCountries());
     this.store.dispatch(CoinsActions.loadCoins());
     this.store.dispatch(AuthActions.checkAuth());
-    this.store.dispatch(AuthActions.setIsAdmin({ isAdmin: this.router.url.includes(atob(ADTL)) }));
 
     this.initializeUserFromLocalStorage();
 
@@ -229,6 +230,9 @@ export class MainLayoutComponent implements OnInit {
 
   handleAdminSettings() {
     alert('Admin: Settings - Feature coming soon!');
-    console.log('Admin settings accessed');
+  }
+
+  ngOnDestroy(): void {
+    this.authService.resetVerifyCode();
   }
 }

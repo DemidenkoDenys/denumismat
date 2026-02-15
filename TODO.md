@@ -10,10 +10,11 @@
 <!-- ## implement toast -->
 <!-- ## Match numbers in full equalilty when seasrch -->
 <!-- ## Authenticate with firebase on every admin action (implemented under the hood) -->
+<!-- ## Confirmation code to email on authorization -->
 
-## Confirmation code to email on authorization
-## Deselect coin when it become booked
 ## Book not more than 50 items (include booked)
+## Input on each coin when authorized
 ## Maximum book coins in user firebase settings (50 by default)
+## Deselect coin when it become booked
 
 ## ? Subscribe checkbox on auth modal

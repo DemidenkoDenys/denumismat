@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { User } from './auth.models';
 
 export const loginWithGoogle = createAction('[Auth] Login with Google');
+export const loginWithEmail = createAction('[Auth] Login with Email');
 export const loginSuccess = createAction('[Auth] Login Success', props<{ user: User }>());
 export const loginFailure = createAction('[Auth] Login Failure', props<{ error: string }>());
 

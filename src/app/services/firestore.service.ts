@@ -1,22 +1,7 @@
 import { Injectable } from '@angular/core';
-import {
-  collection,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  getDocs,
-  getDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-  onSnapshot,
-  Query,
-  QueryConstraint
-} from 'firebase/firestore';
+import { collection, doc, query, onSnapshot, QueryConstraint } from 'firebase/firestore';
 import { firestore } from '../config/firebase.config';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

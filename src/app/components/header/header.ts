@@ -10,8 +10,9 @@ import { setSelectedCurrency } from '../../state/currency.actions';
 import { setSelectedLanguage } from '../../state/countries.actions';
 import { CountriesMap } from '../../state/countries.models';
 import { selectUser } from '../../state/auth/auth.selectors';
-import { loginWithGoogle, logout } from '../../state/auth/auth.actions';
+import { logout } from '../../state/auth/auth.actions';
 import { ALPHA3_TO_ALPHA2 } from '../../config/country-codes';
+import { AuthModalService } from '../../services/auth-modal.service';
 
 export type Language = string;
 export type Currency = string;
@@ -64,15 +65,16 @@ export interface CurrencyOption {
           <svg class="header__search-icon" aria-hidden="true" viewBox="0 0 20 20" fill="none">
             <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
+
           <input
             type="search"
             class="header__search-input"
-            [placeholder]="'header.searchPlaceholder' | translate"
             [value]="searchQuery()"
+            [placeholder]="'header.searchPlaceholder' | translate"
+            [attr.aria-label]="'header.searchPlaceholder' | translate"
             (input)="handleSearchInput($event)"
             (focus)="onSearchFocus()"
             (blur)="onSearchBlur()"
-            [attr.aria-label]="'header.searchPlaceholder' | translate"
           />
         </div>
 
@@ -90,7 +92,7 @@ export interface CurrencyOption {
                 @if (user.photoURL) {
                    <img [src]="user.photoURL" class="header__auth-avatar" [alt]="user.displayName">
                 } @else {
-                   <span class="header__auth-initials">{{ user.displayName?.charAt(0) || 'U' }}</span>
+                   <span class="header__auth-initials">{{ user.displayName?.charAt(0)?.toUpperCase() || '?' }}</span>
                 }
               </button>
             } @else {
@@ -100,11 +102,20 @@ export interface CurrencyOption {
                 (click)="onLogin()"
                 [attr.aria-label]="'header.auth' | translate">
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor">
-                  <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z"/>
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
+                  <circle cx="12" cy="10" r="3" fill="currentColor"/>
+                  <path d="M7 18c0-2.21 2.24-4 5-4s5 1.79 5 4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
                 </svg>
               </button>
             }
-            <div class="header__tooltip" role="tooltip">{{ (currentUser() ? 'header.logout' : 'header.authTooltip') | translate }}</div>
+
+            <div class="header__tooltip" role="tooltip">
+              @if (currentUser(); as user) {
+                {{ user.displayName }}<br>
+                {{ user.email }}<br><br>
+              }
+              {{ (currentUser() ? 'header.logout' : 'header.authTooltip') | translate }}
+            </div>
           </div>
 
           <!-- Currency Selector -->
@@ -117,6 +128,7 @@ export interface CurrencyOption {
               [attr.aria-label]="'header.currency' | translate">
               <span class="header__currency-symbol">{{ getCurrentCurrency().symbol }}</span>
             </button>
+
             @if (isCurrencyMenuOpen()) {
               <div class="header__dropdown" role="menu">
                 @for (currency of mustCurrencies(); track currency.key) {
@@ -140,6 +152,7 @@ export interface CurrencyOption {
                     <path d="M5 7l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </button>
+
                 @if (isCurrencyExpanded()) {
                   @for (currency of otherCurrencies(); track currency.key) {
                     <button
@@ -167,6 +180,7 @@ export interface CurrencyOption {
               [attr.aria-label]="'header.language' | translate">
               <span class="fi fi-{{ getFlagCode(getCurrentLanguageCountryCode()) }}"></span>
             </button>
+
             @if (isLanguageMenuOpen()) {
               <div class="header__dropdown" role="menu">
                 @for (lang of mustLanguages(); track lang.key) {
@@ -237,13 +251,14 @@ export class HeaderComponent {
   searchQuery = input('');
   currentLanguage = input<Language>('en');
 
+  store = inject(Store);
   translate = inject(TranslateService);
-  private store = inject(Store);
+  authModalService = inject(AuthModalService);
 
   currentUser = toSignal(this.store.select(selectUser));
 
   onLogin() {
-    this.store.dispatch(loginWithGoogle());
+    this.authModalService.showAuthModal();
   }
 
   onLogout() {

@@ -21,11 +21,6 @@ export class AdminAuthResolver implements Resolve<boolean> {
   }
 
   private clearAuthData() {
-    // Clear localStorage items
-    localStorage.removeItem('denumismat.name');
-    localStorage.removeItem('denumismat.email');
-    localStorage.removeItem('auth_google_user');
-
     // Reset auth state in store
     this.store.dispatch(setAuthUser({ user: null }));
     this.store.dispatch(setIsAdmin({ isAdmin: false }));

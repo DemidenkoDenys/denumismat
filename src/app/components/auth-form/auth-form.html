@@ -14,7 +14,9 @@
       (ngModelChange)="onNameChange($event)"
     />
 
-    @if (nameInput.invalid && (nameInput.touched || submitted()) && nameInput.errors?.['required']) {
+    @if (
+      nameInput.invalid && (nameInput.touched || submitted()) && nameInput.errors?.['required']
+    ) {
       <div class="error-message">
         {{ 'authForm.nameRequiredError' | translate }}
       </div>
@@ -52,10 +54,11 @@
   </div>
 
   @if (showVerifyInput()) {
-    <div class="form-group">
+    <div class="form-group form-group_verify-code">
       <label for="verifyCode">{{ 'authForm.verifyCode' | translate }}</label>
+
       <input
-        #verifyCodeInput="ngModel"
+        #codeInput="ngModel"
         id="verifyCode"
         type="text"
         name="verifyCode"
@@ -68,18 +71,17 @@
         (ngModelChange)="onVerifyCodeChange($event)"
         (input)="onVerifyCodeInput($event)"
       />
-      @if (
-        verifyCodeInput.invalid && (verifyCodeInput.dirty || verifyCodeInput.touched || submitted())
-      ) {
-        @if (verifyCodeInput.errors?.['required']) {
-          <div class="error-message">
+
+      @if (submitted() && codeInput.invalid && codeInput.dirty && codeInput.touched) {
+        <div class="error-message">
+          @if (codeInput.errors?.['required']) {
             {{ 'authForm.verifyCodeRequiredError' | translate }}
-          </div>
-        } @else if (verifyCodeInput.errors?.['pattern']) {
-          <div class="error-message">
+          } @else if (codeInput.errors?.['pattern']) {
             {{ 'authForm.verifyCodeFormatError' | translate }}
-          </div>
-        }
+          } @else if (codeInput.errors?.['invalid']) {
+            {{ 'authForm.verifyCodeInvalidError' | translate }}
+          }
+        </div>
       }
     </div>
   }
