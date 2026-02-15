@@ -31,6 +31,7 @@ import { ToastService } from '../../services/toast.service';
             [conversionRate]="conversionRate()"
             [currencyFormat]="currencyFormat()"
             (selectedChange)="onSelect(coin.id, $event)"
+            (coinMessageSent)="onCoinMessageSent($event)"
             (openSliderModal)="openSliderModal.emit($event)">
           </app-coin-card>
         }
@@ -247,6 +248,11 @@ export class CoinGridComponent implements OnInit {
     if (!coin || !coin.id) return;
     // persist viewed coin id into IndexedDB via service
     this.indexedDb.markViewed(coin.id).catch(err => console.error('indexedDb.markViewed failed', err));
+  }
+
+  onCoinMessageSent(event: { coinId: string, message: string }) {
+    const { coinId, message } = event;
+    console.log(`Coin message sent for coinId: ${coinId}, message: ${message}`);
   }
 
   showMore() {

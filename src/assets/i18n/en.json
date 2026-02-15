@@ -18,8 +18,10 @@
     "price": "{{price}}",
     "weight": "{{weight}} g",
     "booked": "Booked",
+    "askCoin": "Ask me about this coin or propose price",
     "denomination": "Denomination",
-    "year": "Year"
+    "year": "Year",
+    "send": "Send"
   },
   "selectionBar": {
     "selected": "Selected: {{count}}",

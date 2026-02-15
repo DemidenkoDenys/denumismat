@@ -6,7 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { PricePipe } from '../../pipes/price.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
-import { selectIsAdmin } from '../../state/auth/auth.selectors';
+import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors';
 import { selectIsSelectionLimitReached, selectSelectedCoinsCount } from '../../state/coins.selectors';
 
 export interface CoinImage {
@@ -157,28 +157,52 @@ export interface Coin {
       <div class="coin-card__body">
         <h3 class="coin-card__title">{{ countryFullName() }} - {{ coin().deno }} - <span class="coin-card__year">{{ coin().year }}</span>{{ coin().description ? ' - ' + coin().description : '' }}</h3>
         <div class="coin-card__meta">
-          <button
-            type="button"
-            class="coin-card__toggle"
-            [class.coin-card__toggle--open]="detailsOpen()"
-            (click)="$event.stopPropagation(); toggleDetails()">
-            <span class="coin-card__toggle-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          @if (detailsOpen() && detailsText().trim().length > 0) {
+            <button
+              type="button"
+              class="coin-card__submit"
+              (click)="$event.stopPropagation(); submitDetails()"
+              aria-label="{{ 'coin.send' | translate }}">
+              <!-- Send icon (paper plane) -->
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
-            </span>
-            <span class="sr-only">{{ detailsOpen() ? ('coin.hide' | translate) : ('coin.details' | translate) }}</span>
-          </button>
+              <span class="sr-only">{{ 'coin.send' | translate }}</span>
+            </button>
+          }
+          @if (!(detailsOpen() && detailsText().trim().length > 0)) {
+            <button
+              type="button"
+              class="coin-card__toggle"
+              [disabled]="!isLoggedIn()"
+              [class.coin-card__toggle--open]="detailsOpen()"
+              (click)="$event.stopPropagation(); toggleDetails()">
+              <span class="coin-card__toggle-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <span class="sr-only">{{ detailsOpen() ? ('coin.hide' | translate) : ('coin.details' | translate) }}</span>
+            </button>
+          }
         </div>
+      </div>
 
-        @if (detailsOpen()) {
+      @if (detailsOpen() && isLoggedIn()) {
           <div class="coin-card__details">
-            <p>{{ 'filters.countryPlaceholder' | translate }}: {{ countryFullName() }}</p>
-            <p>{{ 'coin.denomination' | translate }}: {{ coin().deno }}</p>
-            <p>{{ 'coin.year' | translate }}: {{ coin().year }}</p>
+            <textarea
+              id="coin-desc-{{coin().id}}"
+              class="coin-card__details-textarea"
+              type="text"
+              [value]="detailsText()"
+              (click)="$event.stopPropagation()"
+              (input)="$event.stopPropagation(); detailsText.set($any($event.target).value)"
+              (keydown.enter)="$event.stopPropagation(); detailsText() ? submitDetails() : null"
+              [attr.placeholder]="('coin.askCoin' | translate)"
+            ></textarea>
           </div>
         }
-      </div>
     </article>
   `,
 })
@@ -186,8 +210,8 @@ export class CoinCardComponent {
   private s3Service = inject(S3Service);
   private store = inject(Store);
 
-  // Get countries from store
   private isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
+  public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
 
@@ -317,8 +341,14 @@ export class CoinCardComponent {
               }
             }
           }
-        } catch {}
+        } catch { }
       }
+    });
+
+    // Keep local editable text in sync when coin input changes
+    effect(() => {
+      const desc = this.coin().description ?? '';
+      this.detailsText.set(desc);
     });
 
     // Get list of image keys when coin changes
@@ -422,9 +452,23 @@ export class CoinCardComponent {
   });
 
   detailsOpen = signal(false);
+  detailsText = signal('');
+  coinMessageSent = output<{ coinId: string; message: string }>();
 
   toggleDetails() {
     this.detailsOpen.update(v => !v);
+  }
+
+  submitDetails() {
+    const coinId = this.coin()?.id;
+    const message = this.detailsText().trim();
+
+    if (!coinId || !message) return;
+
+    this.coinMessageSent.emit({ coinId, message });
+
+    // close editor after submit
+    this.detailsOpen.set(false);
   }
 
   toggleSelect() {

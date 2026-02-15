@@ -18,8 +18,10 @@
     "price": "{{price}}",
     "weight": "{{weight}} g",
     "booked": "Foglalt",
+    "askCoin": "Kérdezzen erről az érméről vagy javasoljon árat",
     "denomination": "Címlet",
-    "year": "Év"
+    "year": "Év",
+    "send": "Küldés"
   },
   "selectionBar": {
     "selected": "Kiválasztva: {{count}}",

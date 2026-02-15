@@ -18,8 +18,10 @@
     "price": "{{price}}",
     "weight": "{{weight}} g",
     "booked": "Заброньовано",
+    "askCoin": "Запитайте мене про цю монету або запропонуйте ціну",
     "denomination": "Номінал",
-    "year": "Рік"
+    "year": "Рік",
+    "send": "Надіслати"
   },
   "selectionBar": {
     "selected": "Вибрано: {{count}}",

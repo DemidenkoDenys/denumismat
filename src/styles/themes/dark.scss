@@ -49,11 +49,17 @@ body.theme-dark {
   }
 
   @keyframes searchShineDark {
-    0%, 100% {
-      box-shadow: 0 0 8px rgba(59, 130, 246, 0.5), 0 0 15px rgba(59, 130, 246, 0.3);
+    0%,
+    100% {
+      box-shadow:
+        0 0 8px rgba(59, 130, 246, 0.5),
+        0 0 15px rgba(59, 130, 246, 0.3);
     }
     50% {
-      box-shadow: 0 0 15px rgba(59, 130, 246, 0.7), 0 0 25px rgba(59, 130, 246, 0.4), 0 0 35px rgba(59, 130, 246, 0.2);
+      box-shadow:
+        0 0 15px rgba(59, 130, 246, 0.7),
+        0 0 25px rgba(59, 130, 246, 0.4),
+        0 0 35px rgba(59, 130, 246, 0.2);
     }
   }
 
@@ -316,6 +322,83 @@ body.theme-dark {
     color: #94a3b8;
   }
 
+  .coin-card__details-input {
+    border-color: #334155;
+    background: rgba(255, 255, 255, 0.02);
+    color: #cbd5e1;
+  }
+
+  .coin-card__details-input::placeholder {
+    color: #6b7280;
+  }
+
+  .coin-card__details-input:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.06);
+  }
+
+  .coin-card__details-textarea {
+    border-color: #334155;
+    background: rgba(255, 255, 255, 0.02);
+    color: #cbd5e1;
+    resize: vertical;
+    max-height: 200px;
+    overflow: auto;
+    margin-bottom: -8px;
+
+    /* subtle decorative pattern for dark theme */
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%);
+    background-repeat: no-repeat;
+    background-position: right calc(0.5rem + 2px) bottom calc(0.5rem + 2px);
+    background-size: 10px 10px;
+
+    /* style native WebKit resize handle in dark theme */
+    &::-webkit-resizer {
+      width: 18px;
+      height: 18px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.06) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%);
+      border-radius: 2px;
+    }
+
+    /* WebKit scrollbar (dark) */
+    &::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 8px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.06) transparent;
+  }
+
+  .coin-card__details-textarea::placeholder {
+    color: #6b7280;
+  }
+
+  .coin-card__submit {
+    color: #2563eb;
+    box-shadow: none;
+  }
+
+  .coin-card__submit:hover {
+    color: #3b82f6;
+  }
+
   .coin-card__select {
     background: rgba(15, 23, 42, 0.7);
     box-shadow: none;
@@ -341,7 +424,9 @@ body.theme-dark {
     background: rgba(30, 41, 59, 0.98);
     backdrop-filter: blur(10px);
     border-color: #334155;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1), 0 0 5px rgba(255, 255, 255, 0.05);
+    box-shadow:
+      0 0 15px rgba(255, 255, 255, 0.1),
+      0 0 5px rgba(255, 255, 255, 0.05);
   }
 
   .selection-bar__metrics {
@@ -424,4 +509,3 @@ body.theme-dark {
     filter: invert(1) hue-rotate(180deg) saturate(1.1) brightness(0.9);
   }
 }
-

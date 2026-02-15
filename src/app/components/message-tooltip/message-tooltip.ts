@@ -150,7 +150,7 @@ export class MessageTooltipComponent {
 
   private sendMessageRequest(text: string) {
     this.isTextareaDisabled.set(true);
-    this.http.post('http://localhost:3000/send', {
+    this.http.post('https://denumismat-server.onrender.com/send', {
       text: text,
       from: 'test-email@gmail.com',
       subject: 'Question: denumismat app',

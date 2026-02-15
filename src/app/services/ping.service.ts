@@ -24,28 +24,27 @@ export class PingService {
     }
 
     this.zone.runOutsideAngular(() => {
-        const visibilityChange$ = fromEvent(this.document, 'visibilitychange');
+      const visibilityChange$ = fromEvent(this.document, 'visibilitychange');
 
-        visibilityChange$.pipe(
-            startWith(null),
-            map(() => this.document.visibilityState),
-            switchMap(visibilityState => {
-                if (visibilityState === 'visible') {
-                    // Start immediately (0) and repeat every 1 minute (60000ms)
-                    return timer(0, 60000).pipe(
-                        switchMap(() => this.http.get('http://localhost:3000/ping').pipe(
-                            // Catch error to prevent infinite stream termination
-                            catchError(err => {
-                                console.error('Ping request failed', err);
-                                return EMPTY;
-                            })
-                        ))
-                    );
-                } else {
-                    return EMPTY;
-                }
-            })
-        ).subscribe();
+      visibilityChange$.pipe(
+        startWith(null),
+        map(() => this.document.visibilityState),
+        switchMap(visibilityState => {
+          if (visibilityState === 'visible') {
+            // Start immediately (0) and repeat every 1 minute (60000ms)
+            return timer(0, 60000).pipe(
+              switchMap(() => this.http.get('https://denumismat-server.onrender.com/ping').pipe(
+                catchError(err => {
+                  console.error('Ping request failed', err);
+                  return EMPTY;
+                })
+              ))
+            );
+          } else {
+            return EMPTY;
+          }
+        })
+      ).subscribe();
     });
   }
 }
