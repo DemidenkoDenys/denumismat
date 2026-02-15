@@ -1,5 +1,7 @@
 # TODO - Denumismat Application
 
+## disabled buttons until ping success
+
 <!-- ## In admin mode - show auth modal to submit, when cancelled - reset app without route -->
 <!-- ## In admin mode - hide "order" "book" buttons in selection-bar -->
 <!-- ## Viewed coins should be saved in indexDB and all no viewed marked as NEW -->
