@@ -1,15 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of, from } from 'rxjs';
-import { map, catchError, switchMap, concatMap } from 'rxjs/operators';
+import { map, catchError, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
 import * as CoinsActions from './coins.actions';
 import { FirestoreService } from '../services/firestore.service';
 import { Coin } from '../components/coins/coin-card';
 import { IndexedDbService } from '../services/indexed-db.service';
 import { where } from 'firebase/firestore';
+import { Store } from '@ngrx/store';
+import { selectUser } from './auth/auth.selectors';
 
 @Injectable()
 export class UserCoinsEffects {
+  private store = inject(Store);
   private actions$ = inject(Actions);
   private indexedDb = inject(IndexedDbService);
   private firestoreService = inject(FirestoreService);
@@ -21,9 +24,11 @@ export class UserCoinsEffects {
         const restrictions: any[] = [where("ordered_at", "==", null), where("is_deleted", "==", null)];
 
         return this.firestoreService.listenToCollection('coins', restrictions).pipe(
-          concatMap((coins: Coin[]) => {
+          withLatestFrom(this.store.select(selectUser)),
+          concatMap(([coins, user]: [Coin[], any]) => {
             return from(this.indexedDb.getViewedCoinsMap()).pipe(
               map((viewedMap: Record<string, boolean>) => {
+                const bookedCoins: Coin[] = [];
                 const mappedCoins = coins.map((coin) => {
                   const tags = coin.tags ?? [];
                   if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
@@ -31,11 +36,15 @@ export class UserCoinsEffects {
                   }
                   if (coin.booked_at) {
                     tags.unshift('booked');
+                    if (user && user.email === coin.booked_by) {
+                      bookedCoins.push(coin);
+                    };
                   }
                   return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
                 });
                 const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
                 return [
+                  CoinsActions.setBookedCoins({ coins: bookedCoins }),
                   CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
                   CoinsActions.setCoinCountries({ countries: coinCountriesMap }),
                 ];

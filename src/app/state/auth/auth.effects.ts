@@ -6,6 +6,7 @@ import * as AuthActions from './auth.actions';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { User } from './auth.models';
+import { selectBookedCoinsByEmail } from '../coins.actions';
 
 @Injectable()
 export class AuthEffects {
@@ -53,11 +54,9 @@ export class AuthEffects {
   logoutSuccess$ = createEffect(() =>
     this.actions$.pipe(
       ofType(AuthActions.logoutSuccess),
-      tap(() => {
-        this.router.navigate(['/']);
-      })
+      tap(() => this.router.navigate(['/'])),
+      map(() => selectBookedCoinsByEmail({ email: null }))
     ),
-    { dispatch: false }
   );
 
   checkAuth$ = createEffect(() =>

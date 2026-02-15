@@ -6,6 +6,7 @@ export type ToastType = 'info' | 'success' | 'warning' | 'error';
 
 export interface ToastOptions {
   type?: ToastType;
+  params?: Record<string, any>;
   duration?: number; // ms
   actionLabel?: string;
   action?: () => void;
@@ -22,9 +23,9 @@ export interface ToastItem {
 
 @Injectable({ providedIn: 'root' })
 export class ToastService {
-  private translate = inject(TranslateService);
-  private toastsSub = new BehaviorSubject<ToastItem[]>([]);
   private timeouts = new Map<string, any>();
+  private toastsSub = new BehaviorSubject<ToastItem[]>([]);
+  private translate = inject(TranslateService);
 
   get toasts$(): Observable<ToastItem[]> {
     return this.toastsSub.asObservable();
@@ -45,7 +46,7 @@ export class ToastService {
       action: opts.action
     };
 
-    this.translate.get(message).subscribe((translated: string) => {
+    this.translate.get(message, opts.params).subscribe((translated: string) => {
       toast.message = translated;
       const list = this.toastsSub.getValue();
       list.push(toast);

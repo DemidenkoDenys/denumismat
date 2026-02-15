@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MainLayoutComponent } from '../../main-layout';
-import { selectIsLoggedIn, selectIsAdmin } from '../../state/auth/auth.selectors';
+import { selectIsLoggedIn, selectIsAdmin, selectUser } from '../../state/auth/auth.selectors';
 import { loginWithGoogle, setAuthUser, setIsAdmin } from '../../state/auth/auth.actions';
 import { TranslateModule } from '@ngx-translate/core';
 import { UserSelectionBarComponent } from '../user-selection-bar/user-selection-bar';
@@ -18,6 +18,7 @@ import { selectSelectedCoins } from '../../state/coins.selectors';
 import { clearSelection, deselectCoin } from '../../state/coins.actions';
 import { UserService } from '../../services/user.service';
 import { ToastService } from '../../services/toast.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'user-wrapper',
@@ -183,16 +184,23 @@ export class UserWrapperComponent implements OnInit {
   handleBooking() {
     const coins = this.selectedCoins() ?? {};
 
-    for (const id in coins) {
-      if (!coins[id].booked_at) {
-        this.service.bookCoin(coins[id].id, 'user@example.com').subscribe(() => {
-          this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
-        });
+    this.store.select(selectUser).pipe(first()).subscribe(user => {
+      if (user?.email) {
+        for (const id in coins) {
+          if (!coins[id].booked_at) {
+            this.service.bookCoin(coins[id].id, user.email.toLowerCase()).subscribe(() => {
+              this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
+            });
+          } else {
+            this.toast.show('toast.coinAlreadyBooked', { params: { coinId: coins[id].id } });
+            console.log('Coin already booked:', coins[id].id);
+          }
+        }
+        this.toast.show('toast.bookInfo');
       } else {
-        console.log('Coin already booked:', coins[id].id);
+        this.toast.show('toast.authRequired');
       }
-    }
-    this.toast.show('toast.bookInfo');
+    });
   }
 
   handleOrderSubmit(data: { name: string; email: string; coins: any[] }) {

@@ -111,6 +111,8 @@
   },
   "toast": {
     "welcome": "Üdvözlünk a Denumismat-nál. Örülök, hogy itt vagy! Ez az én érmekatalógusom, amely eladásra készen áll.",
+    "coinAlreadyBooked": "A(z) {{param}} érmét már lefoglalták.",
+    "authRequired": "Be kell jelentkeznie az érme foglalásához.",
     "selectionLimitExceeded": "Egyszerre legfeljebb 50 érmét választhat."
   },
   "countries": {

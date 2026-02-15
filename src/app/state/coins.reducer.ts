@@ -1,9 +1,11 @@
 import { createReducer, on } from '@ngrx/store';
 import * as CoinsActions from './coins.actions';
 import { Coin } from '../components/coins/coin-card';
+import { selectBookedCoinsByEmail } from './coins.actions';
 
 export interface CoinsState {
   coins: Coin[] | null;
+  booked: Coin[];
   selected: { [coinId: string]: Coin };
   loading: boolean;
   error: any | null;
@@ -12,6 +14,7 @@ export interface CoinsState {
 
 export const initialState: CoinsState = {
   coins: null,
+  booked: [],
   selected: {},
   loading: false,
   error: null,
@@ -88,5 +91,13 @@ export const coinsReducer = createReducer(
   on(CoinsActions.setCoinCountries, (state, { countries }) => ({
     ...state,
     countries
-  }))
+  })),
+  on(CoinsActions.setBookedCoins, (state, { coins }) => ({
+    ...state,
+    booked: coins
+  })),
+  on(CoinsActions.selectBookedCoinsByEmail, (state, { email }) => ({
+    ...state,
+    booked: email ? state.coins?.filter(coin => coin.booked_by === email) ?? [] : []
+  })),
 );

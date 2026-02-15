@@ -115,6 +115,8 @@
   "toast": {
     "welcome": "Welcome to Denumismat. I happy to see you here! It's my coins catalog that I ready to sell.",
     "bookInfo": "Coins will be booked for 1 day and restored afterward in case of no payment.",
+    "coinAlreadyBooked": "Coin {{param}} is already booked.",
+    "authRequired": "Please sign in to book coin",
     "selectionLimitExceeded": "You can select only 50 coins maximum"
   },
   "countries": {

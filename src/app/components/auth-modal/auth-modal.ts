@@ -11,6 +11,7 @@ import { AuthForm } from '../auth-form/auth-form';
 import { BaseModalComponent } from '../base-modal/base-modal';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { selectBookedCoinsByEmail } from '../../state/coins.actions';
 
 @Component({
   selector: 'app-auth-modal',
@@ -87,6 +88,7 @@ export class AuthModalComponent {
     effect(() => {
       const user = this.currentUser();
       if (user && !this.isAdminMode()) {
+        this.store.dispatch(selectBookedCoinsByEmail({ email: user.email }));
         this.close();
       }
     });
@@ -158,6 +160,7 @@ export class AuthModalComponent {
       next: (user) => {
         this.authService.resetVerifyCode();
         this.store.dispatch(loginSuccess({ user }));
+        this.store.dispatch(selectBookedCoinsByEmail({ email: user.email }));
         this.close();
       },
       error: (err) => {

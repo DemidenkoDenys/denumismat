@@ -49,8 +49,10 @@ export const selectIsCoinSelected = (coinId: string) => createSelector(
 );
 
 export const selectIsSelectionLimitReached = createSelector(
-  selectSelectedCoinsCount,
-  (count) => count >= MAX_SELECTED_COINS
+  selectCoinsState,
+  (coins) => {
+    return (Object.keys(coins.selected).length ?? 0) + (coins.booked.length ?? 0) >= MAX_SELECTED_COINS;
+  }
 );
 
 export const selectSelectedCoinsPrice = createSelector(

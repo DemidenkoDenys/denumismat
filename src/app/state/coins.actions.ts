@@ -38,3 +38,13 @@ export const setCoinCountries = createAction(
   '[Coins] Set Coin Countries',
   props<{ countries: Record<string, boolean> }>()
 );
+
+export const setBookedCoins = createAction(
+  '[Coins] Set Booked Coins',
+  props<{ coins: Coin[] }>()
+);
+
+export const selectBookedCoinsByEmail = createAction(
+  '[Coins] Select Booked Coins By Email',
+  props<{ email: string | null }>()
+);
