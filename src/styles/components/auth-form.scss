@@ -97,4 +97,12 @@
   .form-group_verify-code {
     text-align: center;
   }
+
+  .auth-form_container {
+    display: flex;
+
+    .form-group {
+      width: 50%;
+    }
+  }
 }

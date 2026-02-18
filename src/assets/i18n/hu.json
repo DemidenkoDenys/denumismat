@@ -81,7 +81,18 @@
     "emailRequiredError": "Az email megadása kötelező",
     "cancel": "Mégse",
     "submit": "Rendelés most",
-    "processing": "Feldolgozás..."
+    "processing": "Feldolgozás...",
+    "shipping": {
+      "standard": "Normál (5-10 munkanap)",
+      "express": "Expressz (2-3 munkanap)",
+      "pickup": "Személyes átvétel",
+      "foxpost_terminal": "Foxpost csomagpont",
+      "mail_international": "Nemzetközi posta",
+      "mail_international_registered": "Nemzetközi ajánlott küldemény",
+      "mail_registered_by_hungary": "Ajánlott küldemény (Magyarország)",
+      "mail_standart_by_hungary": "Normál levél (Magyarország)",
+      "mpl_terminal": "MPL csomagpont"
+    }
   },
   "authModal": {
     "title": "Bejelentkezés",

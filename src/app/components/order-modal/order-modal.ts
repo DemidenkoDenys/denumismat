@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, input, output, signal, computed, inject, ViewChild, OnInit, OnDestroy, PLATFORM_ID, ChangeDetectorRef, effect, Renderer2 } from '@angular/core';
 import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
@@ -9,11 +9,12 @@ import { Coin } from '../coins/coin-card';
 import { PricePipe } from '../../pipes/price.pipe';
 import { AuthForm } from '../auth-form/auth-form';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
+import { selectShippingMethods } from '../../state/shipping.selectors';
 
 @Component({
   selector: 'app-order-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, PricePipe, AuthForm],
+  imports: [CommonModule, FormsModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="modal-overlay" (mousedown)="onBackdropMouseDown($event)" (mouseup)="onBackdropMouseUp($event)">
@@ -43,16 +44,39 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
             </div>
           </div>
 
-          <form (ngSubmit)="submitOrder()" #orderForm="ngForm" class="order-form">
-            <app-auth-form
-              [name]="name"
-              [email]="email"
-              [emailDisabled]="!!currentUser()?.email"
-              (nameChange)="onNameChange($event)"
-              (emailChange)="onEmailChange($event)"
-              (formValid)="isFormValid.set($event)"
-              (submitForm)="onFormSubmit($event)"
-            ></app-auth-form>
+          <form (ngSubmit)="submitOrder(orderForm)" #orderForm="ngForm" class="order-form">
+            <div class="form-group">
+              <label for="shippingMethod">{{ 'orderModal.shippingMethod' | translate }}</label>
+              <select id="shippingMethod" name="shippingMethod" [(ngModel)]="shippingMethod" required #shippingModel="ngModel" [class.submitted]="submitted()">
+                <option value="" disabled>{{ 'orderModal.shippingPlaceholder' | translate }}</option>
+                @for (method of shippingMethods(); track method.id) {
+                  <option [value]="method.id">{{ displayMethodLabel(method) }}{{ method.price ? ' - ' : '' }}{{ method.price ? (method.price | price) : '' }}</option>
+                }
+              </select>
+
+              @if (shippingModel.invalid && (shippingModel.touched || submitted())) {
+                <div class="field-error">{{ 'orderModal.shippingRequired' | translate }}</div>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="orderMessage">{{ 'orderModal.messageLabel' | translate }}</label>
+              <textarea
+                id="orderMessage"
+                name="orderMessage"
+                class="order-modal__textarea"
+                [(ngModel)]="orderMessage"
+                #messageModel="ngModel"
+                required
+                [class.submitted]="submitted()"
+                maxlength="500"
+                placeholder="{{ 'orderModal.messagePlaceholder' | translate }}"
+              ></textarea>
+
+              @if (messageModel.invalid && (messageModel.touched || submitted())) {
+                <div class="field-error">{{ 'orderModal.messageRequired' | translate }}</div>
+              }
+            </div>
 
             <div class="form-row visibility-accept">
               <label class="checkbox">
@@ -91,36 +115,29 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
 })
 export class OrderModalComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
-  private cdr = inject(ChangeDetectorRef);
   private store = inject(Store);
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
+  private translate = inject(TranslateService);
 
   currentUser = toSignal(this.store.select(selectUser));
   excludedIds = signal<Set<string>>(new Set());
 
   existsCountries = toSignal(this.store.select(selectCountries));
   extinctCountries = toSignal(this.store.select(selectExtinctCountries));
-  countries = computed(() => {
-    return { ...this.existsCountries(), ...this.extinctCountries() };
-  });
+  shippingMethods = toSignal(this.store.select(selectShippingMethods));
+
+  countries = computed(() => ({ ...this.existsCountries(), ...this.extinctCountries() }));
+
+  displayMethodLabel(method: { id: string; label?: string }): string {
+    const key = `orderModal.shipping.${method.id}`;
+    const translated = this.translate.instant(key);
+    return translated === key ? (method.label || method.id) : translated;
+  }
 
   constructor() {
     effect(() => {
-      const user = this.currentUser();
-      if (user?.email) {
-        this.email = user.email;
-        if (user.displayName) {
-          this.name = user.displayName;
-        }
-        this.cdr.markForCheck();
-      }
-    });
-
-    // Reset excluded coins when the coins list changes
-    effect(() => {
       const c = this.coins();
-      // Start with all coins excluded (unchecked)
       this.excludedIds.set(new Set(c.map(coin => coin.id)));
     }, { allowSignalWrites: true });
   }
@@ -155,10 +172,11 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   onClose = output<void>();
-  onSubmit = output<{ name: string; email: string; coins: Coin[] }>();
+  onSubmit = output<{ coins: Coin[]; shippingMethod?: string; message?: string }>();
 
-  name = '';
-  email = '';
+  // shippingMethod left empty by default so user explicitly chooses it (optional)
+  shippingMethod = '';
+  orderMessage = '';
   isSubmitting = signal(false);
   submitted = signal(false);
   isFormValid = signal(false);
@@ -183,28 +201,6 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.renderer.removeStyle(this.document.body, 'overflow');
-    }
-  }
-
-  onNameChange(value: string) {
-    this.name = value;
-    // Don't save to localStorage - users should enter fresh data each time
-  }
-
-  onEmailChange(value: string) {
-    this.email = value;
-    // Don't save to localStorage - users should enter fresh data each time
-  }
-
-  onFormSubmit(formData: { name: string; email: string; verifyCode: string }) {
-    this.name = formData.name;
-    this.email = formData.email;
-    this.submitOrder();
-  }
-
   totalAmount = computed(() => {
     return this.coins()
       .filter(c => !this.excludedIds().has(c.id))
@@ -215,11 +211,17 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     this.onClose.emit();
   }
 
-  submitOrder() {
+  submitOrder(form: NgForm) {
     this.submitted.set(true);
+    this.isFormValid.set(!!form?.valid);
 
-    if (!this.isFormValid()) {
-      // The auth-form component will handle showing validation errors
+    // If the template-driven form is invalid, show validation UI and stop
+    if (!form || !form.valid) {
+      return;
+    }
+
+    // shippingMethod and orderMessage are required (redundant but safe)
+    if (!this.shippingMethod || !this.orderMessage || this.orderMessage.trim().length === 0) {
       return;
     }
 
@@ -235,11 +237,17 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     // Simulate API call or just event emit
     setTimeout(() => {
       this.onSubmit.emit({
-        name: this.name,
-        email: this.email,
-        coins: finalCoins
+        coins: finalCoins,
+        message: this.orderMessage?.trim() || undefined,
+        shippingMethod: this.shippingMethod,
       });
       this.isSubmitting.set(false);
     }, 500);
+  }
+
+  ngOnDestroy() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.renderer.removeStyle(this.document.body, 'overflow');
+    }
   }
 }

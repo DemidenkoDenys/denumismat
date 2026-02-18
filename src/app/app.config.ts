@@ -13,6 +13,8 @@ import { authReducer } from './state/auth/auth.reducer';
 import { AuthEffects } from './state/auth/auth.effects';
 import { orderReducer } from './state/order.reducer';
 import { OrderEffects } from './state/order.effects';
+import { shippingReducer } from './state/shipping.reducer';
+import { ShippingEffects } from './state/shipping.effects';
 
 import { routes } from './app.routes';
 
@@ -21,8 +23,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer, order: orderReducer }),
-    provideEffects([CurrencyEffects, CountriesEffects, AuthEffects, OrderEffects]),
+    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer, order: orderReducer, shipping: shippingReducer }),
+    provideEffects([CurrencyEffects, CountriesEffects, AuthEffects, OrderEffects, ShippingEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]
 };

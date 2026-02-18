@@ -1,8 +1,9 @@
-import { Pipe, PipeTransform, inject } from '@angular/core';
+import { Pipe, PipeTransform, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectConversionRate, selectCurrencyFormat } from '../state/currency.selectors';
 
+@Injectable({ providedIn: 'root' })
 @Pipe({
   name: 'price',
   standalone: true,

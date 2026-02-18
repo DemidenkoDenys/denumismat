@@ -56,7 +56,7 @@
   }
 
   .selected-coins-list {
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     background: #f9fafb;
     border-radius: 8px;
     padding: 1rem;
@@ -69,6 +69,13 @@
     }
   }
 
+  /* generic field-error styling (applies to all error messages in the modal) */
+  .field-error {
+    color: #ef4444; /* red-500 */
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
   .visibility-accept {
     label span {
       margin-left: 10px;
@@ -77,11 +84,10 @@
     input.ng-invalid {
       box-shadow: inset 0 0 0 10px rgba(239, 68, 68, 0.5);
     }
+  }
 
-    .field-error {
-      color: red;
-      font-size: 0.7rem;
-    }
+  .order-modal__textarea + .field-error {
+    margin-top: -7px;
   }
 
   .coin-list {
@@ -178,18 +184,20 @@
 
     label {
       display: block;
-      margin-bottom: 0.5rem;
       font-size: 0.875rem;
       font-weight: 500;
     }
 
-    input {
+    input,
+    select,
+    textarea {
       width: 100%;
       padding: 0.75rem;
       border: 1px solid #d1d5db;
       border-radius: 6px;
       font-size: 1rem;
       transition: border-color 0.2s;
+      resize: none; /* disable native resize handle */
 
       &:disabled {
         color: #5a6f84 !important;
@@ -207,6 +215,8 @@
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
       }
 
+      /* highlight when control is invalid and form was submitted */
+      &.ng-invalid.submitted,
       &.ng-invalid.ng-touched.submitted {
         border-color: #ef4444;
         box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
@@ -228,7 +238,7 @@
     display: flex;
     justify-content: flex-end;
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
   }
 
   .btn {

@@ -21,6 +21,7 @@ import { ToastService } from './services/toast.service';
 import { ADTL } from './app.constants';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './services/auth.service';
+import { loadShippingMethods } from './state/shipping.actions';
 
 @Component({
   selector: 'app-main-layout',
@@ -147,6 +148,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.store.dispatch(CountriesActions.loadCountries());
     this.store.dispatch(CountriesActions.loadExtinctCountries());
     this.store.dispatch(CoinsActions.loadCoins());
+    this.store.dispatch(loadShippingMethods());
     this.store.dispatch(AuthActions.checkAuth());
 
     this.initializeUserFromLocalStorage();

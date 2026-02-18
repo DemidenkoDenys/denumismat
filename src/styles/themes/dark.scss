@@ -337,6 +337,49 @@ body.theme-dark {
     box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.06);
   }
 
+  /* Modal / order form select (shippingMethod) - dark theme */
+  .modal-container select,
+  .modal-container .form-group select,
+  .order-form select,
+  select[name="shippingMethod"] {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: #334155;
+    color: #cbd5e1;
+    padding: 0.6rem 2.25rem 0.6rem 0.75rem;
+    border-radius: 6px;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.06) 50%),
+                      linear-gradient(135deg, rgba(255,255,255,0.02) 50%, transparent 50%),
+                      linear-gradient(to right, rgba(255,255,255,0.02), rgba(255,255,255,0));
+    background-position: calc(100% - 1.1rem) calc(50% - 0.2rem), calc(100% - 0.9rem) calc(50% - 0.2rem), right center;
+    background-size: 6px 6px, 6px 6px, 1px 60%;
+    background-repeat: no-repeat;
+  }
+
+  .modal-container select:focus,
+  select[name="shippingMethod"]:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.06);
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .modal-container select option,
+  select[name="shippingMethod"] option {
+    background: #0f172a;
+    color: #f1f5f9;
+  }
+
+  /* Small screen adjustments for select inside modal */
+  @media (max-width: 520px) {
+    .modal-container select,
+    select[name="shippingMethod"] {
+      width: 100%;
+      padding-right: 1.25rem;
+    }
+  }
+
   .coin-card__details-textarea {
     border-color: #334155;
     background: rgba(255, 255, 255, 0.02);
@@ -397,6 +440,56 @@ body.theme-dark {
 
   .coin-card__submit:hover {
     color: #3b82f6;
+  }
+
+  /* Order modal textarea (dark theme) */
+  .order-modal__textarea,
+  .modal-container textarea.order-modal__textarea {
+    width: 100%;
+    min-height: 100px;
+    max-height: 100px;
+    box-sizing: border-box;
+    padding: 0.75rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid #334155;
+    background: rgba(255, 255, 255, 0.02);
+    color: #cbd5e1;
+    resize: none; /* prevent resize handle */
+    font-size: 0.95rem;
+    line-height: 1.4;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  }
+
+  .order-modal__textarea::placeholder {
+    color: #6b7280;
+  }
+
+  .order-modal__textarea:focus {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.06);
+    background: rgba(255,255,255,0.025);
+    outline: none;
+  }
+
+  /* show invalid state for textarea/select in dark theme when submitted */
+  .order-modal__textarea.ng-invalid.submitted,
+  .order-modal__textarea.ng-invalid.ng-touched.submitted,
+  .modal-container select.ng-invalid.submitted {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
+  }
+
+  /* small helper text inside modal (character counter) */
+  .modal-container .field-hint {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    margin-top: 0.35rem;
+    text-align: right;
+  }
+
+  /* error message color in dark theme */
+  .modal-container .field-error {
+    color: #fb7185; /* red-400 for good contrast on dark bg */
   }
 
   .coin-card__select {

@@ -1,3 +1,5 @@
+import { Coin } from "../components/coins/coin-card";
+
 export interface Order {
   id?: string;
   name: string;
@@ -7,13 +9,4 @@ export interface Order {
   status: 'pending' | 'processing' | 'completed' | 'cancelled';
   createdAt?: Date;
   updatedAt?: Date;
-}
-
-export interface Coin {
-  id: string;
-  deno: string;
-  year: number;
-  title?: string;
-  price: number;
-  discountPrice?: number;
 }

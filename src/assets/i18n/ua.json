@@ -81,7 +81,18 @@
     "emailRequiredError": "Email обов'язковий",
     "cancel": "Закрити",
     "submit": "Замовити",
-    "processing": "Обробка..."
+    "processing": "Обробка...",
+    "shipping": {
+      "standard": "Стандарт (5-10 робочих днів)",
+      "express": "Експрес (2-3 робочих дні)",
+      "pickup": "Особисте отримання",
+      "foxpost_terminal": "Foxpost термінал",
+      "mail_international": "Пошта — міжнародна",
+      "mail_international_registered": "Пошта — міжнародна (з реєстрацією)",
+      "mail_registered_by_hungary": "Реєстрована пошта (Угорщина)",
+      "mail_standart_by_hungary": "Стандартна пошта (Угорщина)",
+      "mpl_terminal": "MPL термінал"
+    }
   },
   "authModal": {
     "title": "Увійти",

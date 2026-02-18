@@ -1,56 +1,58 @@
 <form (ngSubmit)="onSubmit()" #authForm="ngForm" class="auth-form">
-  <div class="form-group">
-    <label for="name">{{ 'authForm.name' | translate }}</label>
-    <input
-      #nameInput="ngModel"
-      required
-      id="name"
-      type="text"
-      name="name"
-      placeholder="{{ 'authForm.namePlaceholder' | translate }}"
-      [ngModel]="name()"
-      [disabled]="!!currentUser()?.displayName"
-      [class.submitted]="submitted()"
-      (ngModelChange)="onNameChange($event)"
-    />
+  <div class="auth-form_container">
+    <div class="form-group">
+      <label for="name">{{ 'authForm.name' | translate }}</label>
+      <input
+        #nameInput="ngModel"
+        required
+        id="name"
+        type="text"
+        name="name"
+        placeholder="{{ 'authForm.namePlaceholder' | translate }}"
+        [ngModel]="name()"
+        [disabled]="!!currentUser()?.displayName"
+        [class.submitted]="submitted()"
+        (ngModelChange)="onNameChange($event)"
+      />
 
-    @if (
-      nameInput.invalid && (nameInput.touched || submitted()) && nameInput.errors?.['required']
-    ) {
-      <div class="error-message">
-        {{ 'authForm.nameRequiredError' | translate }}
-      </div>
-    }
-  </div>
-
-  <div class="form-group">
-    <label for="email">{{ 'authForm.email' | translate }}</label>
-    <input
-      #emailInput="ngModel"
-      email
-      required
-      id="email"
-      type="email"
-      name="email"
-      pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$"
-      [ngModel]="email()"
-      [disabled]="emailDisabled() || !!currentUser()?.email"
-      [placeholder]="'authForm.emailPlaceholder' | translate"
-      [class.submitted]="submitted()"
-      (ngModelChange)="onEmailChange($event)"
-    />
-
-    @if (emailInput.invalid && (emailInput.touched || submitted())) {
-      @if (emailInput.errors?.['required']) {
+      @if (
+        nameInput.invalid && (nameInput.touched || submitted()) && nameInput.errors?.['required']
+      ) {
         <div class="error-message">
-          {{ 'authForm.emailRequiredError' | translate }}
-        </div>
-      } @else if (emailInput.errors?.['pattern']) {
-        <div class="error-message">
-          {{ 'authForm.emailError' | translate }}
+          {{ 'authForm.nameRequiredError' | translate }}
         </div>
       }
-    }
+    </div>
+
+    <div class="form-group">
+      <label for="email">{{ 'authForm.email' | translate }}</label>
+      <input
+        #emailInput="ngModel"
+        email
+        required
+        id="email"
+        type="email"
+        name="email"
+        pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,4}$"
+        [ngModel]="email()"
+        [disabled]="emailDisabled() || !!currentUser()?.email"
+        [placeholder]="'authForm.emailPlaceholder' | translate"
+        [class.submitted]="submitted()"
+        (ngModelChange)="onEmailChange($event)"
+      />
+
+      @if (emailInput.invalid && (emailInput.touched || submitted())) {
+        @if (emailInput.errors?.['required']) {
+          <div class="error-message">
+            {{ 'authForm.emailRequiredError' | translate }}
+          </div>
+        } @else if (emailInput.errors?.['pattern']) {
+          <div class="error-message">
+            {{ 'authForm.emailError' | translate }}
+          </div>
+        }
+      }
+    </div>
   </div>
 
   @if (showVerifyInput()) {

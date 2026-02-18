@@ -19,6 +19,7 @@ import { clearSelection, deselectCoin } from '../../state/coins.actions';
 import { UserService } from '../../services/user.service';
 import { ToastService } from '../../services/toast.service';
 import { first } from 'rxjs';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'user-wrapper',
@@ -56,7 +57,6 @@ import { first } from 'rxjs';
     }
 
     @if (isOrderModalOpen()) {
-      {{ orderCoins() | json }}
       <app-order-modal
         [coins]="orderCoins()"
         [conversionRate]="conversionRate()"
@@ -72,6 +72,7 @@ export class UserWrapperComponent implements OnInit {
   private toast = inject(ToastService);
   private router = inject(Router);
   private service = inject(UserService);
+  private apiService = inject(ApiService);
   public authModalService = inject(AuthModalService);
 
   showImageSliderModal = signal(false);
@@ -203,18 +204,29 @@ export class UserWrapperComponent implements OnInit {
     });
   }
 
-  handleOrderSubmit(data: { name: string; email: string; coins: any[] }) {
-    if (!data.email || !data.coins || data.coins.length === 0) {
+  handleOrderSubmit(data: { coins: any[]; shippingMethod?: string; message?: string }) {
+    if (!data.coins || data.coins.length === 0) {
       return;
     }
 
     this.isOrderModalOpen.set(false);
 
-    for (const coin of data.coins) {
-      this.service.orderCoin(coin.id, data.email).subscribe(() => {
-        this.store.dispatch(deselectCoin({ coinId: coin.id }));
-      });
-    }
+    this.store.select(selectUser).pipe(first()).subscribe(user => {
+      if (user?.email) {
+        for (const coin of data.coins) {
+          this.service.orderCoin(coin.id, user.email).subscribe({
+            next: () => this.store.dispatch(deselectCoin({ coinId: coin.id })),
+            error: () => this.toast.error(`Cannot order coin ${coin.id}`),
+          });
+        }
+
+        this.apiService.sendOrder(data.coins, user.email, data.shippingMethod || '', data.message || '').subscribe({
+          next: () => this.toast.success('order success', 5000),
+          error: () => this.toast.error('order error', 2000),
+        });
+      }
+    });
+
   }
 
   private clearAuthData() {

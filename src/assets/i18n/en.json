@@ -83,7 +83,21 @@
     "submit": "Order now",
     "processing": "Processing...",
     "confirmCheckbox": "Coins will not be visible to other users for 1 hour unless paid",
-    "confirmCheckboxRequired": "You must accept the visibility terms"
+    "confirmCheckboxRequired": "You must accept the visibility terms",
+    "shippingMethod": "Shipping method",
+    "shippingPlaceholder": "Choose shipping method (optional)",
+    "shipping": {
+      "mpl_terminal": "MPL terminal",
+      "foxpost_terminal": "Foxpost terminal (by Hungary only)",
+      "mail_international": "International mail (envelope without track number)",
+      "mail_standart_by_hungary": "Standard mail (by Hungary, without track number)",
+      "mail_registered_by_hungary": "Registered mail (by Hungary)",
+      "mail_international_registered": "International mail (envelope with track number)"
+    },
+    "messageLabel": "Additional note",
+    "messagePlaceholder": "Add delivery notes, preferred contact or other info (required)",
+    "messageRequired": "Please provide an order note",
+    "shippingRequired": "Please choose a shipping method"
   },
   "authModal": {
     "title": "Sign In",
