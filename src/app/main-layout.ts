@@ -185,7 +185,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   handleCurrencyChange(currency: Currency): void {
     this.currentCurrency.set(currency);
-    console.log('Currency changed to:', currency);
   }
 
   handleFilters(filters: any): void {

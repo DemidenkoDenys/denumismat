@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform, inject, Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectConversionRate, selectCurrencyFormat } from '../state/currency.selectors';
+import { selectConversionRate, selectCurrencyFormat, selectHufRate } from '../state/currency.selectors';
 
 @Injectable({ providedIn: 'root' })
 @Pipe({
@@ -12,6 +12,7 @@ import { selectConversionRate, selectCurrencyFormat } from '../state/currency.se
 export class PricePipe implements PipeTransform {
   private store = inject(Store);
 
+  private hufRate = toSignal(this.store.select(selectHufRate), { initialValue: 1 });
   private conversionRate = toSignal(this.store.select(selectConversionRate), { initialValue: 1 });
   private currencyFormat = toSignal(this.store.select(selectCurrencyFormat), {
     initialValue: { symbol: '$', short: '$', start: true }
@@ -22,10 +23,8 @@ export class PricePipe implements PipeTransform {
 
     const rate = this.conversionRate();
     const effectiveFormat = this.currencyFormat();
-
-    const convertedPrice = value * rate;
+    const convertedPrice = rate / this.hufRate() * value;
     const formatted = convertedPrice.toFixed(2);
-
     const currency = effectiveFormat.short;
 
     // Add thousands separator (space)

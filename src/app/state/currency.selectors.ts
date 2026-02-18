@@ -29,6 +29,11 @@ export const selectCurrenciesInfo = createSelector(
   (state) => state.info
 );
 
+export const selectHufRate = createSelector(
+  selectCurrencyState,
+  (state) => state.rates?.HUF
+);
+
 export const selectConversionRate = createSelector(
   selectCurrencyRates,
   selectSelectedCurrency,
