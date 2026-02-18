@@ -133,7 +133,16 @@
   }
 }
 
-// Actions
+@media (max-width: 700px) {
+  .header__container .header__search {
+    top: 64px;
+    left: 0;
+    right: 0;
+    position: absolute;
+    max-width: none;
+  }
+}
+
 .header__actions {
   display: flex;
   align-items: center;

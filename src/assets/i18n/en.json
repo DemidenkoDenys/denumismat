@@ -52,7 +52,8 @@
     "leaveOnly": "Leave only: ",
     "onlyCoinsOf": "Only coins of ",
     "reset": "reset",
-    "selectCountry": "Select country to filter:",
+    "selectCountry": "Select country",
+    "forFiltering": "for filtering",
     "tag": {
       "UNC": "UNC",
       "Rare": "Rare",

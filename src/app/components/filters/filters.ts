@@ -17,9 +17,9 @@ export interface Filters {
       <div class="filters__inner">
         <div class="filters__group filters__group--country">
           @if (selectedCountry()) {
-            <span>{{ 'filters.onlyCoinsOf' | translate }}&nbsp;&nbsp;{{ 'countries.' + selectedCountry()  | translate }}</span>
+            <span class="filters__group--country-description">{{ 'filters.onlyCoinsOf' | translate }}</span>&nbsp;&nbsp;<span>{{ 'countries.' + selectedCountry()  | translate }}</span>
           } @else {
-            <span>{{ 'filters.selectCountry' | translate}}</span>
+            <span>{{ 'filters.selectCountry' | translate}}</span><span class="filters__group--country-description">{{ 'filters.forFiltering' | translate}}</span>
           }
           <country-dropdown [value]="selectedCountry() || ''" (onCountryChanged)="onCountryChange($event)"></country-dropdown>
 
