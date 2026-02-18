@@ -17,10 +17,10 @@
 <!-- ## Input on each coin when authorized -->
 <!-- ## Book not more than 50 items (include booked) -->
 <!-- ## in admin mode - show coin ID and add datetime -->
+<!-- ## add isActive and isAnounce to coins -->
 <!-- ## forint based prices -->
 
 ## correct mobile styles
-## add isActive and isAnounce to coins
 ## Maximum book coins in user firebase settings (50 by default)
 ## Deselect coin when it become booked
 

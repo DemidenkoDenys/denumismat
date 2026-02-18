@@ -34,7 +34,7 @@ import { selectShippingMethods } from '../../state/shipping.selectors';
                     <input type="checkbox" [checked]="isSelected(coin.id)" (click)="toggleCoin(coin.id, $event)">
                   </div>
                   <span class="coin-name">{{ countries()[coin.country]?.name }} - {{ coin.deno }} - {{ coin.year }}</span>
-                  <span class="coin-price">{{ coin.price | price }}</span>
+                  <span class="coin-price">{{ coin.discountPrice | price }}</span>
                 </li>
               }
             </ul>
@@ -204,7 +204,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   totalAmount = computed(() => {
     return this.coins()
       .filter(c => !this.excludedIds().has(c.id))
-      .reduce((sum, coin) => sum + coin.price, 0);
+      .reduce((sum, coin) => sum + (coin.discountPrice ?? 0), 0);
   });
 
   close() {

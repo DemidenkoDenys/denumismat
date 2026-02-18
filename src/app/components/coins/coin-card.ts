@@ -23,7 +23,9 @@ export interface Coin {
   country_name: string;
   deno: string;
   year: number;
+  soon?: boolean;
   price: number;
+  disabled?: boolean;
   booked_at?: string | null; // ISO timestamp (if set, coin is booked/reserved)
   booked_by?: string | null; // User ID of the person who booked the coin
   ordered_at?: string | null; // ISO timestamp (if set, coin is ordered)
@@ -62,7 +64,9 @@ export interface Coin {
     <article
       class="coin-card"
       [class.selected]="selected()"
+      [class.coin-card--soon]="isSoon()"
       [class.coin-card--booked]="isBooked()"
+      [class.coin-card--disabled]="coin().disabled"
       (click)="toggleSelect()"
       role="button"
       [attr.tabindex]="isBooked() ? -1 : 0"
@@ -144,7 +148,7 @@ export interface Coin {
             @for (tag of coin().tags; track tag) {
               <span
                 class="coin-card__tag"
-                [class]="'coin-card__tag--' + (tag.toLowerCase().includes('booked') ? 'booked' : tag.toLowerCase())">
+                [class]="'coin-card__tag--' + (tag.toLowerCase().includes('booked') ? 'booked' : tag.toLowerCase().includes('soon') ? 'soon' : tag.toLowerCase())">
                 {{ tag.toUpperCase() }}
               </span>
             }
@@ -161,7 +165,13 @@ export interface Coin {
         @if (isAdmin()) {
           <h3 class="coin-card__title" (click)="onCoinIdClick(coin())">{{ coin().id }}</h3>
         }
-        <h3 class="coin-card__title">{{ countryFullName() }} - {{ coin().deno }} - <span class="coin-card__year">{{ coin().year }}</span>{{ coin().description ? ' - ' + coin().description : '' }}</h3>
+
+        @if (coin().soon) {
+          <h3 class="coin-card__title">{{ coin().description }}</h3>
+        } @else {
+          <h3 class="coin-card__title">{{ countryFullName() }} - {{ coin().deno }} - <span class="coin-card__year">{{ coin().year }}</span>{{ coin().description ? ' - ' + coin().description : '' }}</h3>
+        }
+
         @if (isAdmin()) {
           <small class="coin-card__title-date">{{ coin().created_at | date: "MM/dd/yyyy hh:mm" }}</small>
         }
@@ -333,6 +343,7 @@ export class CoinCardComponent {
 
   // Whether this coin is booked/reserved (truthy `booked_at` means booked)
   isBooked = computed(() => !this.isAdmin() && !!this.coin().booked_at);
+  isSoon = computed(() => !this.isAdmin() && !!this.coin().soon);
 
   // Computed signal for image URL (backward compatibility)
   imageUrl = computed(() => this.currentImageUrl());
@@ -342,8 +353,7 @@ export class CoinCardComponent {
       const coin = this.coin();
       if (!coin || !coin.id) return;
 
-      // Only select if not booked and present in localStorage map
-      if (!coin.booked_at) {
+      if (!coin.disabled) {
         try {
           const stored = localStorage.getItem('denumismat.coins');
           if (stored) {

@@ -24,7 +24,7 @@ export class PingService {
     private toast: ToastService,
     private translate: TranslateService,
   ) {
-    // this.startPinging();
+    this.startPinging();
   }
 
   private startPinging() {

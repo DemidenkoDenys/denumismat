@@ -31,11 +31,16 @@ export class UserCoinsEffects {
                 const bookedCoins: Coin[] = [];
                 const mappedCoins = coins.map((coin) => {
                   const tags = coin.tags ?? [];
+                  if (tags.includes('anounce') || tags.includes('soon')) {
+                    return { ...coin, tags: ['soon'], price: 0, disabled: true, discountPrice: 0, soon: true };
+                  }
                   if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
                     tags.unshift('new');
                   }
                   if (coin.booked_at) {
+                    coin.disabled = true;
                     tags.unshift('booked');
+
                     if (user && user.email === coin.booked_by) {
                       bookedCoins.push(coin);
                     };
