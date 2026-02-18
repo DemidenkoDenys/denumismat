@@ -9,6 +9,7 @@ import { selectCountries, selectExtinctCountries } from '../../state/countries.s
 import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors';
 import { selectIsSelectionLimitReached, selectSelectedCoinsCount } from '../../state/coins.selectors';
 import { ToastService } from '../../services/toast.service';
+import { selectServerIsAvailable } from '../../state/server.selectors';
 
 export interface CoinImage {
   obverse: string | null;
@@ -166,7 +167,7 @@ export interface Coin {
         }
 
         <div class="coin-card__meta">
-          @if (detailsOpen() && detailsText().trim().length > 0) {
+          @if (detailsOpen() && detailsText().trim().length > 0 && isServerAvailable()) {
             <button
               type="button"
               class="coin-card__submit"
@@ -206,6 +207,7 @@ export interface Coin {
               class="coin-card__details-textarea"
               maxlength="100"
               [value]="detailsText()"
+              [disabled]="!isServerAvailable()"
               (click)="$event.stopPropagation()"
               (input)="$event.stopPropagation(); detailsText.set($any($event.target).value)"
               [attr.placeholder]="('coin.askCoin' | translate)"
@@ -224,6 +226,7 @@ export class CoinCardComponent {
   public isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
+  public isServerAvailable = toSignal(this.store.select(selectServerIsAvailable), { initialValue: false });
   private extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
 
   // Watch global selected coins count to know when selection limit is reached

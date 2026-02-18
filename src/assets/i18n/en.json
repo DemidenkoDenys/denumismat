@@ -133,7 +133,8 @@
     "bookInfo": "Coins will be booked for 1 day and restored afterward in case of no payment.",
     "coinAlreadyBooked": "Coin {{param}} is already booked.",
     "authRequired": "Please sign in to book coin",
-    "selectionLimitExceeded": "You can select only 50 coins maximum"
+    "selectionLimitExceeded": "You can select only 50 coins maximum",
+    "nowYouCanSendMessagesAndBookCoins": "Now you can send messages and book coins"
   },
   "countries": {
     "AFG": "Afghanistan",

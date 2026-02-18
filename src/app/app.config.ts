@@ -15,15 +15,26 @@ import { orderReducer } from './state/order.reducer';
 import { OrderEffects } from './state/order.effects';
 import { shippingReducer } from './state/shipping.reducer';
 import { ShippingEffects } from './state/shipping.effects';
+import { serverReducer } from './state/server.reducer';
 
 import { routes } from './app.routes';
+
+const reducers = {
+  auth: authReducer,
+  coins: coinsReducer,
+  order: orderReducer,
+  server: serverReducer,
+  currency: currencyReducer,
+  shipping: shippingReducer,
+  countries: countriesReducer,
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideHttpClient(),
-    provideStore({ currency: currencyReducer, countries: countriesReducer, coins: coinsReducer, auth: authReducer, order: orderReducer, shipping: shippingReducer }),
+    provideStore(reducers),
     provideEffects([CurrencyEffects, CountriesEffects, AuthEffects, OrderEffects, ShippingEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: false })
   ]

@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService, type ToastItem } from '../../services/toast.service';
 
@@ -27,12 +27,14 @@ import { ToastService, type ToastItem } from '../../services/toast.service';
   `
 })
 export class ToastComponent implements OnInit {
-  private service = inject(ToastService);
+  cd = inject(ChangeDetectorRef);
   toasts = signal<ToastItem[]>([]);
+  service = inject(ToastService);
 
   ngOnInit() {
     this.service.toasts$.subscribe(list => {
       this.toasts.set(list);
+      this.cd.detectChanges();
     });
   }
 

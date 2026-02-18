@@ -5,6 +5,7 @@ import { PricePipe } from '../../pipes/price.pipe';
 import { selectIsSelectionLimitReached, selectSelectedCoinsCount, selectSelectedCoinsDiscountPrice, selectSelectedCoinsPrice } from '../../state/coins.selectors';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { selectServerIsAvailable } from '../../state/server.selectors';
 
 @Component({
   selector: 'user-selection-bar',
@@ -40,8 +41,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
           <div class="selection-bar__actions">
             <button class="btn btn--ghost" (click)="handleReset()">{{ 'selectionBar.reset' | translate }}</button>
-            <button class="btn btn--ghost" (click)="handleBook()">{{ 'selectionBar.book' | translate }}</button>
-            <button class="btn btn--primary" (click)="handleOrder()">{{ 'selectionBar.order' | translate }}</button>
+            <button class="btn btn--ghost" (click)="handleBook()" [disabled]="!isServerAvailable()">{{ 'selectionBar.book' | translate }}</button>
+            <button class="btn btn--primary" (click)="handleOrder()" [disabled]="!isServerAvailable()">{{ 'selectionBar.order' | translate }}</button>
           </div>
         </div>
       </div>
@@ -55,6 +56,7 @@ export class UserSelectionBarComponent {
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   totalPrice = toSignal(this.store.select(selectSelectedCoinsPrice), { initialValue: 0 });
+  isServerAvailable = toSignal(this.store.select(selectServerIsAvailable));
   totalDiscountPrice = toSignal(this.store.select(selectSelectedCoinsDiscountPrice), { initialValue: 0 });
   selectedCoinsCount = toSignal(this.store.select(selectSelectedCoinsCount), { initialValue: 0 });
   selectionLimitReached = toSignal(this.store.select(selectIsSelectionLimitReached));
