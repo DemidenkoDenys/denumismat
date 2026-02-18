@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed, effect, EventEmitter, Output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed, effect, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
@@ -8,6 +8,7 @@ import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors';
 import { selectIsSelectionLimitReached, selectSelectedCoinsCount } from '../../state/coins.selectors';
+import { ToastService } from '../../services/toast.service';
 
 export interface CoinImage {
   obverse: string | null;
@@ -26,6 +27,7 @@ export interface Coin {
   booked_by?: string | null; // User ID of the person who booked the coin
   ordered_at?: string | null; // ISO timestamp (if set, coin is ordered)
   ordered_by?: string | null; // User ID of the person who ordered the coin
+  created_at?: string;
   is_deleted?: string | null; // ISO timestamp (if set, coin is deleted)
   description?: string; // Coin description
   imageUrl?: string; // CloudFront image URL
@@ -155,7 +157,14 @@ export interface Coin {
       </div>
 
       <div class="coin-card__body">
+        @if (isAdmin()) {
+          <h3 class="coin-card__title" (click)="onCoinIdClick(coin())">{{ coin().id }}</h3>
+        }
         <h3 class="coin-card__title">{{ countryFullName() }} - {{ coin().deno }} - <span class="coin-card__year">{{ coin().year }}</span>{{ coin().description ? ' - ' + coin().description : '' }}</h3>
+        @if (isAdmin()) {
+          <small class="coin-card__title-date">{{ coin().created_at | date: "MM/dd/yyyy hh:mm" }}</small>
+        }
+
         <div class="coin-card__meta">
           @if (detailsOpen() && detailsText().trim().length > 0) {
             <button
@@ -207,10 +216,12 @@ export interface Coin {
   `,
 })
 export class CoinCardComponent {
-  private s3Service = inject(S3Service);
+  private cd = inject(ChangeDetectorRef);
   private store = inject(Store);
+  private toast = inject(ToastService);
+  private s3Service = inject(S3Service);
 
-  private isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
+  public isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private extinctCountries = toSignal(this.store.select(selectExtinctCountries), { initialValue: null });
@@ -559,6 +570,13 @@ export class CoinCardComponent {
   onLupaClick() {
     const alt = this.coin().deno + ' ' + this.coin().year;
     this.openSliderModal.emit({ coinId: this.coin().id, alt });
+  }
+
+  onCoinIdClick(coin: any) {
+    navigator.clipboard.writeText(coin.id).then(() => {
+      this.toast.show(coin.id + ' - copied', { duration: 3000 });
+      this.cd.detectChanges();
+    })
   }
 
   closeImageSliderModal = () => {
