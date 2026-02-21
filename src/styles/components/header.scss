@@ -37,22 +37,22 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #111827;
-  letter-spacing: -0.025em;
-  transition:
-    color 0.2s ease,
-    text-shadow 0.2s ease,
-    background-size 0.4s ease;
-}
+  // color: #111827;
+  letter-spacing: 0.1em;
+  //   transition:
+  //     color 0.2s ease,
+  //     text-shadow 0.2s ease,
+  //     background-size 0.4s ease;
+  // }
 
-.header__brand-text:hover {
-  background-image: linear-gradient(90deg, #3b82f6, #f97316, #3b82f6);
-  background-size: 200% 100%;
-  background-position: 0 0;
-  animation: brandShine 1.6s linear infinite;
-  -webkit-background-clip: text;
-  background-clip: text;
+  // .header__brand-text:hover {
   color: transparent;
+  animation: brandShine 1.6s linear infinite;
+  background-clip: text;
+  background-size: 200% 100%;
+  background-image: linear-gradient(90deg, #3b82f6, #f97316, #3b82f6);
+  background-position: 0 0;
+  -webkit-background-clip: text;
   text-shadow:
     0 0 10px rgba(59, 130, 246, 0.45),
     0 0 16px rgba(249, 115, 22, 0.35);
@@ -172,7 +172,7 @@
   color: #f9fafb;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  font-size: 0.75rem;
+  font-size: 1rem;
   line-height: 1.4;
   white-space: normal;
   width: max-content;
@@ -183,7 +183,7 @@
   visibility: hidden;
   transition: all 0.2s ease;
   z-index: 1050;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -303,6 +303,24 @@
 
 .header__localization {
   position: relative;
+
+  .header__icon-btn:hover + .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+  }
+
+  &.country-dropdown {
+    .header__dropdown {
+      left: 0 !important;
+    }
+
+    &:hover .tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      visibility: visible;
+    }
+  }
 }
 
 .header__dropdown {
@@ -441,23 +459,6 @@ body.theme-dark {
   .header__dropdown-item .country-code {
     background: #374151;
     color: #e5e7eb;
-  }
-
-  .header__brand-text {
-    color: #f9fafb;
-  }
-
-  .header__brand-text:hover {
-    background-image: linear-gradient(90deg, #3b82f6, #f97316, #3b82f6);
-    background-size: 200% 100%;
-    background-position: 0 0;
-    animation: brandShine 1.6s linear infinite;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow:
-      0 0 12px rgba(59, 130, 246, 0.6),
-      0 0 18px rgba(249, 115, 22, 0.5);
   }
 
   .header__search-input {

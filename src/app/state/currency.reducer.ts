@@ -7,6 +7,7 @@ export interface CurrencyState {
   error: any | null;
   selected: string | null;
   info: any | null;
+  order: Record<string, number>;
 }
 
 export const initialState: CurrencyState = {
@@ -14,7 +15,21 @@ export const initialState: CurrencyState = {
   loading: false,
   error: null,
   selected: null,
-  info: null
+  info: null,
+  order: {
+    USD: 0,
+    EUR: 1,
+    HUF: 2,
+    UAH: 3,
+    PLN: 6,
+    CZK: 7,
+    ROU: 8,
+    RSD: 9,
+    TRY: 10,
+    CNY: 11,
+    EGP: 12,
+    BRL: 13
+  }
 };
 
 export const currencyReducer = createReducer(

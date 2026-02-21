@@ -10,6 +10,7 @@ import { PricePipe } from '../../pipes/price.pipe';
 import { AuthForm } from '../auth-form/auth-form';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectShippingMethods } from '../../state/shipping.selectors';
+import { ShippingMethod } from '../../state/shipping.reducer';
 
 @Component({
   selector: 'app-order-modal',
@@ -46,11 +47,11 @@ import { selectShippingMethods } from '../../state/shipping.selectors';
 
           <form (ngSubmit)="submitOrder(orderForm)" #orderForm="ngForm" class="order-form">
             <div class="form-group">
-              <label for="shippingMethod">{{ 'orderModal.shippingMethod' | translate }}</label>
+              <label for="shippingMethod">{{ 'orderModal.shippingMethod' | translate }}&nbsp;&nbsp;<small class="shipping-label-details">{{ 'orderModal.shippingMethodDetails' | translate }}</small></label>
               <select id="shippingMethod" name="shippingMethod" [(ngModel)]="shippingMethod" required #shippingModel="ngModel" [class.submitted]="submitted()">
-                <option value="" disabled>{{ 'orderModal.shippingPlaceholder' | translate }}</option>
-                @for (method of shippingMethods(); track method.id) {
-                  <option [value]="method.id">{{ displayMethodLabel(method) }}{{ method.price ? ' - ' : '' }}{{ method.price ? (method.price | price) : '' }}</option>
+                <option value="" disabled hidden>{{ 'orderModal.shippingPlaceholder' | translate }}</option>
+                @for (method of shippingMethods(); track method?.id) {
+                  <option [value]="method?.id">{{ displayMethodLabel(method) | translate}}{{ method?.price ? ' - ' : '' }}{{ method?.price ? (method?.price | price) : '' }}</option>
                 }
               </select>
 
@@ -129,7 +130,10 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
   countries = computed(() => ({ ...this.existsCountries(), ...this.extinctCountries() }));
 
-  displayMethodLabel(method: { id: string; label?: string }): string {
+  displayMethodLabel(method: ShippingMethod | undefined): string {
+    if (!method) {
+      return '';
+    }
     const key = `orderModal.shipping.${method.id}`;
     const translated = this.translate.instant(key);
     return translated === key ? (method.label || method.id) : translated;

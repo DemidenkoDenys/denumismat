@@ -420,6 +420,15 @@ body.theme-dark .coin-card__lupa:hover {
   margin: 0;
 }
 
+.coin-card__description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin: 0;
+  display: inline-block;
+  margin-top: 10px;
+}
+
 .coin-card__meta {
   display: flex;
   align-items: center;
@@ -428,9 +437,6 @@ body.theme-dark .coin-card__lupa:hover {
 
 .coin-card__toggle {
   margin-left: auto;
-}
-
-.coin-card__toggle {
   background: none;
   border: none;
   color: #3b82f6;
@@ -443,6 +449,7 @@ body.theme-dark .coin-card__lupa:hover {
   margin-top: -10px;
   margin-bottom: 5px;
   justify-content: center;
+  position: relative;
   transition:
     color 0.2s ease,
     transform 0.2s ease;

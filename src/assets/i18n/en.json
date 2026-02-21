@@ -1,7 +1,7 @@
 {
   "header": {
-    "brand": "Denumismat",
-    "searchPlaceholder": "enter country, year or coin name",
+    "brand": "DENumismat",
+    "searchPlaceholder": "Enter country, year or coin denomination to find",
     "language": "Language",
     "currency": "Currency",
     "currencyMore": "More countries",
@@ -9,7 +9,9 @@
     "themeToggle": "Toggle dark theme",
     "auth": "Sign in with Google",
     "logout": "Click to log out",
-    "authTooltip": "Authorization keeps your email always ready to any action in the app"
+    "authTooltip": "Please sign in to buy or message me",
+    "currencyTooltip": "Select currency to see prices at the current rate (base price in HUF).",
+    "languageTooltip": "Translate the website into your language"
   },
   "coin": {
     "details": "Details",
@@ -18,7 +20,8 @@
     "price": "{{price}}",
     "weight": "{{weight}} g",
     "booked": "Booked",
-    "askCoin": "Ask me about this coin or propose price",
+    "askCoin": "Ask me about this coin and I will answer you on email (any language accepted)",
+    "authForMessage": "Please sign in to message me",
     "denomination": "Denomination",
     "year": "Year",
     "send": "Send"
@@ -29,32 +32,52 @@
     "totalWeightUnit": "gramm",
     "reset": "Reset",
     "book": "Book",
-    "order": "Order",
+    "buy": "Buy",
     "delete": "Delete",
     "restore": "Restore"
   },
   "pageFooter": {
     "aboutTitle": "About me",
-    "aboutText": "Independent numismatist helping collectors discover rare European coins.",
+    "aboutText": " - it's my account name across various selling platforms. I sell coins from my personal collection and more. Since I'm an amateur collector, I might make pricing mistakes - let me know if you see unfair price! I promise honest service and fast responses.",
+    "aboutTextAdditional": "I have successfully completed many sales on various sites, and all buyers were happy. You can check it by feedbacks on next platforms:",
+    "contactsText": "You can also find me on the following platforms:",
     "linkGaleriaSavaria": "Galeria Savaria",
     "linkVatera": "Vatera",
     "linkAukro": "Aukro",
     "linkEbay": "eBay",
     "infoTitle": "Shipping",
-    "infoItemOne": "Processing: 1-2 business days",
-    "infoItemTwo": "Delivery: 5-10 business days",
-    "infoItemThree": "Tracking included",
-    "infoItemFour": "Free shippsendinging Sover $100",
+    "iOffer": "I offer international and domestic shipping.",
+    "iOffer2": "You can select shipping method when placing an order.",
+    "packing": "I pack all coins securely and hermetically, not detectable by touch when sent by mail envelope.",
+    "noTraceableGreen": "Mails without tracking number",
+    "noTraceableRest": " are not traceable, but from my experience they usually deliver pretty well even abroad (China, Canada, Europe).",
+    "noTraceableAlert": " The buyer takes all responsibility if the letter is lost.",
+    "domestic": "Domestic shipping",
+    "international": "International shipping",
     "mapTitle": "Personal pickup available at"
+  },
+  "shipping": {
+    "custom": "Custom shipping",
+    "personal": "Personal pickup",
+    "mpl_terminal": "MPL terminal",
+    "packeta_other": "Packeta (Czech, Romania, Slovakia)",
+    "packeta_hungary": "Packeta terminal (by Hungary)",
+    "foxpost_terminal": "Foxpost terminal (by Hungary)",
+    "mail_international": "International standart mail (envelope, no track number, not traceable)",
+    "mail_standart_by_hungary": "Standard priority mail (by Hungary, no track number, not traceable)",
+    "mail_registered_by_hungary": "Registered mail (by Hungary, envelope with track number)",
+    "mail_international_registered": "International registered mail (envelope with track number)"
   },
   "filters": {
     "countryPlaceholder": "Country",
     "leaveOnly": "Leave only: ",
     "onlyCoinsOf": "Only coins of ",
     "reset": "reset",
-    "country": "Country",
+    "coinsOf": "Coins of ",
+    "country": "Select country",
     "tag": {
       "MY": "MY",
+      "NEW": "NEW",
       "UNC": "UNC",
       "RARE": "RARE",
       "SOON": "SOON",
@@ -64,8 +87,17 @@
     }
   },
   "introduction": {
-    "title": "Explore historical and rare coins",
-    "subtitle": "Browse, filter and book coins from around the world"
+    "title": "Hi, I'm Denys, an amateur coin collector from Ukraine",
+    "subtitle": "On this site, you can find coins from my collection that I am selling",
+    "subtitle2": "<span class=\"highlight\">I offer 10% discount</span> to anyone who orders coins on this site",
+    "subtitle3_1": "I also sell on ",
+    "subtitle3_2": "Check feedbacks about me there",
+    "step1": "Sign in with Google in 2 clicks or with your email by code verification",
+    "signin": "Sign in",
+    "step1rest": " with Google in 2 clicks or with your email by code verification",
+    "step2": "Click the coins you like or want to buy",
+    "step3": "Click <span class=\"highlight\">book</span> to disable coins for another buyers or <span class=\"highlight\">buy</span> to purchase them",
+    "step4": "After buying, I send you bank account number to pay (order means completed and coins are removed from other platforms only after payment confirmation)"
   },
   "grid": {
     "ariaLabel": "Coin grid",
@@ -85,19 +117,12 @@
     "cancel": "Cancel",
     "submit": "Order now",
     "processing": "Processing...",
-    "confirmCheckbox": "Coins will not be visible to other users for 1 hour unless paid",
+    "confirmCheckbox": "I understand that coins remain available on other platforms until I pay order and seller confirms",
     "confirmCheckboxRequired": "You must accept the visibility terms",
     "shippingMethod": "Shipping method",
+    "shippingMethodDetails": "Read details in site footer",
     "shippingPlaceholder": "Choose shipping method (optional)",
-    "shipping": {
-      "mpl_terminal": "MPL terminal",
-      "foxpost_terminal": "Foxpost terminal (by Hungary only)",
-      "mail_international": "International mail (envelope without track number)",
-      "mail_standart_by_hungary": "Standard mail (by Hungary, without track number)",
-      "mail_registered_by_hungary": "Registered mail (by Hungary)",
-      "mail_international_registered": "International mail (envelope with track number)"
-    },
-    "messageLabel": "Additional note",
+    "messageLabel": "Address, terminal, custom shipping you prefer, telephone or some details are welcome",
     "messagePlaceholder": "Add delivery notes, preferred contact or other info (required)",
     "messageRequired": "Please provide an order note",
     "shippingRequired": "Please choose a shipping method"
@@ -333,6 +358,10 @@
     "AUH": "Austro-Hungarian Empire"
   },
   "messageTooltip": {
-    "enterYourQuestion": "Enter your question"
+    "enterYourQuestion": "Enter your question",
+    "authRequired": "Please, sign in to message me (I should know who write me and who I should answer)"
+  },
+  "countryDropdown": {
+    "tooltip": "Select country to filter coins"
   }
 }

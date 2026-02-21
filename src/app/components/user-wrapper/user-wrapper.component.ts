@@ -19,7 +19,7 @@ import { clearSelection, deselectCoin } from '../../state/coins.actions';
 import { UserService } from '../../services/user.service';
 import { ToastService } from '../../services/toast.service';
 import { first } from 'rxjs';
-import { ApiService } from '../../services/api.service';
+import { NotificationService } from '../../services/api.service';
 
 @Component({
   selector: 'user-wrapper',
@@ -72,7 +72,7 @@ export class UserWrapperComponent implements OnInit {
   private toast = inject(ToastService);
   private router = inject(Router);
   private service = inject(UserService);
-  private apiService = inject(ApiService);
+  private notificationService = inject(NotificationService);
   public authModalService = inject(AuthModalService);
 
   showImageSliderModal = signal(false);
@@ -215,7 +215,7 @@ export class UserWrapperComponent implements OnInit {
           });
         }
 
-        this.apiService.sendOrder(data.coins, user.email, data.shippingMethod || '', data.message || '').subscribe({
+        this.notificationService.sendOrder(data.coins, user.email, data.shippingMethod || '', data.message || '').subscribe({
           next: () => this.toast.success('order success', 5000),
           error: () => this.toast.error('order error', 2000),
         });

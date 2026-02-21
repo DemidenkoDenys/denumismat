@@ -10,6 +10,11 @@ export const selectCurrencyRates = createSelector(
   (state) => state.rates
 );
 
+export const selectCurrencyOrder = createSelector(
+  selectCurrencyState,
+  (state) => state.order
+);
+
 export const selectCurrencyLoading = createSelector(
   selectCurrencyState,
   (state) => state.loading

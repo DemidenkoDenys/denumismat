@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed, effect, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, inject, computed, effect, EventEmitter, Output, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
@@ -149,7 +149,7 @@ export interface Coin {
               <span
                 class="coin-card__tag"
                 [class]="'coin-card__tag--' + (tag.toLowerCase().includes('booked') ? 'booked' : tag.toLowerCase().includes('soon') ? 'soon' : tag.toLowerCase())">
-                {{ tag.toUpperCase() }}
+                {{ 'filters.tag.' + tag.toUpperCase() | translate }}
               </span>
             }
           }
@@ -169,7 +169,10 @@ export interface Coin {
         @if (coin().soon) {
           <h3 class="coin-card__title">{{ coin().description }}</h3>
         } @else {
-          <h3 class="coin-card__title">{{ countryFullName() }} - {{ coin().deno }} - <span class="coin-card__year">{{ coin().year }}</span>{{ coin().description ? ' - ' + coin().description : '' }}</h3>
+          <h3 class="coin-card__title"><strong>{{ countryFullName() }} - {{ coin().deno }}</strong> - <span class="coin-card__year">{{ coin().year }}</span>
+          @if (coin().description) {
+            <span class="coin-card__description">{{ coin().description }}</span>
+          }</h3>
         }
 
         @if (isAdmin()) {
@@ -177,13 +180,13 @@ export interface Coin {
         }
 
         <div class="coin-card__meta">
-          @if (detailsOpen() && detailsText().trim().length > 0 && isServerAvailable()) {
+          @if (detailsOpen() && detailsText().trim().length > 0 && isServerAvailable() && isLoggedIn()) {
             <button
               type="button"
               class="coin-card__submit"
               (click)="$event.stopPropagation(); submitDetails()"
-              aria-label="{{ 'coin.send' | translate }}">
-              <!-- Send icon (paper plane) -->
+              aria-label="{{ 'coin.send' | translate }}"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
@@ -191,11 +194,11 @@ export interface Coin {
               <span class="sr-only">{{ 'coin.send' | translate }}</span>
             </button>
           }
+
           @if (!(detailsOpen() && detailsText().trim().length > 0)) {
             <button
               type="button"
-              class="coin-card__toggle"
-              [disabled]="!isLoggedIn()"
+              class="coin-card__toggle w"
               [class.coin-card__toggle--open]="detailsOpen()"
               (click)="$event.stopPropagation(); toggleDetails()">
               <span class="coin-card__toggle-icon" aria-hidden="true">
@@ -209,18 +212,18 @@ export interface Coin {
         </div>
       </div>
 
-      @if (detailsOpen() && isLoggedIn()) {
+      @if (detailsOpen()) {
           <div class="coin-card__details">
-            <textarea
+            <textarea #detailsTextarea
               id="coin-desc-{{coin().id}}"
               type="text"
               class="coin-card__details-textarea"
               maxlength="100"
               [value]="detailsText()"
-              [disabled]="!isServerAvailable()"
+              [disabled]="!isServerAvailable() || !isLoggedIn()"
               (click)="$event.stopPropagation()"
               (input)="$event.stopPropagation(); detailsText.set($any($event.target).value)"
-              [attr.placeholder]="('coin.askCoin' | translate)"
+              [attr.placeholder]="isLoggedIn() ? ('coin.askCoin' | translate) : ('coin.authForMessage' | translate)"
             ></textarea>
           </div>
         }
@@ -338,7 +341,7 @@ export class CoinCardComponent {
   // Check if current image is placeholder
   isPlaceholder = computed(() => {
     const url = this.currentImageUrl();
-    return url === this.placeholderImageUrl || url.includes('assets/placeholder') || url.includes('placeholder-image');
+    return !url || url === this.placeholderImageUrl || url.includes('assets/placeholder') || url.includes('placeholder-image');
   });
 
   // Whether this coin is booked/reserved (truthy `booked_at` means booked)
@@ -367,12 +370,6 @@ export class CoinCardComponent {
           }
         } catch { }
       }
-    });
-
-    // Keep local editable text in sync when coin input changes
-    effect(() => {
-      const desc = this.coin().description ?? '';
-      this.detailsText.set(desc);
     });
 
     // Get list of image keys when coin changes
@@ -479,8 +476,20 @@ export class CoinCardComponent {
   detailsText = signal('');
   coinMessageSent = output<{ coin: Coin; message: string }>();
 
+  // reference to textarea element so we can focus when details are shown
+  @ViewChild('detailsTextarea') detailsTextarea?: import('@angular/core').ElementRef<HTMLTextAreaElement>;
+
   toggleDetails() {
-    this.detailsOpen.update(v => !v);
+    this.detailsOpen.update(v => {
+      const next = !v;
+      if (!v && next) {
+        // details are being opened; focus textarea on next tick
+        setTimeout(() => {
+          this.detailsTextarea?.nativeElement?.focus();
+        });
+      }
+      return next;
+    });
   }
 
   submitDetails() {
@@ -491,7 +500,7 @@ export class CoinCardComponent {
 
     this.coinMessageSent.emit({ coin: this.coin(), message });
 
-    // close editor after submit
+    this.detailsText.set('');
     this.detailsOpen.set(false);
   }
 
@@ -509,7 +518,7 @@ export class CoinCardComponent {
   onImageLoad(event: Event) {
     const img = event.target as HTMLImageElement;
     const currentSrc = img.src;
-    const isPlaceholder = currentSrc.includes('placeholder') || currentSrc.includes('assets/');
+    const isPlaceholder = !currentSrc || currentSrc.includes('placeholder') || currentSrc.includes('assets/');
 
     if (!isPlaceholder) {
       // Find which index this image belongs to

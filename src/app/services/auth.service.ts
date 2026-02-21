@@ -106,8 +106,7 @@ export class AuthService {
   }
 
   setVerifyCode() {
-    const code = localStorage.getItem(AUTH_VERIFY_CODE) ?? Math.floor(100000 + Math.random() * 900000).toString();
-    const encryptedCode = encrypt(code);
+    const encryptedCode = localStorage.getItem(AUTH_VERIFY_CODE) ?? encrypt(Math.floor(100000 + Math.random() * 900000).toString());
     localStorage.setItem(AUTH_VERIFY_CODE, encryptedCode);
     return encryptedCode;
   }

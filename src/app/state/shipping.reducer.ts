@@ -2,8 +2,10 @@ import { createReducer, on } from '@ngrx/store';
 import * as ShippingActions from './shipping.actions';
 import { keyBy } from 'lodash-es';
 
+export interface ShippingMethod { id: string; label: string; price: number, domestic: boolean };
+
 export interface ShippingState {
-  methods: Record<string, { id: string; label: string; price?: number }>;
+  methods: Record<string, ShippingMethod>;
 }
 
 export const initialShippingState: ShippingState = {

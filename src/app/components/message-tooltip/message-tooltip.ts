@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { selectIsLoggedIn } from '../../state/auth/auth.selectors';
 import { TranslateModule } from '@ngx-translate/core';
-import { ApiService } from '../../services/api.service';
+import { NotificationService } from '../../services/api.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectServerIsAvailable } from '../../state/server.selectors';
 
@@ -47,7 +47,7 @@ import { selectServerIsAvailable } from '../../state/server.selectors';
 
       @if (!isLoggedIn()) {
         <div class="tooltip top" role="tooltip">
-          Auth required
+          {{ 'messageTooltip.authRequired' | translate }}
         </div>
       }
 
@@ -68,7 +68,7 @@ import { selectServerIsAvailable } from '../../state/server.selectors';
 })
 export class MessageTooltipComponent {
   private store = inject(Store);
-  private apiService = inject(ApiService);
+  private notificationService = inject(NotificationService);
   private elementRef = inject(ElementRef);
 
 
@@ -167,7 +167,7 @@ export class MessageTooltipComponent {
 
   private sendMessageRequest(text: string) {
     this.isTextareaDisabled.set(true);
-    this.apiService.sendMessage(text).subscribe({
+    this.notificationService.sendMessage(text).subscribe({
       next: () => {
         this.messageText.set('');
         this.isTextareaDisabled.set(false);

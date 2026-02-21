@@ -8,6 +8,11 @@ export const selectCountries = createSelector(
   (state) => state.countries
 );
 
+export const selectCountriesOrder = createSelector(
+  selectCountriesState,
+  (state) => state.order
+);
+
 export const selectCountriesLoading = createSelector(
   selectCountriesState,
   (state) => state.loading

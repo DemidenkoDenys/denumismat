@@ -1,17 +1,15 @@
-import { Component, ChangeDetectionStrategy, output, signal, inject, ViewChild, PLATFORM_ID, ChangeDetectorRef, effect, Renderer2 } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, ChangeDetectionStrategy, output, signal, inject, ViewChild, ChangeDetectorRef, effect } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
 import { loginSuccess, loginWithGoogle } from '../../state/auth/auth.actions';
-import { AuthModalService } from '../../services/auth-modal.service';
 import { AuthForm } from '../auth-form/auth-form';
-import { BaseModalComponent } from '../base-modal/base-modal';
-import { UserService } from '../../services/user.service';
-import { AuthService } from '../../services/auth.service';
+import { BaseModalComponent } from '../base-modal/base-modal';import { AuthService } from '../../services/auth.service';
 import { selectBookedCoinsByEmail } from '../../state/coins.actions';
+import { NotificationService } from '../../services/api.service';
 
 @Component({
   selector: 'app-auth-modal',
@@ -64,14 +62,10 @@ import { selectBookedCoinsByEmail } from '../../state/coins.actions';
 })
 export class AuthModalComponent {
   @ViewChild(AuthForm) authFormComponent!: AuthForm;
-  private platformId = inject(PLATFORM_ID);
   private cdr = inject(ChangeDetectorRef);
   private store = inject(Store);
-  private renderer = inject(Renderer2);
-  private document = inject(DOCUMENT);
-  private modalService = inject(AuthModalService);
-  private userService = inject(UserService);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
 
   currentUser = toSignal(this.store.select(selectUser));
 
@@ -151,6 +145,7 @@ export class AuthModalComponent {
     if (this.authService.isEmailValid(this.email) && !this.showVerifyInput()) {
       const code = this.authService.setVerifyCode();
       this.showVerifyInput.set(!!code);
+      this.notificationService.sendVerifyCode(this.email, code).subscribe();
       this.authService.setStorageEmailUser(this.name, this.email);
       return;
     }

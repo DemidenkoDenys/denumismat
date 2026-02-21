@@ -1,4 +1,4 @@
-<div class="header__localization" #languageContainer>
+<div class="header__localization country-dropdown" #languageContainer>
   <button
     type="button"
     class="header__icon-btn"
@@ -12,6 +12,8 @@
       <img src="./assets/no-country.png" alt="" />
     }
   </button>
+
+  <div class="tooltip top" role="tooltip">{{ 'countryDropdown.tooltip' | translate }}</div>
 
   @if (isMenuOpen()) {
     <div class="header__dropdown" role="menu" [style.left.0]="true">

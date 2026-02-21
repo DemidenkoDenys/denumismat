@@ -33,8 +33,12 @@
 
   & + .tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateX(-80%) translateY(0);
     visibility: visible;
+
+    &:before {
+      display: none;
+    }
   }
 }
 

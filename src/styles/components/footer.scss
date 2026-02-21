@@ -40,6 +40,10 @@
   gap: 0.75rem;
 }
 
+.page-footer__section--wide {
+  grid-column: span 2;
+}
+
 .page-footer__title {
   font-size: 1rem;
   font-weight: 600;
@@ -53,10 +57,55 @@
   line-height: 1.5;
 }
 
+.page-footer__brand {
+  color: #10b981; /* green-500 from Tailwind for visible contrast */
+  font-weight: 600;
+}
+
+.page-footer__highlight {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.page-footer__alert {
+  color: #7c4545;
+  font-weight: 500;
+}
+
+.page-footer__list__price {
+  color: #10b981; /* green-500 */
+}
+
+/* grid wrapper for shipping info/map */
+.page-footer__section-shipping-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* make wide section take two columns in overall footer grid */
+.page-footer__section--wide {
+  grid-column: span 2;
+}
+
+/* shipping methods should sit under both columns */
+.page-footer__section-shipping-methods {
+  grid-column: 1 / -1;
+}
+
+.page-footer__text--international {
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .page-footer__section-shipping-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 .page-footer__links {
   display: flex;
   gap: 2rem;
-  margin: 0.5rem 0 0;
   padding: 0;
 }
 
@@ -83,6 +132,8 @@
   border-radius: 12px;
   overflow: hidden;
   min-height: 180px;
+  margin-top: 5px;
+  margin-bottom: 20px;
 }
 
 .page-footer__map iframe {

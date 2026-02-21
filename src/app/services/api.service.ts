@@ -6,9 +6,10 @@ import { selectUser } from '../state/auth/auth.selectors';
 import { EMPTY, switchMap, take } from 'rxjs';
 import { Coin } from '../components/coins/coin-card';
 import { PricePipe } from '../pipes/price.pipe';
+import { decrypt } from '../utils/cr.utils';
 
 @Injectable({ providedIn: 'root', })
-export class ApiService {
+export class NotificationService {
   private http = inject(HttpClient);
   private store = inject(Store);
   private price = inject(PricePipe);
@@ -39,9 +40,9 @@ Message: ${message}
       switchMap(user => {
         if (user) {
           const text = `
-${user.email}
+Message from: ${user.email}
 ${message}`;
-          return this.http.post(`${environment.apiUrl}/send`, { text, email: user.email, telegramOnly: true });
+          return this.http.post(`${environment.apiUrl}/send`, { subject: 'Message', text, email: user.email, telegramOnly: true });
         }
         return EMPTY;
       })
@@ -54,13 +55,21 @@ ${message}`;
       switchMap(user => {
         if (user) {
           const text = `
-${user.email}
-${coin.deno} - ${coin.year}
+User ask: ${user.email}
+About coin: ${coin.id} - (${coin.deno} - ${coin.year})
 ${message}`;
-          return this.http.post(`${environment.apiUrl}/send`, { text, email: user.email, telegramOnly: true });
+          return this.http.post(`${environment.apiUrl}/send`, { subject: 'Coin Question', text, email: user.email, telegramOnly: true });
         }
         return EMPTY;
       })
     );
+  }
+
+  sendVerifyCode(email: string, code: string) {
+    console.log(code, decrypt(code));
+    const text = `
+User: ${email}
+Verification code: ${decrypt(code)}`;
+    return this.http.post(`${environment.apiUrl}/send`, { email, text, subject: 'verification code' });
   }
 }

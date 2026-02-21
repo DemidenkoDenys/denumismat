@@ -18,7 +18,7 @@ export interface Filters {
     <aside class="filters" [class.scrolling-down]="scrollingDown()" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
         <div class="filters__group filters__group--country">
-          <span class="filters__group--country-description">{{ 'filters.country' | translate}}: </span>
+          <span class="filters__group--country-description">{{ selectedCountry() ? ('filters.coinsOf' | translate) : ('filters.country' | translate)}} </span>
           @if (selectedCountry()) {
             <span>{{ 'countries.' + selectedCountry()  | translate }}</span>
           } @else {

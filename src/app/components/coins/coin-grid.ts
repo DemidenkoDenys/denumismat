@@ -14,7 +14,7 @@ import { IndexedDbService } from '../../services/indexed-db.service';
 import { selectIsAdmin } from '../../state/auth/auth.selectors';
 import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
 import { ToastService } from '../../services/toast.service';
-import { ApiService } from '../../services/api.service';
+import { NotificationService } from '../../services/api.service';
 import { first } from 'rxjs';
 import { selectCurrencyRates, selectSelectedRate } from '../../state/currency.selectors';
 import { filter, maxBy, minBy } from 'lodash';
@@ -56,7 +56,7 @@ export class CoinGridComponent implements OnInit {
   private store = inject(Store);
   private toast = inject(ToastService);
   private indexedDb = inject(IndexedDbService);
-  private apiService = inject(ApiService);
+  private notificationService = inject(NotificationService);
   private selectionRestored = false;
 
   coins = toSignal(this.store.select(selectCoins), { initialValue: [] });
@@ -226,7 +226,7 @@ export class CoinGridComponent implements OnInit {
     if (!coin) return;
 
     // prevent selecting booked coins
-    if (!this.isAdmin() && coin.booked_at && coin.disabled) return;
+    if (!this.isAdmin() && coin.disabled) return;
 
     // Enforce maximum selection limit in the UI (reducer also enforces defensively)
     const currentCount = this.selectedIds().length;
@@ -259,7 +259,7 @@ export class CoinGridComponent implements OnInit {
 
   onCoinMessageSent(event: { coin: Coin, message: string }) {
     const { coin, message } = event;
-    this.apiService.sendCoinQuestion(coin, message).subscribe();
+    this.notificationService.sendCoinQuestion(coin, message).subscribe();
   }
 
   showMore() {

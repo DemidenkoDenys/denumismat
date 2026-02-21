@@ -8,6 +8,7 @@ export interface CountriesState {
   loading: boolean;
   error: any | null;
   selected: string | null;
+  order: Record<string, number>;
 }
 
 export const initialState: CountriesState = {
@@ -15,7 +16,27 @@ export const initialState: CountriesState = {
   extincts: null,
   loading: false,
   error: null,
-  selected: null
+  selected: null,
+  order: {
+    USA: 0,
+    HUN: 1,
+    UKR: 2,
+    DEU: 3,
+    FRA: 4,
+    SVK: 5,
+    POL: 6,
+    ROU: 7,
+    CZE: 9,
+    SRB: 10,
+    ITA: 11,
+    ESP: 12,
+    LVA: 13,
+    LTU: 14,
+    TUR: 15,
+    CHN: 16,
+    EGY: 17,
+    BRA: 18
+  }
 };
 
 export const countriesReducer = createReducer(

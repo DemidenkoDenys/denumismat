@@ -33,7 +33,7 @@ import { loadShippingMethods } from './state/shipping.actions';
     </app-header>
 
     <main>
-      <app-introduction></app-introduction>
+      <app-introduction [isLoggedIn]="isLoggedIn()"></app-introduction>
       <app-filters
         [selectedCount]="selectedCount()"
         [priceBounds]="priceBounds()"
@@ -102,7 +102,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), { initialValue: null });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
-  private isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
+  public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
 
   conversionRate = computed(() => {
     const rates = this.currencyRates();

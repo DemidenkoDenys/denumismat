@@ -1,6 +1,5 @@
-import { Component, Input, Output, EventEmitter, signal, inject, computed, effect, output, HostListener, ViewChild, ElementRef, input } from '@angular/core';
+import { Component, Input, signal, inject, computed, output, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Language, LanguageOption } from '../header/header';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CountriesMap, CountryInfo } from '../../state/countries.models';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';

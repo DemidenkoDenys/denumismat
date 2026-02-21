@@ -1,4 +1,5 @@
-import { Component, ChangeDetectionStrategy, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, Inject } from '@angular/core';
+import { AuthModalService } from '../../services/auth-modal.service';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,9 +14,29 @@ import { TranslateModule } from '@ngx-translate/core';
             <span class="introduction__admin-badge">admin</span>
           }
         </h1>
+        <p class="introduction__subtitle">{{ 'introduction.subtitle' | translate }}</p>
+        <p class="introduction__subtitle" [innerHTML]="'introduction.subtitle2' | translate"></p>
         <p class="introduction__subtitle">
-          {{ 'introduction.subtitle' | translate }}
+          <span>{{ 'introduction.subtitle3_1' | translate }}</span>
+          <a href="https://www.vatera.hu/listings/index.php?us=Denumizmat" target="_blank" rel="noopener noreferrer">Vatera</a>,
+          <a href="https://galeriasavaria.hu/en/felhasznalo/Denumismat/termekek/" target="_blank" rel="noopener noreferrer">Galéria Savaria</a>,
+          <a href="https://aukro.hu/felhasznalo/denumismat/ajanlatok" target="_blank" rel="noopener noreferrer">Aukro</a>.
+          <small> {{ 'introduction.subtitle3_2' | translate }}</small>
         </p>
+        <ul class="introduction__guide">
+          <li>
+            <ng-container *ngIf="!isLoggedIn(); else already">
+              <a href="#" (click)="openAuth($event)">{{ 'introduction.signin' | translate }}</a>
+              {{ 'introduction.step1rest' | translate }}
+            </ng-container>
+            <ng-template #already>
+              <span>{{ 'introduction.step1' | translate }}</span>
+            </ng-template>
+          </li>
+          <li><span>{{ 'introduction.step2' | translate }}</span></li>
+          <li [innerHTML]="'introduction.step3' | translate"></li>
+          <li><span>{{ 'introduction.step4' | translate }}</span></li>
+        </ul>
       </div>
       <div class="introduction__background" aria-hidden="true"></div>
     </section>
@@ -26,4 +47,12 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class IntroductionComponent {
   isAdmin = input(false);
+  isLoggedIn = input(false);
+
+  constructor(@Inject(AuthModalService) private authModal: AuthModalService) { }
+
+  openAuth(event: Event) {
+    event.preventDefault();
+    this.authModal.showAuthModal();
+  }
 }

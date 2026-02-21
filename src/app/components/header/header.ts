@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectCountries } from '../../state/countries.selectors';
-import { selectCurrenciesInfo } from '../../state/currency.selectors';
+import { selectCountries, selectCountriesOrder } from '../../state/countries.selectors';
+import { selectCurrenciesInfo, selectCurrencyOrder } from '../../state/currency.selectors';
 import { setSelectedCurrency } from '../../state/currency.actions';
 import { setSelectedLanguage } from '../../state/countries.actions';
 import { CountriesMap } from '../../state/countries.models';
@@ -29,6 +29,7 @@ export interface CurrencyOption {
   countryCode: string;
   countryName: string;
   currencyCode: Currency;
+  currencyName: string;
   symbol: string;
   rate: number;
 }
@@ -129,6 +130,10 @@ export interface CurrencyOption {
               <span class="header__currency-symbol">{{ getCurrentCurrency().symbol }}</span>
             </button>
 
+            <div class="tooltip" role="tooltip">
+              {{ 'header.currencyTooltip' | translate }}
+            </div>
+
             @if (isCurrencyMenuOpen()) {
               <div class="header__dropdown" role="menu">
                 @for (currency of mustCurrencies(); track currency.key) {
@@ -139,7 +144,7 @@ export interface CurrencyOption {
                     (click)="selectCurrency(currency.key)"
                     role="menuitem">
                     <span class="currency-symbol">{{ currency.symbol }}</span>
-                    <span>{{ currency.countryName }} ({{ currency.currencyCode }})</span>
+                    <span>{{ currency.currencyName }} ({{ currency.currencyCode }})</span>
                   </button>
                 }
                 <button
@@ -180,6 +185,10 @@ export interface CurrencyOption {
               [attr.aria-label]="'header.language' | translate">
               <span class="fi fi-{{ getFlagCode(getCurrentLanguageCountryCode()) }}"></span>
             </button>
+
+            <div class="tooltip" role="tooltip">
+              {{ 'header.languageTooltip' | translate }}
+            </div>
 
             @if (isLanguageMenuOpen()) {
               <div class="header__dropdown" role="menu">
@@ -287,12 +296,16 @@ export class HeaderComponent {
   currentCurrencyKey = signal('');
   currentLanguageCountryKey = signal('');
 
+  private order = toSignal(this.store.select(selectCountriesOrder), { initialValue: null });
   private countries = toSignal<CountriesMap | null>(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal<any>(this.store.select(selectCurrenciesInfo), { initialValue: null });
+  private currenciesOrder = toSignal<any>(this.store.select(selectCurrencyOrder), { initialValue: null });
 
   readonly mustCurrencies = computed<CurrencyOption[]>(() => {
     const map = this.countries();
+    const order = this.currenciesOrder() ?? {};
     const currInfo = this.currenciesInfo();
+
     if (!map || !currInfo) return [];
 
     // Find any EUR country to get EUR rate
@@ -303,6 +316,7 @@ export class HeaderComponent {
       countryCode: 'EUR',
       countryName: 'Europe',
       currencyCode: 'EUR',
+      currencyName: eurInfo.name,
       symbol: eurInfo.symbol,
       rate: eurCountry.rate,
     }] : [];
@@ -310,18 +324,19 @@ export class HeaderComponent {
     // Find USA entry
     const usaCountry = map['USA'];
     const usdInfo = currInfo[usaCountry?.currency];
-    const usaEntry: CurrencyOption[] = usaCountry && usaCountry.must && usdInfo ? [{
+    const usaEntry: CurrencyOption[] = usaCountry && usdInfo ? [{
       key: usaCountry.code,
       countryCode: usaCountry.code,
       countryName: usaCountry.original,
       currencyCode: usaCountry.currency,
+      currencyName: usdInfo.name,
       symbol: usdInfo.symbol,
       rate: usaCountry.rate,
     }] : [];
 
     const currencies = Object.values(map)
-      .filter((country) => country.must && country.currency !== 'EUR' && country.code !== 'USA')
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((country) => country.currency !== 'EUR' && country.code !== 'USA' && country.code !== 'SLV' && country.currency in order)
+      .sort((a, b) => order[a.currency] - order[b.currency])
       .map((country) => {
         const info = currInfo[country.currency];
         return {
@@ -329,21 +344,28 @@ export class HeaderComponent {
           countryCode: country.code,
           countryName: country.original,
           currencyCode: country.currency,
+          currencyName: info?.name || '',
           symbol: info?.symbol || '$',
           rate: country.rate,
         };
       });
 
-    return [...eurEntry, ...usaEntry, ...currencies];
+    console.log([...usaEntry, ...eurEntry, ...currencies]);
+
+
+    return [...usaEntry, ...eurEntry, ...currencies];
   });
 
   readonly otherCurrencies = computed<CurrencyOption[]>(() => {
     const map = this.countries();
+    const order = this.currenciesOrder() ?? {};
     const currInfo = this.currenciesInfo();
+
     if (!map || !currInfo) return [];
+
     return Object.values(map)
-      .filter((country) => !country.must && country.currency !== 'EUR')
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((country) => country.currency !== 'EUR' && country.code !== 'USA' && country.code !== 'SLV' && !(country.currency in order))
+      .sort((a, b) => order[a.currency] - order[b.currency])
       .map((country) => {
         const info = currInfo[country.currency];
         return {
@@ -351,6 +373,7 @@ export class HeaderComponent {
           countryCode: country.code,
           countryName: country.original,
           currencyCode: country.currency,
+          currencyName: info?.name || '',
           symbol: info?.symbol || '$',
           rate: country.rate,
         };
@@ -364,10 +387,11 @@ export class HeaderComponent {
 
   readonly mustLanguages = computed<LanguageOption[]>(() => {
     const map = this.countries();
+    const order = this.order() ?? {};
     if (!map) return [];
     return Object.values(map)
-      .filter((country) => country.must)
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .filter((country) => country.code in order)
+      .sort((a, b) => order[a.code] - order[b.code])
       .map((country) => ({
         key: country.code,
         countryCode: country.code,
@@ -378,9 +402,10 @@ export class HeaderComponent {
 
   readonly otherLanguages = computed<LanguageOption[]>(() => {
     const map = this.countries();
+    const order = this.order() ?? {};
     if (!map) return [];
     return Object.values(map)
-      .filter((country) => !country.must)
+      .filter((country) => !(country.code in order))
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((country) => ({
         key: country.code,
