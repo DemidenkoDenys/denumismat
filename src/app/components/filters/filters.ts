@@ -1,7 +1,9 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CountryDropdownComponent } from '../country-dropdown/country-dropdown.component';
+import { fromEvent } from 'rxjs';
+import { map, pairwise, distinctUntilChanged } from 'rxjs/operators';
 
 export interface Filters {
   tags: string[];
@@ -13,7 +15,7 @@ export interface Filters {
 @Component({
   selector: 'app-filters',
   template: `
-    <aside class="filters" [attr.aria-label]="'filters.tags' | translate">
+    <aside class="filters" [class.scrolling-down]="scrollingDown()" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
         <div class="filters__group filters__group--country">
           <span class="filters__group--country-description">{{ 'filters.country' | translate}}: </span>
@@ -110,17 +112,15 @@ export interface Filters {
   standalone: true,
   imports: [CommonModule, TranslateModule, CountryDropdownComponent],
 })
-export class FiltersComponent {
+export class FiltersComponent implements OnInit {
   priceRange = input<[number, number]>([0, 10000]);
   priceBounds = input<[number, number]>([0, 10000]);
   tagsInput = input<string[]>([]);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
   conversionRate = input<number>(1);
   allCoins = input<any[]>([]);
-
   selectedCount = input<number>(0);
 
-  // Compute available tags from all coins
   availableTags = computed(() => {
     const coins = this.allCoins();
     if (!coins || coins.length === 0) return [];
@@ -137,8 +137,8 @@ export class FiltersComponent {
 
   filterChange = output<Filters>();
 
-  // local signals for interactive control
   priceMin = signal<number>(this.priceRange()[0]);
+  scrollingDown = signal(false);
 
   formattedMinPrice = computed(() => {
     const price = this.priceMin().toFixed(2);
@@ -196,6 +196,15 @@ export class FiltersComponent {
         this.priceMax.set(maxBound);
       }
     });
+  }
+
+  ngOnInit() {
+    fromEvent(window, 'scroll').pipe(
+      map(() => window.pageYOffset || document.documentElement.scrollTop),
+      pairwise(),
+      map(([prev, curr]) => curr > prev ? 'down' : 'up'),
+      distinctUntilChanged()
+    ).subscribe(direction => this.scrollingDown.set(direction === 'down'));
   }
 
   private emit() {

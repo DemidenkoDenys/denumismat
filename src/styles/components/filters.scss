@@ -4,6 +4,22 @@
   z-index: 90;
   padding: 1rem 0;
   background: var(--color-background);
+  transition: top 0.3s ease, transform 0.3s ease;
+}
+
+/* added class when user scrolls downward; mobile behaviour defined below */
+.filters.scrolling-down {
+  /* general style kept empty; specific breakpoints override */
+}
+
+/* mobile hide/show using top property */
+@media (max-width: 600px) {
+  .filters {
+    top: none; /* reset so we can animate from 0 to 500px */
+  }
+  .filters.scrolling-down {
+    top: -200px;
+  }
 }
 
 .filters__inner {
