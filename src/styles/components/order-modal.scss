@@ -23,6 +23,22 @@
     animation: slideIn 0.3s ease-out;
   }
 
+  // responsive breakpoints for modal container
+  @media (max-width: 900px) {
+    .modal-container {
+      width: 70%;
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .modal-container {
+      width: 95%;
+      max-width: none;
+      border-radius: 8px;
+    }
+  }
+
   .modal-header {
     display: flex;
     justify-content: space-between;
@@ -305,6 +321,7 @@
     to { transform: translateY(0); opacity: 1; }
   }
 }
+
 
 /* Dark Theme Overrides */
   body.theme-dark {

@@ -105,3 +105,13 @@
     }
   }
 }
+
+@media (max-width: 600px) {
+  .auth-form_container {
+    flex-direction: column;
+
+    .form-group {
+      width: 100% !important;
+    }
+  }
+}
