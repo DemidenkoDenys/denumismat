@@ -15,6 +15,9 @@ import { selectIsAdmin } from '../../state/auth/auth.selectors';
 import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
 import { ToastService } from '../../services/toast.service';
 import { ApiService } from '../../services/api.service';
+import { first } from 'rxjs';
+import { selectCurrencyRates, selectSelectedRate } from '../../state/currency.selectors';
+import { filter, maxBy, minBy } from 'lodash';
 
 @Component({
   selector: 'app-coin-grid',
@@ -63,6 +66,7 @@ export class CoinGridComponent implements OnInit {
   selectionLimit = toSignal(this.store.select(selectIsSelectionLimitReached), { initialValue: false });
   selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: {} });
   selectedIds = toSignal(this.store.select(selectSelectedCoinIds), { initialValue: [] });
+  rate = toSignal(this.store.select(selectSelectedRate));
 
   displayLimit = signal(20);
   // UI flag for selection limit exceeded (temporary warning)
@@ -145,8 +149,9 @@ export class CoinGridComponent implements OnInit {
         }
 
         if (filters.priceRange) {
+          const rate = this.rate() ?? 1;
           const [min, max] = filters.priceRange;
-          if (coin.price < min || coin.price > max) return false;
+          if (coin.discountPrice && (rate * coin.discountPrice < min || rate * coin.discountPrice > max)) return false;
         }
 
         if (filters.tags && filters.tags.length > 0) {
@@ -221,7 +226,7 @@ export class CoinGridComponent implements OnInit {
     if (!coin) return;
 
     // prevent selecting booked coins
-    if (!this.isAdmin() && coin.booked_at) return;
+    if (!this.isAdmin() && coin.booked_at && coin.disabled) return;
 
     // Enforce maximum selection limit in the UI (reducer also enforces defensively)
     const currentCount = this.selectedIds().length;
@@ -321,14 +326,15 @@ export class CoinGridComponent implements OnInit {
   }
 
   private emitPriceBounds() {
-    const coins = this.coins();
-    if (!coins) return;
-    const prices = coins
-      .map(c => c.price)
-      .filter(price => Number.isFinite(price));
-    if (prices.length === 0) return;
-    const min = Math.min(...prices);
-    const max = Math.max(...prices);
-    this.priceBoundsChange.emit([Number(min.toFixed(2)), Number(max.toFixed(2))]);
+    this.store.select(selectCurrencyRates).pipe(first()).subscribe(rates => {
+      const rate = this.rate() ?? 1;
+      const coins: Coin[] = filter(this.coins(), c => c.discountPrice) as Coin[];
+      const min = minBy(coins, 'discountPrice')?.discountPrice ?? 0;
+      const max = maxBy(coins, 'discountPrice')?.discountPrice ?? 100;
+      this.priceBoundsChange.emit([
+        rate * min,
+        rate * max,
+      ]);
+    })
   }
 }

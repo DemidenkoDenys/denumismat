@@ -342,7 +342,7 @@ export class CoinCardComponent {
   });
 
   // Whether this coin is booked/reserved (truthy `booked_at` means booked)
-  isBooked = computed(() => !this.isAdmin() && !!this.coin().booked_at);
+  isBooked = computed(() => !this.isAdmin() && !!this.coin().booked_at && this.coin().disabled);
   isSoon = computed(() => !this.isAdmin() && !!this.coin().soon);
 
   // Computed signal for image URL (backward compatibility)

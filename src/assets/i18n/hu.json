@@ -54,9 +54,12 @@
     "reset": "visszaállítás",
     "selectCountry": "Válasszon országot a szűréshez:",
     "tag": {
+      "MY": "Saját",
       "UNC": "UNC",
-      "Rare": "Ritka",
-      "Sale": "Akció",
+      "RARE": "Ritka",
+      "SOON": "Hamarosan",
+      "SALE": "Akció",
+      "BOOKED": "Foglalt",
       "Selected": "Kiválasztott"
     }
   },

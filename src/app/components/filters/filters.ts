@@ -16,12 +16,12 @@ export interface Filters {
     <aside class="filters" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
         <div class="filters__group filters__group--country">
+          <span class="filters__group--country-description">{{ 'filters.country' | translate}}: </span>
           @if (selectedCountry()) {
-            <span class="filters__group--country-description">{{ 'filters.onlyCoinsOf' | translate }}</span>&nbsp;&nbsp;<span>{{ 'countries.' + selectedCountry()  | translate }}</span>
+            <span>{{ 'countries.' + selectedCountry()  | translate }}</span>
           } @else {
-            <span>{{ 'filters.selectCountry' | translate}}</span><span class="filters__group--country-description">{{ 'filters.forFiltering' | translate}}</span>
+            <country-dropdown [value]="selectedCountry() || ''" (onCountryChanged)="onCountryChange($event)"></country-dropdown>
           }
-          <country-dropdown [value]="selectedCountry() || ''" (onCountryChanged)="onCountryChange($event)"></country-dropdown>
 
           @if (selectedCountry()) {
             <button class="filters__group--country-reset" (click)="onCountryChange(null)">{{ 'filters.reset' | translate }}</button>
@@ -83,7 +83,7 @@ export interface Filters {
                 [class]="'filters__tag--' + tag.toLowerCase()"
                 [class.active]="tags().includes(tag)"
                 (click)="toggleTag(tag)">
-                {{ tag.toUpperCase() }}
+                {{ ('filters.tag.' + tag.toUpperCase()) | translate }}
               </button>
             }
 
@@ -141,7 +141,7 @@ export class FiltersComponent {
   priceMin = signal<number>(this.priceRange()[0]);
 
   formattedMinPrice = computed(() => {
-    const price = (this.priceMin() * this.conversionRate()).toFixed(2);
+    const price = this.priceMin().toFixed(2);
     const format = this.currencyFormat();
     const currency = format.short;
     // Add thousands separator (space)
@@ -152,7 +152,7 @@ export class FiltersComponent {
   });
 
   formattedMaxPrice = computed(() => {
-    const price = (this.priceMax() * this.conversionRate()).toFixed(2);
+    const price = this.priceMax().toFixed(2);
     const format = this.currencyFormat();
     const currency = format.short;
     // Add thousands separator (space)

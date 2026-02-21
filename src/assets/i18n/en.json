@@ -52,12 +52,14 @@
     "leaveOnly": "Leave only: ",
     "onlyCoinsOf": "Only coins of ",
     "reset": "reset",
-    "selectCountry": "Select country",
-    "forFiltering": "for filtering",
+    "country": "Country",
     "tag": {
+      "MY": "MY",
       "UNC": "UNC",
-      "Rare": "Rare",
-      "Sale": "Sale",
+      "RARE": "RARE",
+      "SOON": "SOON",
+      "SALE": "SALE",
+      "BOOKED": "BOOKED",
       "Selected": "Selected"
     }
   },

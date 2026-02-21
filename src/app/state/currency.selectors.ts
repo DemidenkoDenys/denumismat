@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { CurrencyState } from './currency.reducer';
 import { selectCountries } from './countries.selectors';
+import { CountriesState } from './countries.reducer';
 
 export const selectCurrencyState = createFeatureSelector<CurrencyState>('currency');
 
@@ -22,6 +23,17 @@ export const selectCurrencyError = createSelector(
 export const selectSelectedCurrency = createSelector(
   selectCurrencyState,
   (state) => state.selected
+);
+
+export const selectSelectedRate = createSelector(
+  selectCurrencyState,
+  createFeatureSelector<CountriesState>('countries'),
+  (state, countries) => {
+    const countryCode = state.selected;
+    const currency = countryCode ? countryCode === 'EUR' ? countryCode : (countries?.countries ?? {})[countryCode]?.currency : 'USD';
+    const rate = state.rates ? state.rates[currency] / state.rates.HUF : 1;
+    return rate;
+  }
 );
 
 export const selectCurrenciesInfo = createSelector(

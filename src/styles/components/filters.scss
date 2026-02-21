@@ -252,6 +252,7 @@
 
   &.active {
     font-weight: 500;
+    border-color: blue;
   }
 }
 
@@ -272,7 +273,8 @@
   }
 }
 
-.filters__tag--rare {
+.filters__tag--my,
+.filters__tag--soon {
   border-color: #f97316;
   color: #c2410c;
 

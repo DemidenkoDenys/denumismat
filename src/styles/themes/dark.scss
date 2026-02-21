@@ -171,7 +171,8 @@ body.theme-dark {
     }
   }
 
-  .filters__tag--rare {
+  .filters__tag--my,
+  .filters__tag--soon {
     border-color: #f97316;
     color: #fed7aa;
 
@@ -184,6 +185,23 @@ body.theme-dark {
     &.active {
       background: #f97316;
       border-color: #f97316;
+      color: #ffffff;
+    }
+  }
+
+  .filters__tag--booked {
+    border-color: #3a2020;
+    color: #bbf7d0;
+
+    &:hover {
+      border-color: #4b2020;
+      background: #0f2a1c;
+      color: #dcfce7;
+    }
+
+    &.active {
+      background: #603333;
+      border-color: #512727;
       color: #ffffff;
     }
   }
@@ -341,32 +359,39 @@ body.theme-dark {
   .modal-container select,
   .modal-container .form-group select,
   .order-form select,
-  select[name="shippingMethod"] {
+  select[name='shippingMethod'] {
     background: rgba(255, 255, 255, 0.02);
     border-color: #334155;
     color: #cbd5e1;
     padding: 0.6rem 2.25rem 0.6rem 0.75rem;
     border-radius: 6px;
     -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
-    background-image: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.06) 50%),
-                      linear-gradient(135deg, rgba(255,255,255,0.02) 50%, transparent 50%),
-                      linear-gradient(to right, rgba(255,255,255,0.02), rgba(255,255,255,0));
-    background-position: calc(100% - 1.1rem) calc(50% - 0.2rem), calc(100% - 0.9rem) calc(50% - 0.2rem), right center;
-    background-size: 6px 6px, 6px 6px, 1px 60%;
+    -moz-appearance: none;
+    appearance: none;
+    background-image:
+      linear-gradient(45deg, transparent 50%, rgba(255, 255, 255, 0.06) 50%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.02) 50%, transparent 50%),
+      linear-gradient(to right, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
+    background-position:
+      calc(100% - 1.1rem) calc(50% - 0.2rem),
+      calc(100% - 0.9rem) calc(50% - 0.2rem),
+      right center;
+    background-size:
+      6px 6px,
+      6px 6px,
+      1px 60%;
     background-repeat: no-repeat;
   }
 
   .modal-container select:focus,
-  select[name="shippingMethod"]:focus {
+  select[name='shippingMethod']:focus {
     border-color: #60a5fa;
     box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.06);
     background: rgba(255, 255, 255, 0.025);
   }
 
   .modal-container select option,
-  select[name="shippingMethod"] option {
+  select[name='shippingMethod'] option {
     background: #0f172a;
     color: #f1f5f9;
   }
@@ -374,7 +399,7 @@ body.theme-dark {
   /* Small screen adjustments for select inside modal */
   @media (max-width: 520px) {
     .modal-container select,
-    select[name="shippingMethod"] {
+    select[name='shippingMethod'] {
       width: 100%;
       padding-right: 1.25rem;
     }
@@ -457,7 +482,10 @@ body.theme-dark {
     resize: none; /* prevent resize handle */
     font-size: 0.95rem;
     line-height: 1.4;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      background 0.15s ease;
   }
 
   .order-modal__textarea::placeholder {
@@ -467,7 +495,7 @@ body.theme-dark {
   .order-modal__textarea:focus {
     border-color: #60a5fa;
     box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.06);
-    background: rgba(255,255,255,0.025);
+    background: rgba(255, 255, 255, 0.025);
     outline: none;
   }
 

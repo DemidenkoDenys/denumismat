@@ -38,12 +38,14 @@ export class UserCoinsEffects {
                     tags.unshift('new');
                   }
                   if (coin.booked_at) {
-                    coin.disabled = true;
-                    tags.unshift('booked');
 
                     if (user && user.email === coin.booked_by) {
                       bookedCoins.push(coin);
-                    };
+                      tags.unshift('my');
+                    } else {
+                      coin.disabled = true;
+                      tags.unshift('booked');
+                    }
                   }
                   return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
                 });

@@ -45,7 +45,7 @@
   user-select: none;
   overflow: hidden;
 
-  &:not(.coin-card--booked):hover {
+  &:not(.coin-card--booked):not(.coin-card--soon):hover {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
     transform: translateY(-2px);
   }
@@ -72,8 +72,9 @@
 }
 
 .coin-card--disabled {
-  opacity: 0.55;
   filter: grayscale(0.22);
+  cursor: default;
+  opacity: 0.55;
   box-shadow: none;
 }
 

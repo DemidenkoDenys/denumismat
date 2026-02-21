@@ -34,8 +34,8 @@ import { ApiService } from '../../services/api.service';
       ></app-main-layout>
 
       <user-selection-bar
-        (onBook)="handleBookClick()"
-        (onOrder)="handleOrderClick()"
+        (onBook)="isLoggedIn() ? handleBooking() : openAuthModal()"
+        (onOrder)="isLoggedIn() ? openOrderModal() : openAuthModal()"
         (onReset)="handleResetClick()"
       ></user-selection-bar>
     </div>
@@ -83,9 +83,8 @@ export class UserWrapperComponent implements OnInit {
   authSuccessTrigger = signal(0);
   isAuthFormValid = signal(false);
 
-  private isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
-  private isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
+  public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
   private selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: null });
   private currencyRates = toSignal(this.store.select(selectCurrencyRates), { initialValue: null });
   private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
@@ -166,20 +165,16 @@ export class UserWrapperComponent implements OnInit {
     this.authModalService.hideAuthModal();
   }
 
-  handleOrderClick() {
+  openAuthModal() {
+    this.authModalService.showAuthModal();
+  }
+
+  openOrderModal() {
     this.isOrderModalOpen.set(true);
   }
 
   handleResetClick() {
     this.store.dispatch(clearSelection());
-  }
-
-  handleBookClick() {
-    if (!this.isLoggedIn()) {
-      this.authModalService.showAuthModal();
-    } else {
-      this.handleBooking();
-    }
   }
 
   handleBooking() {
