@@ -324,6 +324,20 @@
   }
 }
 
+.filters__tag--video {
+  border-color: #1d4ed8 !important;
+  padding-left: 8px;
+  color: white;
+
+  &.active {
+    background: #1d4ed8 !important;
+  }
+}
+
+.filters__tag-icon svg {
+  stroke-width: 40;
+}
+
 .filters__tag--selected {
   border-color: #3b82f6;
   color: #1e40af;

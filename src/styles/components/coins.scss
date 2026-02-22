@@ -377,6 +377,14 @@ body.theme-dark .coin-card__lupa:hover {
   background: #22c55e;
 }
 
+.coin-card__tag--video {
+  background: #1d4ed8 !important;
+
+  path {
+    fill: white;
+  }
+}
+
 .user-wrapper .coin-card__tag--booked {
   background: rgba(48, 41, 41, 0.4);
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.65);
