@@ -26,9 +26,9 @@ export const initialState: CurrencyState = {
     ROU: 8,
     RSD: 9,
     TRY: 10,
-    CNY: 11,
+    GBP: 11,
     EGP: 12,
-    BRL: 13
+    CNY: 13
   }
 };
 

@@ -387,7 +387,7 @@ export class HeaderComponent {
     const order = this.order() ?? {};
     if (!map) return [];
     return Object.values(map)
-      .filter((country) => country.code in order)
+      .filter((country) => country.code in order && order[country.code] < 100)
       .sort((a, b) => order[a.code] - order[b.code])
       .map((country) => ({
         key: country.code,
@@ -402,7 +402,7 @@ export class HeaderComponent {
     const order = this.order() ?? {};
     if (!map) return [];
     return Object.values(map)
-      .filter((country) => !(country.code in order))
+      .filter((country) => country.code in order && order[country.code] >= 100)
       .sort((a, b) => a.name.localeCompare(b.name))
       .map((country) => ({
         key: country.code,
