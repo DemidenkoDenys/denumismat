@@ -22,6 +22,7 @@ import { ADTL } from './app.constants';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from './services/auth.service';
 import { loadShippingMethods } from './state/shipping.actions';
+import { Coin } from './components/coins/coin-card';
 
 @Component({
   selector: 'app-main-layout',
@@ -85,7 +86,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   onOrderClick = output<void>();
   onBookClick = output<void>();
   onAuthRequired = output<void>();
-  openSliderModal = output<{ coinId: string, alt: string }>();
+  openSliderModal = output<Coin>();
 
   @ViewChild('coinGrid') coinGrid: CoinGridComponent | undefined;
 

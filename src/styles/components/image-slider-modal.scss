@@ -31,6 +31,22 @@
   justify-content: center;
 }
 
+.image-slider-modal__video-container {
+  width: 100%;
+  height: 0;
+  padding-top: 56.25%;
+  position: relative;
+}
+
+.image-slider-modal__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .image-slider-modal__image {
   max-width: 90vw;
   max-height: 90vh;
@@ -128,4 +144,20 @@
 
 .image-slider-modal__dot.active {
   background: #3b82f6;
+
+  svg {
+    fill: #3b82f6 !important;
+  }
+}
+
+.image-slider-modal__dot.video {
+  background: transparent;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.image-slider-modal__dot.video svg {
+  display: block;
+  border-radius: 3px;
 }

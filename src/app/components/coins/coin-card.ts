@@ -39,6 +39,7 @@ export interface Coin {
   highResUrl?: string; // CloudFront high resolution URL
   images?: CoinImage; // Multiple image views
   imageFilenames?: string[]; // Array of image filenames in the coin folder (from Firestore)
+  youtube?: string; // id of youtube video
   tags?: string[]; // Tags like 'UNC', 'RARE', 'SALE'
   title?: string; // Pre-computed searchable title: "Country - Deno - Year - Description"
   discountPrice?: number; // 10% discounted price
@@ -133,13 +134,19 @@ export interface Coin {
           @if (!isPlaceholder()) {
             <button
               type="button"
-              class="coin-card__lupa"
+              class="coin-card__lupa {{ coin().youtube ? 'video' : '' }}"
               (click)="$event.stopPropagation(); onLupaClick()"
-              [attr.aria-label]="'Zoom image'">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+              [attr.aria-label]="coin().youtube ? 'Play video' : 'Zoom image'">
+              @if (coin().youtube) {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24" fill="none" stroke="currentColor" stroke-width="48">
+                  <path d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z" />
+                </svg>
+              } @else {
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              }
             </button>
           }
         </div>
@@ -150,6 +157,11 @@ export interface Coin {
               <span
                 class="coin-card__tag"
                 [class]="'coin-card__tag--' + (tag.toLowerCase().includes('booked') ? 'booked' : tag.toLowerCase().includes('soon') ? 'soon' : tag.toLowerCase())">
+                @if (tag.toLowerCase() === 'video') {
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -100 640 640" width="12" height="12" fill="white" class="coin-card__tag-icon">
+                    <path d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z" fill="none" stroke="currentColor" stroke-width="40"/>
+                  </svg>
+                }
                 {{ 'filters.tag.' + tag.toUpperCase() | translate }}
               </span>
             }
@@ -255,10 +267,10 @@ export class CoinCardComponent {
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
   selectedChange = output<boolean>();
-  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string }>();
+  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string, video?: string }>();
 
   // Signal to store the image keys from S3
-  private imageKeys = signal<string[]>([]);
+  public imageKeys = signal<string[]>([]);
 
   // Track the last loaded coin ID to prevent re-loading same coin
   private lastLoadedCoinId = signal<string>('');
@@ -574,7 +586,7 @@ export class CoinCardComponent {
 
   onLupaClick() {
     const alt = this.coin().deno + ' ' + this.coin().year;
-    this.openSliderModal.emit({ coinId: this.coin().id, alt });
+    this.openSliderModal.emit({ coinId: this.coin().id, alt, video: this.coin().youtube });
   }
 
   onCoinIdClick(coin: any) {

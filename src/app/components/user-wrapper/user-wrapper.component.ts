@@ -20,6 +20,7 @@ import { UserService } from '../../services/user.service';
 import { ToastService } from '../../services/toast.service';
 import { first } from 'rxjs';
 import { NotificationService } from '../../services/api.service';
+import { Coin } from '../coins/coin-card';
 
 @Component({
   selector: 'user-wrapper',
@@ -44,6 +45,7 @@ import { NotificationService } from '../../services/api.service';
       <app-image-slider-modal
         [images]="images()"
         [coinId]="sliderCoinId()"
+        [video]="sliderVideo()"
         [altText]="sliderAltText()"
         (close)="closeImageSliderModal()">
       </app-image-slider-modal>
@@ -83,6 +85,7 @@ export class UserWrapperComponent implements OnInit {
   isAuthModalOpen = signal(false);
   authSuccessTrigger = signal(0);
   isAuthFormValid = signal(false);
+  sliderVideo = signal<string | null>(null);
 
   public images = toSignal(this.store.select(selectCoinImages), { initialValue: null });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
@@ -138,9 +141,9 @@ export class UserWrapperComponent implements OnInit {
     this.clearAuthData();
   }
 
-  openImageSliderModal(event: { coinId: string, alt: string }) {
-    this.sliderCoinId.set(event.coinId);
-    this.sliderAltText.set(event.alt);
+  openImageSliderModal(event: Coin) {
+    this.sliderCoinId.set(event.id);
+    this.sliderVideo.set(event.youtube || null);
     this.showImageSliderModal.set(true);
     document.body.style.overflow = 'hidden';
   }

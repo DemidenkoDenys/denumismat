@@ -125,6 +125,21 @@
   aspect-ratio: 1 / 1;
   height: auto;
   background: #f9fafb;
+}
+
+.coin-card__video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+}
+
+.coin-card__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
   overflow: hidden;
 }
 
@@ -157,6 +172,12 @@
   svg {
     width: 22px;
     height: 22px;
+  }
+
+  &.video {
+    svg {
+      opacity: 0.6;
+    }
   }
 }
 

@@ -34,9 +34,15 @@ export class UserCoinsEffects {
                   if (tags.includes('anounce') || tags.includes('soon')) {
                     return { ...coin, tags: ['soon'], price: 0, disabled: true, discountPrice: 0, soon: true };
                   }
+
                   if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
                     tags.unshift('new');
                   }
+
+                  if (coin.youtube) {
+                    tags.unshift('video');
+                  }
+
                   if (coin.booked_at) {
 
                     if (user && user.email === coin.booked_by) {
@@ -47,6 +53,7 @@ export class UserCoinsEffects {
                       tags.unshift('booked');
                     }
                   }
+
                   return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
                 });
                 const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);

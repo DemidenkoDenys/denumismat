@@ -38,7 +38,7 @@ import { filter, maxBy, minBy } from 'lodash';
               [currencyFormat]="currencyFormat()"
               (selectedChange)="onSelect(coin.id, $event)"
               (coinMessageSent)="onCoinMessageSent($event)"
-              (openSliderModal)="openSliderModal.emit($event)">
+              (openSliderModal)="openSliderModal.emit(coin)">
             </app-coin-card>
           }
         </div>
@@ -178,7 +178,7 @@ export class CoinGridComponent implements OnInit {
     return this.visibleCoins().slice(0, this.displayLimit());
   });
 
-  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string }>();
+  @Output() openSliderModal = new EventEmitter<Coin>();
 
   constructor() {
     effect(() => {
