@@ -5,6 +5,7 @@ import { Store } from '@ngrx/store';
 import { selectUser } from '../state/auth/auth.selectors';
 import { EMPTY, switchMap, take } from 'rxjs';
 import { Coin } from '../components/coins/coin-card';
+import { sanitizeText } from '../utils/message.utils';
 import { PricePipe } from '../pipes/price.pipe';
 import { decrypt } from '../utils/cr.utils';
 
@@ -25,7 +26,7 @@ ${coins.map(coin => `${coin.country} -  ${coin.deno} - ${coin.year} - ${this.pri
 
 Shipping method: ${shipping}
 
-Message: ${message}
+Message: ${sanitizeText(message ?? '')}
 `;
           return this.http.post(`${environment.apiUrl}/send`, { text, subject: 'order', email: user.email });
         }
@@ -41,7 +42,7 @@ Message: ${message}
         if (user) {
           const text = `
 Message from: ${user.email}
-${message}`;
+${sanitizeText(message)}`;
           return this.http.post(`${environment.apiUrl}/send`, { subject: 'Message', text, email: user.email, telegramOnly: true });
         }
         return EMPTY;
@@ -57,7 +58,7 @@ ${message}`;
           const text = `
 User ask: ${user.email}
 About coin: ${coin.id} - (${coin.deno} - ${coin.year})
-${message}`;
+${sanitizeText(message)}`;
           return this.http.post(`${environment.apiUrl}/send`, { subject: 'Coin Question', text, email: user.email, telegramOnly: true });
         }
         return EMPTY;

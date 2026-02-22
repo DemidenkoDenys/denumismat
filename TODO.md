@@ -1,7 +1,7 @@
 # TODO - Denumismat Application
 
-## sanitize manual input text
 ## remove coins from price for currency.decimal = false
+<!-- ## sanitize manual input text -->
 <!-- ## disabled buttons until ping success -->
 <!-- ## shipping dropdown and address form -->
 <!-- ## In admin mode - show auth modal to submit, when cancelled - reset app without route -->

@@ -15,6 +15,7 @@ import { selectIsAdmin } from '../../state/auth/auth.selectors';
 import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
 import { ToastService } from '../../services/toast.service';
 import { NotificationService } from '../../services/api.service';
+import { sanitizeText } from '../../utils/message.utils';
 import { first } from 'rxjs';
 import { selectCurrencyRates, selectSelectedRate } from '../../state/currency.selectors';
 import { filter, maxBy, minBy } from 'lodash';
@@ -263,7 +264,8 @@ export class CoinGridComponent implements OnInit {
 
   onCoinMessageSent(event: { coin: Coin, message: string }) {
     const { coin, message } = event;
-    this.notificationService.sendCoinQuestion(coin, message).subscribe();
+    const safe = sanitizeText(message);
+    this.notificationService.sendCoinQuestion(coin, safe).subscribe();
   }
 
   showMore() {
