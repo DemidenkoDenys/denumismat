@@ -66,7 +66,6 @@ ${message}`;
   }
 
   sendVerifyCode(email: string, code: string) {
-    console.log(code, decrypt(code));
     const text = `
 User: ${email}
 Verification code: ${decrypt(code)}`;

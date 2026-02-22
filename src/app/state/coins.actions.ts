@@ -48,3 +48,8 @@ export const selectBookedCoinsByEmail = createAction(
   '[Coins] Select Booked Coins By Email',
   props<{ email: string | null }>()
 );
+
+export const setCoinImages = createAction(
+  '[Coins] Set Coin Images',
+  props<{ images: any }>()
+);

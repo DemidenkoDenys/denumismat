@@ -147,6 +147,11 @@ export const selectUniqueDenominations = createSelector(
   }
 );
 
+export const selectCoinImages = createSelector(
+  selectCoinsState,
+  (state) => state.images
+);
+
 export const selectAllTags = createSelector(
   selectCoins,
   (coins) => {

@@ -350,9 +350,6 @@ export class HeaderComponent {
         };
       });
 
-    console.log([...usaEntry, ...eurEntry, ...currencies]);
-
-
     return [...usaEntry, ...eurEntry, ...currencies];
   });
 

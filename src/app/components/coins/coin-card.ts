@@ -10,6 +10,7 @@ import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors
 import { selectIsSelectionLimitReached, selectSelectedCoinsCount } from '../../state/coins.selectors';
 import { ToastService } from '../../services/toast.service';
 import { selectServerIsAvailable } from '../../state/server.selectors';
+import { map } from 'lodash';
 
 export interface CoinImage {
   obverse: string | null;
@@ -248,13 +249,8 @@ export class CoinCardComponent {
   // Placeholder image URL for coins without images
   readonly placeholderImageUrl = 'assets/placeholder-image.jpg';
 
-  // Set to true if using private S3 bucket with signed URLs
-  private readonly useSignedUrls = true;
-
-  // Set to false to disable AWS S3 image loading (saves costs, shows placeholders only)
-  private readonly LOAD_IMAGES_FROM_S3 = true;
-
   coin = input<Coin>({} as Coin);
+  images = input<any>(null);
   selected = input<boolean>(false);
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
@@ -314,9 +310,10 @@ export class CoinCardComponent {
   });
 
   // Get total count of available (non-failed) images
-  availableImagesCount = computed(() => {
-    const validIndices = this.validImageIndices();
-    return validIndices.length > 0 ? validIndices.length : 1; // At least 1 for placeholder
+  imagesCount = computed(() => {
+    const coin = this.coin();
+    const images = this.images();
+    return coin ? images[coin.id].length > 0 : 0;
   });
 
   // Get available images array (for dots indicator) - only valid indices
@@ -372,35 +369,36 @@ export class CoinCardComponent {
       }
     });
 
-    // Get list of image keys when coin changes
-    if (this.useSignedUrls && this.LOAD_IMAGES_FROM_S3) {
-      effect(() => {
-        const c = this.coin();
-        const lastId = this.lastLoadedCoinId();
+    effect(() => {
+      const c = this.coin();
+      const lastId = this.lastLoadedCoinId();
 
-        // Only load if coin ID actually changed
-        if (c.id && c.id !== lastId) {
-          // Reset state for new coin
-          this.currentImageIndex.set(0);
-          this.loadedImageUrls.set(new Map());
-          this.imageKeys.set([]);
-          this.failedImageKeys.set(new Set());
-          this.successfullyLoadedIndices.set(new Set());
-          this.lastLoadedCoinId.set(c.id);
+      // Only load if coin ID actually changed
+      if (c.id && c.id !== lastId) {
+        // Reset state for new coin
+        this.currentImageIndex.set(0);
+        this.loadedImageUrls.set(new Map());
+        this.imageKeys.set([]);
+        this.failedImageKeys.set(new Set());
+        this.successfullyLoadedIndices.set(new Set());
+        this.lastLoadedCoinId.set(c.id);
+      }
+    });
 
-          // Get list of image keys (without loading them)
-          // Pass imageFilenames from Firestore if available
-          this.s3Service.getCoinFolderImageKeys(c.id, c.imageFilenames).subscribe(keys => {
-            this.imageKeys.set(keys);
+    effect(() => {
+      const coin = this.coin();
+      const images = this.images();
 
-            // Load first image immediately if available
-            if (keys.length > 0) {
-              this.loadImageAtIndex(0);
-            }
-          });
+      if (coin && images) {
+        const keys = map(this.images()[coin.id] ?? [], key => coin.id + '/' + key);
+        this.imageKeys.set(keys);
+
+        // Load first image immediately if available
+        if (keys.length > 0) {
+          this.loadImageAtIndex(0);
         }
-      });
-    }
+      }
+    });
   }
 
   // Load image at specific index on demand
@@ -414,18 +412,10 @@ export class CoinCardComponent {
     }
 
     const key = keys[index];
-    // console.log(`🔄 Lazy loading image ${index + 1}/${keys.length}: ${key}`);
-
-    if (this.coin().id === 'CC10FR1975') {
-      console.log(`[${this.coin().id}] Loading image at index ${index}: ${key}`);
-    }
 
     this.isLoadingImage.set(true);
     this.s3Service.getSignedUrl(key).subscribe(url => {
       if (url) {
-        if (this.coin().id === 'CC10FR1975') {
-          console.log(`[${this.coin().id}] Got signed URL for index ${index}: ${url}`);
-        }
         const newMap = new Map(this.loadedImageUrls());
         newMap.set(index, url);
         this.loadedImageUrls.set(newMap);
@@ -530,9 +520,6 @@ export class CoinCardComponent {
             newSet.add(index);
             return newSet;
           });
-          if (this.coin().id === 'CC10FR1975') {
-            console.log(`[${this.coin().id}] ✅ Image loaded successfully at index ${index}: ${currentSrc}`);
-          }
           break;
         }
       }
@@ -563,10 +550,6 @@ export class CoinCardComponent {
           const newMap = new Map(this.loadedImageUrls());
           newMap.set(index, this.placeholderImageUrl);
           this.loadedImageUrls.set(newMap);
-
-          if (this.coin().id === 'CC10FR1975') {
-            console.log(`[${this.coin().id}] ❌ Image failed to load at index ${index}: ${currentSrc}`);
-          }
 
           // Try to navigate to next valid image if current one failed
           const validIndices = this.validImageIndices();

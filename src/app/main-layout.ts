@@ -214,25 +214,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  handleAdminDataManagement() {
-    alert('Admin: Data Management - Feature coming soon!');
-    console.log('Admin data management accessed');
-  }
-
-  handleAdminSystemStatus() {
-    alert('Admin: System Status - All systems operational!');
-    console.log('Admin system status accessed');
-  }
-
-  handleAdminAnalytics() {
-    alert('Admin: User Analytics - Feature coming soon!');
-    console.log('Admin analytics accessed');
-  }
-
-  handleAdminSettings() {
-    alert('Admin: Settings - Feature coming soon!');
-  }
-
   ngOnDestroy(): void {
     this.authService.resetVerifyCode();
   }

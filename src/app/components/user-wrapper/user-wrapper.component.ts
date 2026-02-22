@@ -14,7 +14,7 @@ import { AuthModalService } from '../../services/auth-modal.service';
 import { OrderModalComponent } from '../order-modal/order-modal';
 import { selectCurrenciesInfo, selectCurrencyRates, selectSelectedCurrency } from '../../state/currency.selectors';
 import { selectCountries } from '../../state/countries.selectors';
-import { selectSelectedCoins } from '../../state/coins.selectors';
+import { selectCoinImages, selectSelectedCoins } from '../../state/coins.selectors';
 import { clearSelection, deselectCoin } from '../../state/coins.actions';
 import { UserService } from '../../services/user.service';
 import { ToastService } from '../../services/toast.service';
@@ -42,6 +42,7 @@ import { NotificationService } from '../../services/api.service';
 
     @if (showImageSliderModal()) {
       <app-image-slider-modal
+        [images]="images()"
         [coinId]="sliderCoinId()"
         [altText]="sliderAltText()"
         (close)="closeImageSliderModal()">
@@ -83,6 +84,7 @@ export class UserWrapperComponent implements OnInit {
   authSuccessTrigger = signal(0);
   isAuthFormValid = signal(false);
 
+  public images = toSignal(this.store.select(selectCoinImages), { initialValue: null });
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
   private selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: null });
@@ -189,7 +191,6 @@ export class UserWrapperComponent implements OnInit {
             });
           } else {
             this.toast.show('toast.coinAlreadyBooked', { params: { coinId: coins[id].id } });
-            console.log('Coin already booked:', coins[id].id);
           }
         }
         this.toast.show('toast.bookInfo');

@@ -9,6 +9,7 @@ export interface CoinsState {
   loading: boolean;
   error: any | null;
   countries: Record<string, boolean>;
+  images: any;
 }
 
 export const initialState: CoinsState = {
@@ -17,7 +18,8 @@ export const initialState: CoinsState = {
   selected: {},
   loading: false,
   error: null,
-  countries: {}
+  countries: {},
+  images: null
 };
 
 export const MAX_SELECTED_COINS = 50;
@@ -98,5 +100,9 @@ export const coinsReducer = createReducer(
   on(CoinsActions.selectBookedCoinsByEmail, (state, { email }) => ({
     ...state,
     booked: email ? state.coins?.filter(coin => coin.booked_by === email) ?? [] : []
+  })),
+  on(CoinsActions.setCoinImages, (state, { images }) => ({
+    ...state,
+    images
   })),
 );

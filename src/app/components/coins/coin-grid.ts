@@ -6,7 +6,7 @@ import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CoinCardComponent, Coin } from './coin-card';
 import { TranslateModule } from '@ngx-translate/core';
-import { selectCoins, selectSelectedCoins, selectSelectedCoinIds, selectIsSelectionLimitReached } from '../../state/coins.selectors';
+import { selectCoins, selectSelectedCoins, selectSelectedCoinIds, selectIsSelectionLimitReached, selectCoinImages } from '../../state/coins.selectors';
 import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { ObserveVisibilityDirective } from '../../directives/in-viewport.directive';
@@ -25,29 +25,32 @@ import { filter, maxBy, minBy } from 'lodash';
   imports: [CommonModule, CoinCardComponent, TranslateModule, ObserveVisibilityDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
-      <div class="coin-grid__list">
-        @for (coin of paginatedCoins(); track coin.id) {
-          <app-coin-card
-            appObserveVisibility (visible)="onInViewport(coin)"
-            [coin]="coin"
-            [selected]="selectedIdsSet().has(coin.id)"
-            [conversionRate]="conversionRate()"
-            [currencyFormat]="currencyFormat()"
-            (selectedChange)="onSelect(coin.id, $event)"
-            (coinMessageSent)="onCoinMessageSent($event)"
-            (openSliderModal)="openSliderModal.emit($event)">
-          </app-coin-card>
-        }
-      </div>
-      @if (visibleCoins().length > displayLimit()) {
-        <div class="coin-grid__actions">
-          <button class="coin-grid__show-more" (click)="showMore()">
-            {{ 'grid.showMore' | translate }} ({{ paginatedCoins().length }}/{{ visibleCoins().length }})
-          </button>
+    @if (images(); as images) {
+      <section class="coin-grid" [attr.aria-label]="'grid.ariaLabel' | translate">
+        <div class="coin-grid__list">
+          @for (coin of paginatedCoins(); track coin.id) {
+            <app-coin-card
+              appObserveVisibility (visible)="onInViewport(coin)"
+              [coin]="coin"
+              [images]="images"
+              [selected]="selectedIdsSet().has(coin.id)"
+              [conversionRate]="conversionRate()"
+              [currencyFormat]="currencyFormat()"
+              (selectedChange)="onSelect(coin.id, $event)"
+              (coinMessageSent)="onCoinMessageSent($event)"
+              (openSliderModal)="openSliderModal.emit($event)">
+            </app-coin-card>
+          }
         </div>
-      }
-    </section>
+        @if (visibleCoins().length > displayLimit()) {
+          <div class="coin-grid__actions">
+            <button class="coin-grid__show-more" (click)="showMore()">
+              {{ 'grid.showMore' | translate }} ({{ paginatedCoins().length }}/{{ visibleCoins().length }})
+            </button>
+          </div>
+        }
+      </section>
+    }
   `,
 })
 export class CoinGridComponent implements OnInit {
@@ -90,6 +93,7 @@ export class CoinGridComponent implements OnInit {
   });
 
   selectedIdsSet = computed(() => new Set(this.selectedIds()));
+  images = toSignal(this.store.select(selectCoinImages), { initialValue: null });
   selectedSummary = output<{ ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }>();
   priceBoundsChange = output<[number, number]>();
   resetTrigger = signal<number>(0);

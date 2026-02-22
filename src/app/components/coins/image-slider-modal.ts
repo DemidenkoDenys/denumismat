@@ -12,17 +12,23 @@ import { S3Service } from '../../services/s3.service';
       <button class="image-slider-modal__close" (click)="closeModal()" aria-label="Close">
         <svg viewBox="0 0 24 24" width="24" height="24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
+
       <div class="image-slider-modal__slider">
-        <button class="image-slider-modal__nav image-slider-modal__nav--prev" (click)="prevImage()" [disabled]="images().length < 2">
+        <button class="image-slider-modal__nav image-slider-modal__nav--prev" (click)="prevImage()" [disabled]="imageUrls().length < 2">
           <svg viewBox="0 0 24 24" width="48" height="48"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <img [src]="images()[currentIndex()]" class="image-slider-modal__image" [alt]="altText()" (click)="closeModal()" />
-        <button *ngIf="images().length > 0" class="image-slider-modal__nav image-slider-modal__nav--next" (click)="nextImage()" [disabled]="images().length < 2">
-          <svg viewBox="0 0 24 24" width="48" height="48"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+
+        <img [src]="imageUrls()[currentIndex()]" class="image-slider-modal__image" [alt]="altText()" (click)="closeModal()" />
+
+        @if (imageUrls().length > 0) {
+          <button class="image-slider-modal__nav image-slider-modal__nav--next" (click)="nextImage()" [disabled]="imageUrls().length < 2">
+            <svg viewBox="0 0 24 24" width="48" height="48"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        }
       </div>
+
       <div class="image-slider-modal__dots">
-        <button *ngFor="let img of images(); let i = index" class="image-slider-modal__dot" [class.active]="currentIndex() === i" (click)="setIndex(i)"></button>
+        <button *ngFor="let img of imageUrls(); let i = index" class="image-slider-modal__dot" [class.active]="currentIndex() === i" (click)="setIndex(i)"></button>
       </div>
     </div>
   `,
@@ -32,9 +38,10 @@ import { S3Service } from '../../services/s3.service';
 export class ImageSliderModalComponent {
   close = output<void>();
   coinId = input<string>('');
+  images = input<any>(null);
   altText = input<string>('Coin image');
+  imageUrls = signal<string[]>([]);
   currentIndex = signal(0);
-  images = signal<string[]>([]);
 
   private s3Service = inject(S3Service);
 
@@ -42,37 +49,41 @@ export class ImageSliderModalComponent {
   constructor() {
     effect(() => {
       const id = this.coinId();
-      if (id) {
-        this.s3Service.getCoinFolderImageKeys(id).subscribe(keys => {
-          const urls: string[] = [];
-          let loaded = 0;
-          keys.forEach((key, idx) => {
-            this.s3Service.getSignedUrl(key).subscribe(url => {
-              urls[idx] = url || 'assets/placeholder-image.jpg';
-              loaded++;
-              if (loaded === keys.length) {
-                this.images.set(urls);
-                this.currentIndex.set(0);
-              }
-            });
+      const images = this.images();
+
+      if (id && images) {
+        const keys = images[id] as string[];
+        const urls: string[] = [];
+        let loaded = 0;
+
+        keys.forEach((key, idx) => {
+          this.s3Service.getSignedUrl(id + '/' + key).subscribe(url => {
+            urls[idx] = url || 'assets/placeholder-image.jpg';
+
+            loaded++;
+
+            if (loaded === keys.length) {
+              this.imageUrls.set(urls);
+              this.currentIndex.set(0);
+            }
           });
-          if (keys.length === 0) {
-            this.images.set(['assets/placeholder-image.jpg']);
-            this.currentIndex.set(0);
-          }
         });
+        if (keys.length === 0) {
+          this.imageUrls.set(['assets/placeholder-image.jpg']);
+          this.currentIndex.set(0);
+        }
       }
     });
   }
 
   nextImage() {
-    if (this.images().length < 2) return;
-    this.currentIndex.update(idx => (idx + 1) % this.images().length);
+    if (this.imageUrls().length < 2) return;
+    this.currentIndex.update(idx => (idx + 1) % this.imageUrls().length);
   }
 
   prevImage() {
-    if (this.images().length < 2) return;
-    this.currentIndex.update(idx => (idx - 1 + this.images().length) % this.images().length);
+    if (this.imageUrls().length < 2) return;
+    this.currentIndex.update(idx => (idx - 1 + this.imageUrls().length) % this.imageUrls().length);
   }
 
   setIndex(i: number) {
