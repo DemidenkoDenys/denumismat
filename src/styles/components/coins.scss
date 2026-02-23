@@ -63,18 +63,18 @@
   }
 
   &.selected {
-    border-color: #3b82f6;
+    border-color: #f59e0b; /* orange instead of blue */
     border-width: 1px;
     background: #eff6ff;
-    box-shadow: 0 0 0 2px #3b82f6;
+    box-shadow: 0 0 0 2px #f59e0b;
   }
 
   &.selected:hover {
-    border-color: #3b82f6;
+    border-color: #f59e0b;
     border-width: 1px;
     box-shadow:
-      0 4px 12px rgba(59, 130, 246, 0.15),
-      0 0 0 2px #3b82f6;
+      0 4px 12px rgba(245, 158, 11, 0.15),
+      0 0 0 2px #f59e0b;
   }
 }
 
@@ -154,11 +154,9 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(31, 41, 55, 0.5); /* dark, 50% transparent */
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  /* increase hit area but render a smaller circle via pseudo-element */
+  width: 120px;
+  height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -168,10 +166,26 @@
   z-index: 10;
   color: #f9fafb;
   pointer-events: none; /* Prevent click unless hovered */
+  background: transparent;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 50%;
+    transition: inherit;
+    z-index: 0;
+  }
 
   svg {
     width: 22px;
     height: 22px;
+    z-index: 1; /* sit above pseudo background */
   }
 
   &.video {
@@ -197,12 +211,12 @@
 }
 
 body.theme-dark .coin-card__lupa {
-  background: rgba(17, 24, 39, 0.2); /* darker, 50% transparent */
+  background: transparent;
   color: #f9fafb;
 }
 
 body.theme-dark .coin-card__lupa:hover {
-  background: rgba(17, 24, 39, 0.3);
+  background: transparent;
   color: #fff;
 }
 
@@ -699,16 +713,15 @@ body.theme-dark .coin-card__lupa:hover {
     left: 50%;
     width: 6px;
     height: 10px;
-    border-right: 2px solid #3b82f6;
-    border-bottom: 2px solid #3b82f6;
+    border-right: 2px solid #f59e0b;
+    border-bottom: 2px solid #f59e0b;
     transform: translate(-50%, -60%) rotate(45deg);
     opacity: 0;
     transition: opacity 0.2s ease;
   }
 
   &:checked {
-    border: 2px solid #3b82f6;
-    background: rgba(59, 130, 246, 0.3);
+    border: transparent;
     &::after {
       opacity: 1;
     }

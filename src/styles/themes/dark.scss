@@ -226,7 +226,6 @@ body.theme-dark {
   .filters__tag--selected {
     border-color: #3b82f6;
     color: #93c5fd;
-    margin-left: auto;
 
     &:hover {
       border-color: #3b82f6;
@@ -253,12 +252,12 @@ body.theme-dark {
 
     &.selected {
       background: #0f172a;
-      border-color: #3b82f6;
+      border-color: #f59e0b;
       border-width: 1px;
     }
 
     &.selected:hover {
-      border-color: #3b82f6;
+      border-color: #f59e0b;
       border-width: 1px;
     }
   }
@@ -526,12 +525,6 @@ body.theme-dark {
 
     &:hover {
       background: rgba(15, 23, 42, 0.85);
-    }
-  }
-
-  .coin-card__select input[type='checkbox'] {
-    &:checked {
-      background: rgba(59, 130, 246, 0.3);
     }
   }
 

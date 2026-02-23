@@ -91,7 +91,7 @@ export class ImageSliderModalComponent {
             if (loaded === keys.length) {
               // after images loaded, append video slide if valid youtube link
               if (video) {
-                urls.push('VIDEO:' + toEmbedUrl(video));
+                urls.unshift('VIDEO:' + toEmbedUrl(video));
               }
               this.imageUrls.set(urls);
               this.currentIndex.set(0);

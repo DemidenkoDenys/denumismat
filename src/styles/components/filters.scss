@@ -54,9 +54,10 @@
 }
 
 .filters__group--tags {
+  max-width: 40%;
   margin-left: auto;
-  flex-direction: row;
   align-items: center;
+  flex-direction: row;
 }
 
 .filters__label {
@@ -222,9 +223,10 @@
 }
 
 .filters__tags {
-  display: flex;
   gap: 0.5rem;
+  display: flex;
   flex-wrap: wrap;
+  justify-content: end;
 }
 
 .filters__tag {
@@ -341,7 +343,6 @@
 .filters__tag--selected {
   border-color: #3b82f6;
   color: #1e40af;
-  margin-left: auto;
 
   &:hover {
     border-color: #3b82f6;

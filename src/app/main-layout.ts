@@ -139,7 +139,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     return {
       symbol: info?.symbol || '$',
       short: info?.short || '$',
-      start: info?.start !== false
+      start: info?.start !== false,
+      coins: info?.coins ?? true,
     };
   });
 

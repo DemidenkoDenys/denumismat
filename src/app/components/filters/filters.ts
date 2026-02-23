@@ -73,10 +73,6 @@ export interface Filters {
         </div>
 
         <div class="filters__group filters__group--tags">
-          <span class="filters__label" style="display: inline-block; margin-right: 0.5rem; align-self: center;">
-            {{ 'filters.leaveOnly' | translate }}
-          </span>
-
           <div class="filters__tags">
             @for (tag of availableTags(); track tag) {
               <button
@@ -123,7 +119,7 @@ export class FiltersComponent implements OnInit {
   priceRange = input<[number, number]>([0, 10000]);
   priceBounds = input<[number, number]>([0, 10000]);
   tagsInput = input<string[]>([]);
-  currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
+  currencyFormat = input<{ symbol: string; short: string; start: boolean; coins?: boolean }>({ symbol: '$', short: '$', start: true, coins: true });
   conversionRate = input<number>(1);
   allCoins = input<any[]>([]);
   selectedCount = input<number>(0);
@@ -148,24 +144,41 @@ export class FiltersComponent implements OnInit {
   scrollingDown = signal(false);
 
   formattedMinPrice = computed(() => {
-    const price = this.priceMin().toFixed(2);
     const format = this.currencyFormat();
     const currency = format.short;
+    const decimals = format.coins === false ? 0 : 2;
+    const price = this.priceMin().toFixed(decimals);
     // Add thousands separator (space)
-    const [intPart, decPart] = price.split('.');
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    const formattedPrice = `${formattedInt}.${decPart}`;
+    let formattedPrice: string;
+    if (decimals === 0) {
+      const intPart = price.split('.')[0];
+      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      formattedPrice = formattedInt;
+    } else {
+      const [intPart, decPart] = price.split('.');
+      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      formattedPrice = `${formattedInt}.${decPart}`;
+    }
     return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
   });
 
   formattedMaxPrice = computed(() => {
-    const price = this.priceMax().toFixed(2);
     const format = this.currencyFormat();
+    console.log("🚀 ~ format:", format)
     const currency = format.short;
+    const decimals = format.coins === false ? 0 : 2;
+    const price = this.priceMax().toFixed(decimals);
     // Add thousands separator (space)
-    const [intPart, decPart] = price.split('.');
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    const formattedPrice = `${formattedInt}.${decPart}`;
+    let formattedPrice: string;
+    if (decimals === 0) {
+      const intPart = price.split('.')[0];
+      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      formattedPrice = formattedInt;
+    } else {
+      const [intPart, decPart] = price.split('.');
+      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      formattedPrice = `${formattedInt}.${decPart}`;
+    }
     return format.start ? `${currency} ${formattedPrice}` : `${formattedPrice} ${currency}`;
   });
   priceMax = signal<number>(this.priceRange()[1]);

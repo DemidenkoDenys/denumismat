@@ -9,7 +9,7 @@ import { IndexedDbService } from '../services/indexed-db.service';
 import { where } from 'firebase/firestore';
 import { Store } from '@ngrx/store';
 import { selectUser } from './auth/auth.selectors';
-import { orderBy } from 'lodash';
+import { orderBy, toUpper } from 'lodash';
 
 @Injectable()
 export class UserCoinsEffects {
@@ -33,29 +33,31 @@ export class UserCoinsEffects {
 
                 const bookedCoins: Coin[] = [];
                 const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
-                  .map(coin => ({ ...coin, price: coin.price ? +coin.price : 0, tags: coin.tags?.filter(tag => !!tag) ?? [] }))
+                  .map(coin => ({ ...coin, price: coin.price ? +coin.price : 0, tags: (coin.tags ?? [])?.filter(tag => !!tag).map(toUpper) ?? [] }))
                   .map((coin) => {
                     const tags = coin.tags;
-                    if (tags.includes('anounce') || tags.includes('soon')) {
-                      return { ...coin, tags: ['soon'], price: 0, disabled: true, discountPrice: 0, soon: true };
+                    console.log("🚀 ~ tags:", tags);
+
+                    if (tags.includes('ANOUNCE') || tags.includes('SOON')) {
+                      return { ...coin, tags: ['SOON'], price: 0, disabled: true, discountPrice: 0, soon: true };
                     }
 
                     if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
-                      tags.unshift('new');
+                      tags.unshift('NEW');
                     }
 
                     if (coin.youtube) {
-                      tags.unshift('video');
+                      tags.unshift('VIDEO');
                     }
 
                     if (coin.booked_at) {
 
                       if (user && user.email === coin.booked_by) {
                         bookedCoins.push(coin);
-                        tags.unshift('my');
+                        tags.unshift('MY');
                       } else {
                         coin.disabled = true;
-                        tags.unshift('booked');
+                        tags.unshift('BOOKED');
                       }
                     }
 
