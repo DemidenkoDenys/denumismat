@@ -57,6 +57,11 @@
   line-height: 1.5;
 }
 
+.page-footer__text--warning {
+  color: #7c4545;
+  font-weight: 500;
+}
+
 .page-footer__brand {
   color: #10b981; /* green-500 from Tailwind for visible contrast */
   font-weight: 600;
@@ -151,3 +156,11 @@
 }
 
 // Send message styles removed and moved to message-tooltip.scss
+
+.text-right {
+  text-align: right;
+}
+
+.ml-auto {
+  margin-left: auto;
+}

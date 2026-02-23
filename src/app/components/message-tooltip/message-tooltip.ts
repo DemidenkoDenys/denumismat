@@ -45,9 +45,9 @@ import { selectServerIsAvailable } from '../../state/server.selectors';
         }
       </button>
 
-      @if (!isLoggedIn()) {
-        <div class="tooltip top" role="tooltip">
-          {{ 'messageTooltip.authRequired' | translate }}
+      @if (!isLoggedIn() || !this.isServerAvailable()) {
+        <div class="tooltip top" role="tooltip" style="max-width: 300px;">
+          {{ !this.isServerAvailable() ? ('serverUnavailable' | translate) : ('messageTooltip.authRequired' | translate) }}
         </div>
       }
 
@@ -70,7 +70,6 @@ export class MessageTooltipComponent {
   private store = inject(Store);
   private notificationService = inject(NotificationService);
   private elementRef = inject(ElementRef);
-
 
   isError = signal(false);
   messageText = signal('');

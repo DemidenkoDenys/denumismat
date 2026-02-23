@@ -9,6 +9,7 @@ import { IndexedDbService } from '../services/indexed-db.service';
 import { where } from 'firebase/firestore';
 import { Store } from '@ngrx/store';
 import { selectUser } from './auth/auth.selectors';
+import { orderBy, sortBy } from 'lodash';
 
 @Injectable()
 export class UserCoinsEffects {
@@ -29,7 +30,7 @@ export class UserCoinsEffects {
             return from(this.indexedDb.getViewedCoinsMap()).pipe(
               map((viewedMap: Record<string, boolean>) => {
                 const bookedCoins: Coin[] = [];
-                const mappedCoins = coins.map((coin) => {
+                const mappedCoins = orderBy(coins, ['created_at'], ['desc']).map((coin) => {
                   const tags = coin.tags ?? [];
                   if (tags.includes('anounce') || tags.includes('soon')) {
                     return { ...coin, tags: ['soon'], price: 0, disabled: true, discountPrice: 0, soon: true };

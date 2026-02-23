@@ -18,8 +18,8 @@ function toEmbedUrl(youtubeVideoId: string): string {
         <svg viewBox="0 0 24 24" width="24" height="24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
 
-      <div class="image-slider-modal__slider">
-        <button class="image-slider-modal__nav image-slider-modal__nav--prev" (click)="prevImage()" [disabled]="imageUrls().length < 2">
+      <div class="image-slider-modal__slider" (click)="closeModal()">
+        <button class="image-slider-modal__nav image-slider-modal__nav--prev" (click)="$event.stopPropagation(); prevImage()" [disabled]="imageUrls().length < 2">
           <svg viewBox="0 0 24 24" width="48" height="48"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
 
@@ -37,7 +37,7 @@ function toEmbedUrl(youtubeVideoId: string): string {
         }
 
         @if (imageUrls().length > 0) {
-          <button class="image-slider-modal__nav image-slider-modal__nav--next" (click)="nextImage()" [disabled]="imageUrls().length < 2">
+          <button class="image-slider-modal__nav image-slider-modal__nav--next" (click)="$event.stopPropagation(); nextImage()" [disabled]="imageUrls().length < 2">
             <svg viewBox="0 0 24 24" width="48" height="48"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </button>
         }
@@ -136,10 +136,19 @@ export class ImageSliderModalComponent {
     this.close.emit();
   }
 
-  @HostListener('window:keydown.escape', ['$event'])
-  onEscapePress(event: KeyboardEvent | Event) {
-    if (event instanceof KeyboardEvent) {
+  @HostListener('window:keydown', ['$event'])
+  handleKeyDown(event: KeyboardEvent) {
+    // close on escape
+    if (event.key === 'Escape') {
       this.closeModal();
+      return;
+    }
+
+    // navigate slides with arrows
+    if (event.key === 'ArrowLeft') {
+      this.prevImage();
+    } else if (event.key === 'ArrowRight') {
+      this.nextImage();
     }
   }
 }

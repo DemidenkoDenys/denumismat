@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, output, signal, inject, ViewChild, ChangeDetectorRef, effect } from '@angular/core';
+import { Component, ChangeDetectionStrategy, output, signal, inject, ViewChild, ChangeDetectorRef, effect, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -7,7 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { selectUser } from '../../state/auth/auth.selectors';
 import { loginSuccess, loginWithGoogle } from '../../state/auth/auth.actions';
 import { AuthForm } from '../auth-form/auth-form';
-import { BaseModalComponent } from '../base-modal/base-modal';import { AuthService } from '../../services/auth.service';
+import { BaseModalComponent } from '../base-modal/base-modal'; import { AuthService } from '../../services/auth.service';
 import { selectBookedCoinsByEmail } from '../../state/coins.actions';
 import { NotificationService } from '../../services/api.service';
 
@@ -187,5 +187,10 @@ export class AuthModalComponent {
 
   disableEmailField() {
     this.isEmailDisabled.set(true);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    this.close();
   }
 }

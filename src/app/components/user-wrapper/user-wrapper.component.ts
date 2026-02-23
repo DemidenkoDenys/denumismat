@@ -75,6 +75,7 @@ export class UserWrapperComponent implements OnInit {
   private toast = inject(ToastService);
   private router = inject(Router);
   private service = inject(UserService);
+  private apiService = inject(NotificationService);
   private notificationService = inject(NotificationService);
   public authModalService = inject(AuthModalService);
 
@@ -190,7 +191,8 @@ export class UserWrapperComponent implements OnInit {
         for (const id in coins) {
           if (!coins[id].booked_at) {
             this.service.bookCoin(coins[id].id, user.email.toLowerCase()).subscribe(() => {
-              this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
+              this.store.dispatch(deselectCoin({ coinId: coins[id].id }));
+              this.apiService.sendBookCoins(Object.values(coins), user.email ?? '').subscribe();
             });
           } else {
             this.toast.show('toast.coinAlreadyBooked', { params: { coinId: coins[id].id } });

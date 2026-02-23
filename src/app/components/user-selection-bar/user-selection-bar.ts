@@ -41,8 +41,21 @@ import { selectServerIsAvailable } from '../../state/server.selectors';
 
           <div class="selection-bar__actions">
             <button class="btn btn--ghost" (click)="handleReset()">{{ 'selectionBar.reset' | translate }}</button>
-            <button class="btn btn--ghost" (click)="handleBook()" [disabled]="!isServerAvailable()">{{ 'selectionBar.book' | translate }}</button>
-            <button class="btn btn--primary" (click)="handleOrder()" [disabled]="!isServerAvailable()">{{ 'selectionBar.buy' | translate }}</button>
+            <button class="btn btn--ghost btn--book" (click)="handleBook()" [disabled]="!isServerAvailable()">{{ 'selectionBar.book' | translate }}</button>
+
+            @if (!isServerAvailable()) {
+              <div class="tooltip top" role="tooltip">
+                {{ 'serverUnavailable' | translate }}
+              </div>
+            }
+
+            <button class="btn btn--primary btn--buy" (click)="handleOrder()" [disabled]="!isServerAvailable()">{{ 'selectionBar.buy' | translate }}</button>
+
+            @if (!isServerAvailable()) {
+              <div class="tooltip top" role="tooltip">
+                {{ 'serverUnavailable' | translate }}
+              </div>
+            }
           </div>
         </div>
       </div>

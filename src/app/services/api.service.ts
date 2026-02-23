@@ -35,6 +35,22 @@ Message: ${sanitizeText(message ?? '')}
     );
   }
 
+  sendBookCoins(coins: Coin[], email: string) {
+    return this.store.select(selectUser).pipe(
+      take(1),
+      switchMap(user => {
+        if (user) {
+          const text = `
+${email} booked coins:\n
+${coins.map(coin => `${coin.country} -  ${coin.deno} - ${coin.year} - ${this.price.transform(coin.price)} (${this.price.transform(coin.discountPrice)})`).join('\n')}
+`;
+          return this.http.post(`${environment.apiUrl}/send`, { text, subject: 'order', email: user.email });
+        }
+        return EMPTY;
+      })
+    );
+  }
+
   sendMessage(message: string) {
     return this.store.select(selectUser).pipe(
       take(1),

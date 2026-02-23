@@ -4,10 +4,12 @@
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   border: 1px solid #e5e7eb;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6), 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 0 30px rgba(0, 0, 0, 0.6),
+    0 0 10px rgba(0, 0, 0, 0.3);
   border-radius: 13px;
   padding: 0.8rem 1.2rem;
-  z-index: 13;
+  z-index: 100;
   width: calc(100% - 3rem);
   max-width: 800px;
   margin: 0 auto;
@@ -41,7 +43,7 @@
   height: 20px;
   margin-top: 2px;
   vertical-align: middle;
-  color: #92400E; /* amber/danger tint */
+  color: #92400e; /* amber/danger tint */
   cursor: default;
   position: relative; /* allow absolutely positioned tooltip */
 }
@@ -170,6 +172,24 @@
   border-color: #545b62 !important;
 }
 
+.btn--book,
+.btn--buy {
+  & + .tooltip {
+    left: auto;
+    right: -28px;
+  }
+
+  &:hover + .tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+  }
+}
+
+.btn--buy + .tooltip {
+  right: -18%;
+}
+
 /* Slide-up animation */
 @keyframes slideUp {
   from {
@@ -191,8 +211,8 @@
 
   .selection-bar__inner {
     flex-direction: column;
-    gap: 0.8rem;
     align-items: stretch;
+    gap: 0.8rem;
   }
 
   .selection-bar__metrics {

@@ -40,21 +40,26 @@
     "aboutTitle": "About me",
     "aboutText": " - it's my account name across various selling platforms. I sell coins from my personal collection and more. Since I'm an amateur collector, I might make pricing mistakes - let me know if you see unfair price! I promise honest service and fast responses.",
     "aboutTextAdditional": "I have successfully completed many sales on various sites, and all buyers were happy. You can check it by feedbacks on next platforms:",
-    "contactsText": "You can also find me on the following platforms:",
+    "contactsText": "Send me a message directly:",
     "linkGaleriaSavaria": "Galeria Savaria",
     "linkVatera": "Vatera",
     "linkAukro": "Aukro",
     "linkEbay": "eBay",
     "infoTitle": "Shipping",
     "iOffer": "I offer international and domestic shipping.",
-    "iOffer2": "You can select shipping method when placing an order.",
+    "iOffer2": "You can select shipping method in order modal when click Buy.",
     "packing": "I pack all coins securely and hermetically, not detectable by touch when sent by mail envelope.",
     "noTraceableGreen": "Mails without tracking number",
-    "noTraceableRest": " are not traceable, but from my experience they usually deliver pretty well even abroad (China, Canada, Europe).",
-    "noTraceableAlert": " The buyer takes all responsibility if the letter is lost.",
+    "noTraceableRest": " are not traceable, but from my experience they usually deliver pretty well even abroad (China, Canada, Europe). As proof of postage, I’m attaching a photo of the envelope and a video of dropping it into the postbox.",
+    "noTraceableAlert": " The buyer takes full responsibility in case of shipment loss",
     "domestic": "Domestic shipping",
     "international": "International shipping",
-    "mapTitle": "Personal pickup available at"
+    "mapTitle": "Personal pickup available at",
+    "termsTitle": "Booking and Purchase Policy",
+    "termsBooking": "Booking - means that the coins become inactive on this site for 24 hours but remain available for purchase on other platforms (Vatera, Galeria Savaria, Aukro).",
+    "termsOrder": "After purchase (before payment), the coins are removed from this site’s listings but remain active on other platforms (Vatera, Galeria Savaria, Aukro) until payment is confirmed.",
+    "termsWarning": "Priority is given to listings on other platforms until payment is received. Coins are removed from all platforms only after a successful transaction is confirmed by me."
+
   },
   "shipping": {
     "custom": "Custom shipping",
@@ -360,9 +365,10 @@
   },
   "messageTooltip": {
     "enterYourQuestion": "Enter your question",
-    "authRequired": "Please, sign in to message me (I should know who write me and who I should answer)"
+    "authRequired": "Please sign in to message me (I need email to answer you)"
   },
   "countryDropdown": {
     "tooltip": "Select country to filter coins"
-  }
+  },
+  "serverUnavailable": "Server is waking up and will be ready within a minute"
 }
