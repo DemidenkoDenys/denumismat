@@ -9,7 +9,7 @@ import { IndexedDbService } from '../services/indexed-db.service';
 import { where } from 'firebase/firestore';
 import { Store } from '@ngrx/store';
 import { selectUser } from './auth/auth.selectors';
-import { orderBy, sortBy } from 'lodash';
+import { orderBy } from 'lodash';
 
 @Injectable()
 export class UserCoinsEffects {
@@ -27,36 +27,40 @@ export class UserCoinsEffects {
         return this.firestoreService.listenToCollection('coins', restrictions).pipe(
           withLatestFrom(this.store.select(selectUser)),
           concatMap(([coins, user]: [Coin[], any]) => {
+
             return from(this.indexedDb.getViewedCoinsMap()).pipe(
               map((viewedMap: Record<string, boolean>) => {
+
                 const bookedCoins: Coin[] = [];
-                const mappedCoins = orderBy(coins, ['created_at'], ['desc']).map((coin) => {
-                  const tags = coin.tags ?? [];
-                  if (tags.includes('anounce') || tags.includes('soon')) {
-                    return { ...coin, tags: ['soon'], price: 0, disabled: true, discountPrice: 0, soon: true };
-                  }
-
-                  if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
-                    tags.unshift('new');
-                  }
-
-                  if (coin.youtube) {
-                    tags.unshift('video');
-                  }
-
-                  if (coin.booked_at) {
-
-                    if (user && user.email === coin.booked_by) {
-                      bookedCoins.push(coin);
-                      tags.unshift('my');
-                    } else {
-                      coin.disabled = true;
-                      tags.unshift('booked');
+                const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
+                  .map(coin => ({ ...coin, price: coin.price ? +coin.price : 0, tags: coin.tags?.filter(tag => !!tag) ?? [] }))
+                  .map((coin) => {
+                    const tags = coin.tags;
+                    if (tags.includes('anounce') || tags.includes('soon')) {
+                      return { ...coin, tags: ['soon'], price: 0, disabled: true, discountPrice: 0, soon: true };
                     }
-                  }
 
-                  return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
-                });
+                    if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
+                      tags.unshift('new');
+                    }
+
+                    if (coin.youtube) {
+                      tags.unshift('video');
+                    }
+
+                    if (coin.booked_at) {
+
+                      if (user && user.email === coin.booked_by) {
+                        bookedCoins.push(coin);
+                        tags.unshift('my');
+                      } else {
+                        coin.disabled = true;
+                        tags.unshift('booked');
+                      }
+                    }
+
+                    return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
+                  });
                 const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
                 return [
                   CoinsActions.setBookedCoins({ coins: bookedCoins }),

@@ -34,11 +34,6 @@ export interface Coin {
   created_at?: string;
   is_deleted?: string | null; // ISO timestamp (if set, coin is deleted)
   description?: string; // Coin description
-  imageUrl?: string; // CloudFront image URL
-  thumbnailUrl?: string; // CloudFront thumbnail URL
-  highResUrl?: string; // CloudFront high resolution URL
-  images?: CoinImage; // Multiple image views
-  imageFilenames?: string[]; // Array of image filenames in the coin folder (from Firestore)
   youtube?: string; // id of youtube video
   tags?: string[]; // Tags like 'UNC', 'RARE', 'SALE'
   title?: string; // Pre-computed searchable title: "Country - Deno - Year - Description"

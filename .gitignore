@@ -13,6 +13,7 @@ npm-debug.log
 yarn-error.log
 
 # IDEs and editors
+.env
 .idea/
 .project
 .firebase
@@ -49,3 +50,5 @@ Thumbs.db
 environments*
 *environment.ts
 *environment.*.ts
+
+s3-structure.json

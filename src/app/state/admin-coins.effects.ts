@@ -7,6 +7,7 @@ import { FirestoreService } from '../services/firestore.service';
 import { Coin } from '../components/coins/coin-card';
 import { IndexedDbService } from '../services/indexed-db.service';
 import { where } from 'firebase/firestore';
+import { orderBy } from 'lodash-es';
 
 @Injectable()
 export class AdminCoinsEffects {
@@ -20,19 +21,21 @@ export class AdminCoinsEffects {
       switchMap(() =>
         this.firestoreService.listenToCollection('coins').pipe(
           concatMap((coins: Coin[]) => {
-            const mappedCoins = coins.map((coin) => {
-              const tags = [];
-              if (coin.booked_at) {
-                tags.unshift('booked: ' + (coin.booked_by ?? '??'));
-              }
-              if (coin.ordered_at) {
-                tags.unshift('ordered: ' + (coin.ordered_by ?? '??'));
-              }
-              if (coin.is_deleted) {
-                tags.unshift('deleted');
-              }
-              return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
-            });
+            const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
+              .map(coin => ({ ...coin, price: coin.price ? +coin.price : 0, tags: coin.tags?.filter(tag => !!tag) ?? [] }))
+              .map((coin) => {
+                const tags = [];
+                if (coin.booked_at) {
+                  tags.unshift('booked: ' + (coin.booked_by ?? '??'));
+                }
+                if (coin.ordered_at) {
+                  tags.unshift('ordered: ' + (coin.ordered_by ?? '??'));
+                }
+                if (coin.is_deleted) {
+                  tags.unshift('deleted');
+                }
+                return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
+              });
             const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
             return of(
               CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),

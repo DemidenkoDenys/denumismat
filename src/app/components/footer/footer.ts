@@ -1,15 +1,14 @@
-import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { selectDomesticShippingMethods, selectInternationalShippingMethods, selectShippingMethods } from '../../state/shipping.selectors';
-import { PricePipe } from '../../pipes/price.pipe';
+import { selectDomesticShippingMethods, selectInternationalShippingMethods } from '../../state/shipping.selectors';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
-  imports: [CommonModule, TranslateModule, PricePipe],
+  imports: [CommonModule, TranslateModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <footer class="page-footer" role="contentinfo">

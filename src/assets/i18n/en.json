@@ -83,12 +83,17 @@
     "tag": {
       "MY": "MY",
       "NEW": "NEW",
+      "SET": "SET",
       "UNC": "UNC",
+      "AUNC": "AUNC",
+      "EURO": "EURO",
       "RARE": "RARE",
       "SOON": "SOON",
       "SALE": "SALE",
+      "ERROR": "ERROR",
       "VIDEO": "VIDEO",
       "BOOKED": "BOOKED",
+      "REPLICA": "REPLICA",
       "Selected": "Selected"
     }
   },
