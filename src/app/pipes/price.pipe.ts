@@ -5,9 +5,9 @@ import { selectConversionRate, selectCurrencyFormat, selectHufRate } from '../st
 
 @Injectable({ providedIn: 'root' })
 @Pipe({
+  pure: false,
   name: 'price',
   standalone: true,
-  pure: false
 })
 export class PricePipe implements PipeTransform {
   private store = inject(Store);
@@ -15,7 +15,7 @@ export class PricePipe implements PipeTransform {
   private hufRate = toSignal(this.store.select(selectHufRate), { initialValue: 1 });
   private conversionRate = toSignal(this.store.select(selectConversionRate), { initialValue: 1 });
   private currencyFormat = toSignal(this.store.select(selectCurrencyFormat), {
-    initialValue: { symbol: '$', short: '$', start: true }
+    initialValue: { symbol: '$', short: '$', start: true, coins: true }
   });
 
   transform(value: number | null | undefined, withCurrency = true): string {
@@ -24,14 +24,30 @@ export class PricePipe implements PipeTransform {
     const rate = this.conversionRate();
     const effectiveFormat = this.currencyFormat();
     const convertedPrice = rate / this.hufRate() * value;
-    const formatted = convertedPrice.toFixed(2);
+
+    // determine decimal precision: if coins are disabled, drop decimals entirely
+    const decimals = effectiveFormat.coins === false ? 0 : 2;
+    const formatted = convertedPrice.toFixed(decimals);
     const currency = effectiveFormat.short;
 
     // Add thousands separator (space)
-    const [intPart, decPart] = formatted.split('.');
-    const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    const displayPrice = `${formattedInt}.${decPart}`;
+    let displayPrice: string;
+    if (decimals === 0) {
+      const intPart = formatted.split('.')[0];
+      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      displayPrice = formattedInt;
+    } else {
+      const [intPart, decPart] = formatted.split('.');
+      const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      displayPrice = `${formattedInt}.${decPart}`;
+    }
 
-    return withCurrency ? effectiveFormat.start ? `${currency}${currency === '$' ? '' : ' '}${displayPrice}` : `${displayPrice} ${currency}` : displayPrice;
+    if (!withCurrency) {
+      return displayPrice;
+    }
+
+    return effectiveFormat.start
+      ? `${currency}${currency === '$' ? '' : ' '}${displayPrice}`
+      : `${displayPrice} ${currency}`;
   }
 }

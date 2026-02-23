@@ -1,12 +1,21 @@
 import { createReducer, on } from '@ngrx/store';
 import * as CurrencyActions from './currency.actions';
 
+export interface CurrencyInfo {
+  code: string;
+  name: string;
+  short: string;
+  start: boolean;
+  coins: boolean;
+  symbol: string;
+}
+
 export interface CurrencyState {
   rates: any | null;
   loading: boolean;
   error: any | null;
   selected: string | null;
-  info: any | null;
+  info: Record<string, CurrencyInfo> | null;
   order: Record<string, number>;
 }
 

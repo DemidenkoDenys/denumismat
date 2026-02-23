@@ -76,7 +76,7 @@ export const selectCurrencyFormat = createSelector(
   selectCurrenciesInfo,
   (currencyKey, countriesMap, currInfo) => {
     if (!currencyKey || !countriesMap || !currInfo) {
-      return { symbol: '$', short: '$', start: true };
+      return { symbol: '$', short: '$', start: true, coins: true };
     }
 
     let currencyCode: string;
@@ -91,7 +91,8 @@ export const selectCurrencyFormat = createSelector(
     return {
       symbol: info?.symbol || '$',
       short: info?.short || '$',
-      start: info?.start !== false
+      start: info?.start !== false,
+      coins: info?.coins ?? true
     };
   }
 );
