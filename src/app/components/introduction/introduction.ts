@@ -23,20 +23,6 @@ import { TranslateModule } from '@ngx-translate/core';
           <a href="https://aukro.hu/felhasznalo/denumismat/ajanlatok" target="_blank" rel="noopener noreferrer">Aukro</a>.
           <small> {{ 'introduction.subtitle3_2' | translate }}</small>
         </p>
-        <ul class="introduction__guide">
-          <li>
-            <ng-container *ngIf="!isLoggedIn(); else already">
-              <a href="#" (click)="openAuth($event)">{{ 'introduction.signin' | translate }}</a>
-              {{ 'introduction.step1rest' | translate }}
-            </ng-container>
-            <ng-template #already>
-              <span>{{ 'introduction.step1' | translate }}</span>
-            </ng-template>
-          </li>
-          <li><span>{{ 'introduction.step2' | translate }}</span></li>
-          <li [innerHTML]="'introduction.step3' | translate"></li>
-          <li><span>{{ 'introduction.step4' | translate }}</span></li>
-        </ul>
       </div>
       <div class="introduction__background" aria-hidden="true"></div>
     </section>

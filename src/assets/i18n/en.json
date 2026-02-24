@@ -102,13 +102,7 @@
     "subtitle": "On this site, you can find coins from my collection that I am selling",
     "subtitle2": "<span class=\"highlight\">I offer 10% discount</span> to anyone who orders coins on this site",
     "subtitle3_1": "I also sell on ",
-    "subtitle3_2": "Check feedbacks about me there",
-    "step1": "Sign in with Google in 2 clicks or with your email by code verification",
-    "signin": "Sign in",
-    "step1rest": " with Google in 2 clicks or with your email by code verification",
-    "step2": "Click the coins you like or want to buy",
-    "step3": "Click <span class=\"highlight\">book</span> to disable coins for another buyers or <span class=\"highlight\">buy</span> to purchase them",
-    "step4": "After buying, I send you bank account number to pay (order means completed and coins are removed from other platforms only after payment confirmation)"
+    "subtitle3_2": "Check feedbacks about me there"
   },
   "grid": {
     "ariaLabel": "Coin grid",
@@ -168,12 +162,11 @@
     "submit": "Submit"
   },
   "toast": {
-    "welcome": "Welcome to Denumismat. I happy to see you here! It's my coins catalog that I ready to sell.",
+    "welcome": "Welcome to Denumismat.\n\n I happy to see you here! It's my coins catalog that I ready to sell.\n\nHow it works:\n1. Sign in with Google in 2 clicks or with your email\n2. Click the coins you like or want to buy\n3. Click 'Book' to disable coins for another buyers or 'Buy' to purchase\n4. After buying, I send you bank account number to pay and coins almost yours",
     "bookInfo": "Coins will be booked for 1 day and restored afterward in case of no payment.",
     "coinAlreadyBooked": "Coin {{param}} is already booked.",
     "authRequired": "Please sign in to book coin",
-    "selectionLimitExceeded": "You can select only 50 coins maximum",
-    "nowYouCanSendMessagesAndBookCoins": "Now you can send messages and book coins"
+    "selectionLimitExceeded": "You can select only 50 coins maximum"
   },
   "countries": {
     "AFG": "Afghanistan",

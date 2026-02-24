@@ -36,6 +36,7 @@
 .toast__message {
   font-weight: 600;
   font-size: 0.95rem;
+  white-space: pre-wrap;
 }
 .toast__close {
   background: transparent;

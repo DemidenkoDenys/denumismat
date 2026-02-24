@@ -54,10 +54,6 @@ export class PingService {
                         this.store.dispatch(
                           ServerActions.setServerAvailability({ isAvailable: true })
                         );
-                        this.toast.show(
-                          this.translate.instant('toast.nowYouCanSendMessagesAndBookCoins'),
-                          { type: 'success', duration: 5000 }
-                        );
                       }
                     });
                     return of(true);

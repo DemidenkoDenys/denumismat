@@ -153,7 +153,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.initializeUserFromLocalStorage();
 
     if (!localStorage.getItem('denumismat.welcome')) {
-      this.toast.info('toast.welcome', 3000);
+      this.toast.info('toast.welcome', 20000);
       localStorage.setItem('denumismat.welcome', Date.now().toString());
     }
   }
