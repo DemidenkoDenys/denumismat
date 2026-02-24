@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { selectUser } from './auth/auth.selectors';
 import { getDayDiff } from '../utils/date.utils';
 import { isDefined } from '../utils/value.utils';
-import { filter, toUpper } from 'lodash';
+import { filter, orderBy, toUpper } from 'lodash';
 
 @Injectable()
 export class UserCoinsEffects {
@@ -30,7 +30,7 @@ export class UserCoinsEffects {
           // return of(mockCoins as any).pipe(
           concatMap(([coins, statuses, user]: [Coin[], any, any]) => {
             const bookedCoins: Coin[] = [];
-            const mappedCoins = coins //orderBy(coins, ['created_at'], ['desc'])
+            const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
               .map(coin => ({
                 ...coin,
                 ago: getDayDiff(coin.created_at ?? new Date().toISOString()) * -1,

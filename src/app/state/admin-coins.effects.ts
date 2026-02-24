@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { combineLatest, of } from 'rxjs';
 import { map, catchError, switchMap, concatMap } from 'rxjs/operators';
 import * as CoinsActions from './coins.actions';
 import { FirestoreService } from '../services/firestore.service';
@@ -19,20 +19,20 @@ export class AdminCoinsEffects {
     this.actions$.pipe(
       ofType(CoinsActions.loadCoins),
       switchMap(() =>
-        this.firestoreService.listenToCollection('coins').pipe(
-          concatMap((coins: Coin[]) => {
+        combineLatest([
+          this.firestoreService.listenToCollection('coins'),
+          this.firestoreService.listenToDocument('statuses', 'coin_statuses'),
+        ]).pipe(
+          concatMap(([coins, statuses]: [Coin[], any]) => {
             const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
               .map(coin => ({ ...coin, price: coin.price ? +coin.price : 0, tags: coin.tags?.filter(tag => !!tag) ?? [] }))
               .map((coin) => {
                 const tags = [];
-                if (coin.booked_at) {
-                  tags.unshift('booked: ' + (coin.booked_by ?? '??'));
+                if (statuses[coin.id]?.ba) {
+                  tags.unshift('booked: ' + (statuses[coin.id]?.bb ?? '??'));
                 }
-                if (coin.ordered_at) {
-                  tags.unshift('ordered: ' + (coin.ordered_by ?? '??'));
-                }
-                if (coin.is_deleted) {
-                  tags.unshift('deleted');
+                if (statuses[coin.id]?.oa) {
+                  tags.unshift('ordered: ' + (statuses[coin.id]?.ob ?? '??'));
                 }
                 return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
               });
