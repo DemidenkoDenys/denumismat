@@ -167,6 +167,7 @@
   color: #f9fafb;
   pointer-events: none; /* Prevent click unless hovered */
   background: transparent;
+  outline: 0 !important;
 
   &::before {
     content: '';

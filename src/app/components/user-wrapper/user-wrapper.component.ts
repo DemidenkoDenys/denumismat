@@ -31,8 +31,8 @@ import { forEach } from 'lodash';
   template: `
     <div class="user-wrapper">
       <app-main-layout
-      (onAuthRequired)="handleAuthRequired()"
-      (openSliderModal)="openImageSliderModal($event)"
+        (onAuthRequired)="handleAuthRequired()"
+        (openSliderModal)="openImageSliderModal($event)"
       ></app-main-layout>
 
       <user-selection-bar
@@ -45,8 +45,9 @@ import { forEach } from 'lodash';
     @if (showImageSliderModal()) {
       <app-image-slider-modal
         [images]="images()"
-        [coinId]="sliderCoinId()"
+        [index]="sliderIndex()"
         [video]="sliderVideo()"
+        [coinId]="sliderCoinId()"
         [altText]="sliderAltText()"
         (close)="closeImageSliderModal()">
       </app-image-slider-modal>
@@ -87,6 +88,7 @@ export class UserWrapperComponent implements OnInit {
   isAuthModalOpen = signal(false);
   authSuccessTrigger = signal(0);
   isAuthFormValid = signal(false);
+  sliderIndex = signal<number>(0);
   sliderVideo = signal<string | null>(null);
 
   public images = toSignal(this.store.select(selectCoinImages), { initialValue: null });
@@ -143,9 +145,10 @@ export class UserWrapperComponent implements OnInit {
     this.clearAuthData();
   }
 
-  openImageSliderModal(event: Coin) {
-    this.sliderCoinId.set(event.id);
-    this.sliderVideo.set(event.youtube || null);
+  openImageSliderModal(event: any) {
+    this.sliderCoinId.set(event.coinId);
+    this.sliderVideo.set(event.video || null);
+    this.sliderIndex.set(event.index || 0);
     this.showImageSliderModal.set(true);
     document.body.style.overflow = 'hidden';
   }

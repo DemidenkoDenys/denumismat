@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
 import { firestore } from '../config/firebase.config';
 import { doc, updateDoc } from 'firebase/firestore';
-import { from, Observable } from 'rxjs';
+import { forkJoin, from, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  unbookCoin(coinId: string): Observable<any> {
-    const document = doc(firestore, 'coins', coinId);
-    return from(updateDoc(document, { booked_at: null, booked_by: null }));
-  }
-
   deleteCoin(coinId: string): Observable<any> {
-    const document = doc(firestore, 'coins', coinId);
-    return from(updateDoc(document, { is_deleted: new Date().toISOString() }));
+    return forkJoin({
+      coin: from(updateDoc(doc(firestore, 'coins', coinId), { is_deleted: new Date().toISOString() })),
+      statuses: from(updateDoc(doc(firestore, 'statuses', 'coin_statuses'), { [coinId]: {} }))
+    });
   }
 
   restoreCoin(coinId: string): Observable<any> {
-    const document = doc(firestore, 'coins', coinId);
-    return from(updateDoc(document, { is_deleted: null, booked_at: null, booked_by: null, ordered_at: null, ordered_by: null }));
+    return forkJoin({
+      coin: from(updateDoc(doc(firestore, 'coins', coinId), { is_deleted: null })),
+      statuses: from(updateDoc(doc(firestore, 'statuses', 'coin_statuses'), { [coinId]: { ba: null, bb: null, oa: null, ob: null } }))
+    });
   }
 }

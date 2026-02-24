@@ -292,7 +292,7 @@ export class CoinCardComponent {
   conversionRate = input<number>(1);
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
   selectedChange = output<boolean>();
-  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string, video?: string }>();
+  @Output() openSliderModal = new EventEmitter<{ coinId: string, alt: string, video?: string, index?: number }>();
 
   // Signal to store the image keys from S3
   public imageKeys = signal<string[]>([]);
@@ -611,7 +611,7 @@ export class CoinCardComponent {
 
   onLupaClick() {
     const alt = this.coin().deno + ' ' + this.coin().year;
-    this.openSliderModal.emit({ coinId: this.coin().id, alt, video: this.coin().youtube });
+    this.openSliderModal.emit({ coinId: this.coin().id, alt, video: this.coin().youtube, index: this.currentImageIndex() });
   }
 
   onCoinIdClick(coin: any) {

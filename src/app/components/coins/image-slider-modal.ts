@@ -62,6 +62,7 @@ function toEmbedUrl(youtubeVideoId: string): string {
 export class ImageSliderModalComponent {
   close = output<void>();
   coinId = input<string>('');
+  index = input<number>(0);
   images = input<any>(null);
   video = input<string | null>(null);
   altText = input<string>('Coin image');
@@ -74,6 +75,7 @@ export class ImageSliderModalComponent {
   constructor() {
     effect(() => {
       const id = this.coinId();
+      const index = this.index();
       const video = this.video();
       const images = this.images();
 
@@ -94,7 +96,7 @@ export class ImageSliderModalComponent {
                 urls.unshift('VIDEO:' + toEmbedUrl(video));
               }
               this.imageUrls.set(urls);
-              this.currentIndex.set(0);
+              this.currentIndex.set(index + (video ? +Boolean(index > 0) : 0));
             }
           });
         });
@@ -105,7 +107,7 @@ export class ImageSliderModalComponent {
             urls.push('VIDEO:' + toEmbedUrl(video));
           }
           this.imageUrls.set(urls);
-          this.currentIndex.set(0);
+          this.currentIndex.set(index);
         }
       } else if (video) {
         // no images but video present

@@ -25,16 +25,19 @@ export class UserCoinsEffects {
         return combineLatest([
           this.firestoreService.listenToCollection('coins', [where("is_deleted", "==", null)]),
           this.firestoreService.listenToDocument('statuses', 'coin_statuses'),
-          this.store.select(selectUser)
+          this.store.select(selectUser),
         ]).pipe(
           // return of(mockCoins as any).pipe(
           concatMap(([coins, statuses, user]: [Coin[], any, any]) => {
             const bookedCoins: Coin[] = [];
+            const restoreCoinIds: string[] = [];
+            const localStorageCoins: Record<string, boolean> = JSON.parse(localStorage.getItem('denumismat.coins') || '{}');
+
             const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
               .map(coin => ({
                 ...coin,
                 ago: getDayDiff(coin.created_at ?? new Date().toISOString()) * -1,
-                mine: statuses[coin.id]?.ob === user?.email,
+                mine: statuses[coin.id]?.bb === user?.email || statuses[coin.id]?.ob === user?.email,
                 tags: filter(coin.tags, isDefined).map<string>(toUpper),
                 price: coin.price ? +coin.price : 0,
                 booked_at: statuses[coin.id]?.ba ?? null,
@@ -63,10 +66,17 @@ export class UserCoinsEffects {
                   }
                 }
 
+                if (localStorageCoins[coin.id] && (coin.booked_at || coin.ordered_at) && !coin.mine) {
+                  restoreCoinIds.push(coin.id);
+                }
+
                 return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
               });
+
             const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
+
             return [
+              ...restoreCoinIds.map(id => CoinsActions.deselectCoin({ coinId: id })),
               CoinsActions.setBookedCoins({ coins: bookedCoins }),
               CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
               CoinsActions.setCoinCountries({ countries: coinCountriesMap }),
