@@ -1,9 +1,6 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { Store } from '@ngrx/store';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { selectDomesticShippingMethods, selectInternationalShippingMethods } from '../../state/shipping.selectors';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-footer',
@@ -82,17 +79,4 @@ import { selectDomesticShippingMethods, selectInternationalShippingMethods } fro
     </footer>
   `,
 })
-export class FooterComponent {
-  private store = inject(Store);
-  private translate = inject(TranslateService);
-
-  // all shipping methods sorted per selector
-  domesticShippingMethods = toSignal(this.store.select(selectDomesticShippingMethods));
-  internationalShippingMethods = toSignal(this.store.select(selectInternationalShippingMethods));
-
-  displayMethodLabel(method: { id: string; label?: string }): string {
-    const key = `shipping.${method.id}`;
-    const translated = this.translate.instant(key);
-    return translated === key ? (method.label || method.id) : translated;
-  }
-}
+export class FooterComponent {}

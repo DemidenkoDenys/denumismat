@@ -361,6 +361,13 @@
     "enterYourQuestion": "Írja be a kérdését",
     "authRequired": "Kérjük, jelentkezzen be az üzenetküldéshez (tudnom kell, ki írt és kinek válaszoljak)"
   },
+  "agos": {
+    "day": "day ago",
+    "days": "days ago",
+    "week": "week ago",
+    "today": "today",
+    "yesterday": "yesterday"
+  },
   "countryDropdown": {
     "tooltip": "Válasszon országot az érmék szűréséhez"
   }

@@ -4,6 +4,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PricePipe } from '../../pipes/price.pipe';
+import { DaysAgoPipe } from '../../pipes/days-ago.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors';
@@ -35,6 +36,8 @@ export interface Coin {
   is_deleted?: string | null; // ISO timestamp (if set, coin is deleted)
   description?: string; // Coin description
   youtube?: string; // id of youtube video
+  ago: number; // how long ago coin was created in days
+  mine?: boolean;
   tags?: string[]; // Tags like 'UNC', 'RARE', 'SALE'
   title?: string; // Pre-computed searchable title: "Country - Deno - Year - Description"
   discountPrice?: number; // 10% discounted price
@@ -58,12 +61,13 @@ export interface Coin {
   imports: [CommonModule, TranslateModule, PricePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
+  @if (coin(); as coin) {
     <article
       class="coin-card"
       [class.selected]="selected()"
       [class.coin-card--soon]="isSoon()"
       [class.coin-card--booked]="isBooked()"
-      [class.coin-card--disabled]="coin().disabled"
+      [class.coin-card--disabled]="coin.disabled"
       (click)="toggleSelect()"
       role="button"
       [attr.tabindex]="isBooked() ? -1 : 0"
@@ -86,7 +90,7 @@ export interface Coin {
         <div class="coin-card__slider" [class.coin-card__slider--placeholder]="isPlaceholder()">
           <img
             [src]="currentImageUrl()"
-            [alt]="coin().deno + ' ' + coin().year"
+            [alt]="coin.deno + ' ' + coin.year"
             class="coin-card__image"
             [class.coin-card__image--placeholder]="isPlaceholder()"
             loading="lazy"
@@ -129,10 +133,10 @@ export interface Coin {
           @if (!isPlaceholder()) {
             <button
               type="button"
-              class="coin-card__lupa {{ coin().youtube ? 'video' : '' }}"
+              class="coin-card__lupa {{ coin.youtube ? 'video' : '' }}"
               (click)="$event.stopPropagation(); onLupaClick()"
-              [attr.aria-label]="coin().youtube ? 'Play video' : 'Zoom image'">
-              @if (coin().youtube) {
+              [attr.aria-label]="coin.youtube ? 'Play video' : 'Zoom image'">
+              @if (coin.youtube) {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="24" height="24" fill="none" stroke="currentColor" stroke-width="48">
                   <path d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z" />
                 </svg>
@@ -147,16 +151,23 @@ export interface Coin {
         </div>
 
         <div class="coin-card__tags">
-          @if (coin().tags && coin().tags!.length > 0) {
-            @for (tag of coin().tags; track tag) {
-              <span
-                class="coin-card__tag"
-                [class]="'coin-card__tag--' + (tag.toLowerCase().includes('booked') ? 'booked' : tag.toLowerCase().includes('soon') ? 'soon' : tag.toLowerCase())">
+          @if (agos[coin.ago]; as ago) {
+            <span class="coin-card__tag coin-card__tag--ago">
+              @if (coin.ago > 1 && coin.ago < 7) { {{ coin.ago }} }
+              @if (coin.ago > 7) { 1+ }
+              {{ 'agos.' + ago | translate }}
+            </span>
+          }
+
+          @if (coin.tags!.length > 0) {
+            @for (tag of coin.tags; track tag) {
+              <span class="coin-card__tag" [class]="'coin-card__tag--' + tag.toUpperCase()">
                 @if (tag.toLowerCase() === 'video') {
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -100 640 640" width="12" height="12" fill="white" class="coin-card__tag-icon">
                     <path d="M187.2 100.9C174.8 94.1 159.8 94.4 147.6 101.6C135.4 108.8 128 121.9 128 136L128 504C128 518.1 135.5 531.2 147.6 538.4C159.7 545.6 174.8 545.9 187.2 539.1L523.2 355.1C536 348.1 544 334.6 544 320C544 305.4 536 291.9 523.2 284.9L187.2 100.9z" fill="none" stroke="currentColor" stroke-width="40"/>
                   </svg>
                 }
+
                 {{ 'filters.tag.' + tag.toUpperCase() | translate }}
               </span>
             }
@@ -164,27 +175,27 @@ export interface Coin {
         </div>
 
         <span class="coin-card__price-badge">
-          <span class="coin-card__original-price">{{ coin().price | price: false }}</span>&nbsp;
-          <span class="coin-card__discounted-price">{{ 'coin.price' | translate:{ price: (coin().discountPrice | price) } }}</span>
+          <span class="coin-card__original-price">{{ coin.price | price: false }}</span>&nbsp;
+          <span class="coin-card__discounted-price">{{ 'coin.price' | translate:{ price: (coin.discountPrice | price) } }}</span>
         </span>
       </div>
 
       <div class="coin-card__body">
         @if (isAdmin()) {
-          <h3 class="coin-card__title" (click)="onCoinIdClick(coin())">{{ coin().id }}</h3>
+          <h3 class="coin-card__title" (click)="onCoinIdClick(coin)">{{ coin.id }}</h3>
         }
 
-        @if (coin().soon) {
-          <h3 class="coin-card__title">{{ coin().description }}</h3>
+        @if (coin.soon) {
+          <h3 class="coin-card__title">{{ coin.description }}</h3>
         } @else {
-          <h3 class="coin-card__title"><strong>{{ countryFullName() }} - {{ coin().deno }}</strong> - <span class="coin-card__year">{{ coin().year }}</span>
-          @if (coin().description) {
-            <span class="coin-card__description">{{ coin().description }}</span>
+          <h3 class="coin-card__title"><strong>{{ countryFullName() }} - {{ coin.deno }}</strong> - <span class="coin-card__year">{{ coin.year }}</span>
+          @if (coin.description) {
+            <span class="coin-card__description">{{ coin.description }}</span>
           }</h3>
         }
 
         @if (isAdmin()) {
-          <small class="coin-card__title-date">{{ coin().created_at | date: "MM/dd/yyyy hh:mm" }}</small>
+          <small class="coin-card__title-date">{{ coin.created_at | date: "MM/dd/yyyy hh:mm" }}</small>
         }
 
         <div class="coin-card__meta">
@@ -223,7 +234,7 @@ export interface Coin {
       @if (detailsOpen()) {
           <div class="coin-card__details">
             <textarea #detailsTextarea
-              id="coin-desc-{{coin().id}}"
+              id="coin-desc-{{coin.id}}"
               type="text"
               class="coin-card__details-textarea"
               maxlength="100"
@@ -236,6 +247,7 @@ export interface Coin {
           </div>
         }
     </article>
+  }
   `,
 })
 export class CoinCardComponent {
@@ -243,6 +255,24 @@ export class CoinCardComponent {
   private store = inject(Store);
   private toast = inject(ToastService);
   private s3Service = inject(S3Service);
+
+  public agos: any = {
+    '0': 'today',
+    '1': 'yesterday',
+    '2': 'days',
+    '3': 'days',
+    '4': 'days',
+    '5': 'days',
+    '6': 'days',
+    '7': 'week',
+    '8': 'week',
+    '9': 'week',
+    '10': 'week',
+    '11': 'week',
+    '12': 'week',
+    '13': 'week',
+    '14': 'week',
+  };
 
   public isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
   public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });

@@ -375,5 +375,12 @@
   "countryDropdown": {
     "tooltip": "Select country to filter coins"
   },
+  "agos": {
+    "day": "day ago",
+    "days": "days ago",
+    "week": "week ago",
+    "today": "today",
+    "yesterday": "yesterday"
+  },
   "serverUnavailable": "Server is waking up and will be ready within a minute"
 }

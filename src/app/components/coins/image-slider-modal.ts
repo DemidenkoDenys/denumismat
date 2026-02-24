@@ -112,9 +112,6 @@ export class ImageSliderModalComponent {
         this.imageUrls.set(['VIDEO:' + toEmbedUrl(video)]);
         this.currentIndex.set(0);
       }
-
-      console.log(this.imageUrls());
-
     });
   }
 

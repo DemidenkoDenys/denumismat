@@ -18,7 +18,7 @@ import { NotificationService } from '../../services/api.service';
 import { sanitizeText } from '../../utils/message.utils';
 import { first } from 'rxjs';
 import { selectCurrencyRates, selectSelectedRate } from '../../state/currency.selectors';
-import { filter, maxBy, minBy } from 'lodash';
+import { filter, isNil, maxBy, minBy } from 'lodash';
 
 @Component({
   selector: 'app-coin-grid',
@@ -249,7 +249,7 @@ export class CoinGridComponent implements OnInit {
 
     // Emit summary for UI updates
     const currentSelectedIds = this.selectedIds();
-    const newIds = selected
+    const newIds = selected && (isNil(coin.mine) || coin.mine)
       ? [...currentSelectedIds, id]
       : currentSelectedIds.filter(selectedId => selectedId !== id);
 

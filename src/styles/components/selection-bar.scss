@@ -13,7 +13,6 @@
   width: calc(100% - 3rem);
   max-width: 800px;
   margin: 0 auto;
-  animation: slideUp 0.3s ease-out;
 }
 
 .selection-bar__inner {
@@ -176,7 +175,7 @@
 .btn--buy {
   & + .tooltip {
     left: auto;
-    right: -28px;
+    right: -75px;
   }
 
   &:hover + .tooltip {

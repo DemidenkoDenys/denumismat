@@ -1,18 +1,22 @@
 import { firestore } from '../config/firebase.config';
 import { Injectable } from '@angular/core';
 import { doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
-import { from, Observable, map } from 'rxjs';
+import { from, Observable, map, forkJoin } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  private readonly coinDoc = (id: number) => doc(firestore, 'coins', id.toString());
+  private readonly statusesDoc = doc(firestore, 'statuses', 'coin_statuses');
+
   bookCoin(coinId: string, email: string): Observable<any> {
-    const document = doc(firestore, 'coins', coinId);
-    return from(updateDoc(document, { booked_at: new Date().toISOString(), booked_by: email }));
+    return from(updateDoc(this.statusesDoc, { [coinId]: { ba: new Date().toISOString(), bb: email } }));
   }
 
   orderCoin(coinId: number, email: string): Observable<any> {
-    const document = doc(firestore, 'coins', coinId.toString());
-    return from(updateDoc(document, { ordered_at: new Date().toISOString(), ordered_by: email }));
+    return forkJoin({
+      delete: from(updateDoc(this.coinDoc(coinId), { is_deleted: new Date().toISOString() })),
+      status: from(updateDoc(this.statusesDoc, { [coinId]: { oa: new Date().toISOString(), ob: email } })),
+    })
   }
 
   /**

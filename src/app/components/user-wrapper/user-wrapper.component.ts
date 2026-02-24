@@ -18,9 +18,10 @@ import { selectCoinImages, selectSelectedCoins } from '../../state/coins.selecto
 import { clearSelection, deselectCoin } from '../../state/coins.actions';
 import { UserService } from '../../services/user.service';
 import { ToastService } from '../../services/toast.service';
-import { first } from 'rxjs';
+import { defaultIfEmpty, first, forkJoin, switchMap } from 'rxjs';
 import { NotificationService } from '../../services/api.service';
 import { Coin } from '../coins/coin-card';
+import { forEach } from 'lodash';
 
 @Component({
   selector: 'user-wrapper',
@@ -188,16 +189,25 @@ export class UserWrapperComponent implements OnInit {
 
     this.store.select(selectUser).pipe(first()).subscribe(user => {
       if (user?.email) {
+        const bookingCoinIds = [];
+        const bookingCoins$ = [];
+
         for (const id in coins) {
           if (!coins[id].booked_at) {
-            this.service.bookCoin(coins[id].id, user.email.toLowerCase()).subscribe(() => {
-              this.store.dispatch(deselectCoin({ coinId: coins[id].id }));
-              this.apiService.sendBookCoins(Object.values(coins), user.email ?? '').subscribe();
-            });
+            bookingCoins$.push(this.service.bookCoin(coins[id].id, user.email.toLowerCase()));
+            bookingCoinIds.push(id);
           } else {
             this.toast.show('toast.coinAlreadyBooked', { params: { coinId: coins[id].id } });
           }
         }
+
+        forkJoin(bookingCoins$).pipe(
+          defaultIfEmpty([]),
+          switchMap(() => this.apiService.sendBookCoins(Object.values(coins), user.email ?? '')))
+          .subscribe(() => {
+            forEach(coins, (_, id) => this.store.dispatch(deselectCoin({ coinId: id })));
+          });
+
         this.toast.show('toast.bookInfo');
       } else {
         this.toast.show('toast.authRequired');

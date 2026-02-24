@@ -1,77 +1,76 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of, from } from 'rxjs';
-import { map, catchError, switchMap, concatMap, withLatestFrom } from 'rxjs/operators';
+import { of, from, combineLatest } from 'rxjs';
+import { map, catchError, switchMap, concatMap } from 'rxjs/operators';
 import * as CoinsActions from './coins.actions';
 import { FirestoreService } from '../services/firestore.service';
 import { Coin } from '../components/coins/coin-card';
-import { IndexedDbService } from '../services/indexed-db.service';
 import { where } from 'firebase/firestore';
 import { Store } from '@ngrx/store';
 import { selectUser } from './auth/auth.selectors';
-import { orderBy, toUpper } from 'lodash';
+import { getDayDiff } from '../utils/date.utils';
+import { isDefined } from '../utils/value.utils';
+import { filter, toUpper } from 'lodash';
 
 @Injectable()
 export class UserCoinsEffects {
   private store = inject(Store);
   private actions$ = inject(Actions);
-  private indexedDb = inject(IndexedDbService);
   private firestoreService = inject(FirestoreService);
 
   loadCoins$ = createEffect(() =>
     this.actions$.pipe(
       ofType(CoinsActions.loadCoins),
       switchMap(() => {
-        const restrictions: any[] = [where("ordered_at", "==", null), where("is_deleted", "==", null)];
+        return combineLatest([
+          this.firestoreService.listenToCollection('coins', [where("is_deleted", "==", null)]),
+          this.firestoreService.listenToDocument('statuses', 'coin_statuses'),
+          this.store.select(selectUser)
+        ]).pipe(
+          // return of(mockCoins as any).pipe(
+          concatMap(([coins, statuses, user]: [Coin[], any, any]) => {
+            const bookedCoins: Coin[] = [];
+            const mappedCoins = coins //orderBy(coins, ['created_at'], ['desc'])
+              .map(coin => ({
+                ...coin,
+                ago: getDayDiff(coin.created_at ?? new Date().toISOString()) * -1,
+                mine: statuses[coin.id]?.ob === user?.email,
+                tags: filter(coin.tags, isDefined).map<string>(toUpper),
+                price: coin.price ? +coin.price : 0,
+                booked_at: statuses[coin.id]?.ba ?? null,
+                booked_by: statuses[coin.id]?.bb ?? null,
+                ordered_at: statuses[coin.id]?.oa ?? null,
+                ordered_by: statuses[coin.id]?.ob ?? null,
+              }))
+              .map((coin) => {
+                const tags = coin.tags;
 
-        return this.firestoreService.listenToCollection('coins', restrictions).pipe(
-          withLatestFrom(this.store.select(selectUser)),
-          concatMap(([coins, user]: [Coin[], any]) => {
+                if (tags.includes('ANOUNCE') || tags.includes('SOON')) {
+                  return { ...coin, tags: ['SOON'], price: 0, disabled: true, discountPrice: 0, soon: true };
+                }
 
-            return from(this.indexedDb.getViewedCoinsMap()).pipe(
-              map((viewedMap: Record<string, boolean>) => {
+                if (coin.youtube) {
+                  tags.unshift('VIDEO');
+                }
 
-                const bookedCoins: Coin[] = [];
-                const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
-                  .map(coin => ({ ...coin, price: coin.price ? +coin.price : 0, tags: (coin.tags ?? [])?.filter(tag => !!tag).map(toUpper) ?? [] }))
-                  .map((coin) => {
-                    const tags = coin.tags;
-                    console.log("🚀 ~ tags:", tags);
+                if (coin.booked_at) {
+                  if (user && user.email === coin.booked_by) {
+                    bookedCoins.push(coin);
+                    tags.unshift('MY');
+                  } else {
+                    coin.disabled = true;
+                    tags.unshift('BOOKED');
+                  }
+                }
 
-                    if (tags.includes('ANOUNCE') || tags.includes('SOON')) {
-                      return { ...coin, tags: ['SOON'], price: 0, disabled: true, discountPrice: 0, soon: true };
-                    }
-
-                    if (viewedMap && Object.keys(viewedMap).length > 0 && !viewedMap[coin.id]) {
-                      tags.unshift('NEW');
-                    }
-
-                    if (coin.youtube) {
-                      tags.unshift('VIDEO');
-                    }
-
-                    if (coin.booked_at) {
-
-                      if (user && user.email === coin.booked_by) {
-                        bookedCoins.push(coin);
-                        tags.unshift('MY');
-                      } else {
-                        coin.disabled = true;
-                        tags.unshift('BOOKED');
-                      }
-                    }
-
-                    return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
-                  });
-                const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
-                return [
-                  CoinsActions.setBookedCoins({ coins: bookedCoins }),
-                  CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
-                  CoinsActions.setCoinCountries({ countries: coinCountriesMap }),
-                ];
-              }),
-              concatMap((actionsArray) => of(...actionsArray))
-            );
+                return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
+              });
+            const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
+            return [
+              CoinsActions.setBookedCoins({ coins: bookedCoins }),
+              CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
+              CoinsActions.setCoinCountries({ countries: coinCountriesMap }),
+            ];
           }),
           catchError((error) => {
             console.error('Error fetching coins:', error);

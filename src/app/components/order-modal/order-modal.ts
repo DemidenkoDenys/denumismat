@@ -11,6 +11,7 @@ import { AuthForm } from '../auth-form/auth-form';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectShippingMethods } from '../../state/shipping.selectors';
 import { ShippingMethod } from '../../state/shipping.reducer';
+import { loadShippingMethods } from '../../state/shipping.actions';
 
 @Component({
   selector: 'app-order-modal',
@@ -130,6 +131,13 @@ export class OrderModalComponent implements OnInit, OnDestroy {
 
   countries = computed(() => ({ ...this.existsCountries(), ...this.extinctCountries() }));
 
+  ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.renderer.setStyle(this.document.body, 'overflow', 'hidden');
+    }
+    this.store.dispatch(loadShippingMethods());
+  }
+
   displayMethodLabel(method: ShippingMethod | undefined): string {
     if (!method) {
       return '';
@@ -202,12 +210,6 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   @HostListener('document:keydown.escape')
   onEscape() {
     this.close();
-  }
-
-  ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.renderer.setStyle(this.document.body, 'overflow', 'hidden');
-    }
   }
 
   totalAmount = computed(() => {

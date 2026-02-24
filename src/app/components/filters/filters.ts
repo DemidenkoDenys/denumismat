@@ -164,7 +164,6 @@ export class FiltersComponent implements OnInit {
 
   formattedMaxPrice = computed(() => {
     const format = this.currencyFormat();
-    console.log("🚀 ~ format:", format)
     const currency = format.short;
     const decimals = format.coins === false ? 0 : 2;
     const price = this.priceMax().toFixed(decimals);

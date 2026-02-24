@@ -14,10 +14,13 @@ export class FirestoreService {
       const q = constraints.length > 0 ? query(collectionRef, ...constraints) : query(collectionRef);
 
       const unsubscribe = onSnapshot(q, (snapshot) => {
+        // console.log(collectionName, ' - ', snapshot.metadata.fromCache);
+
         const data = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
         }));
+
         observer.next(data);
       }, (error) => {
         observer.error(error);
@@ -33,8 +36,10 @@ export class FirestoreService {
       const docRef = doc(firestore, collectionName, docId);
 
       const unsubscribe = onSnapshot(docRef, (snapshot) => {
+        // console.log(collectionName, docId, ' - ', snapshot.metadata.fromCache);
+
         if (snapshot.exists()) {
-          observer.next({ id: snapshot.id, ...snapshot.data() });
+          observer.next(snapshot.data());
         } else {
           observer.next(null);
         }
