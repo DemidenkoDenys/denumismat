@@ -206,6 +206,7 @@
   .selection-bar {
     width: calc(100% - 2rem);
     padding: 0.7rem 0.8rem;
+    bottom: 1rem;
   }
 
   .selection-bar__inner {
@@ -222,7 +223,7 @@
     width: 100%;
 
     .btn {
-      flex: 1;
+      flex: 0;
     }
   }
 }

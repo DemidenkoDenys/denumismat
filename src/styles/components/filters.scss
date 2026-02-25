@@ -60,6 +60,16 @@
   flex-direction: row;
 }
 
+@media (max-width: 600px) {
+  .filters__group--tags {
+    max-width: none;
+  }
+
+  .filters__tags {
+    justify-content: center !important;
+  }
+}
+
 .filters__label {
   font-size: 0.75rem;
   color: #6b7280;

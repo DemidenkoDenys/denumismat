@@ -78,12 +78,22 @@
   .introduction {
     padding: 3rem 1.5rem;
   }
+}
 
-  .introduction__title {
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
+@media (max-width: 520px) {
+  .introduction {
+    padding: 0;
+  }
+
+  .introduction__content {
+    margin: 0;
+  }
+
+  .introduction__subtitle {
+    font-size: 1.2rem;
   }
 }
+
 
 .introduction__warning-sticky,
 .introduction__question-sticky {
