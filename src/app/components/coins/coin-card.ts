@@ -4,7 +4,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Store } from '@ngrx/store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PricePipe } from '../../pipes/price.pipe';
-import { DaysAgoPipe } from '../../pipes/days-ago.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors';
@@ -152,7 +151,7 @@ export interface Coin {
 
         <div class="coin-card__tags">
           @if (agos[coin.ago]; as ago) {
-            <span class="coin-card__tag coin-card__tag--ago">
+            <span class="coin-card__tag coin-card__tag--AGO">
               @if (coin.ago > 1 && coin.ago < 7) { {{ coin.ago }} }
               @if (coin.ago > 7) { 1+ }
               {{ 'agos.' + ago | translate }}

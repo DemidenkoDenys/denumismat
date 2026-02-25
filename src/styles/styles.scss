@@ -3,6 +3,7 @@
 @use 'flag-icons/sass/flag-icons' with (
   $flag-icons-use-square: false
 );
+@use 'variables' as *;
 
 /* Component Styles (single entry) */
 @use 'components/index' as *;

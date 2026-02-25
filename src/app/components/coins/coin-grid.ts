@@ -105,6 +105,7 @@ export class CoinGridComponent implements OnInit {
     const filters = this.filters();
     const allCoins = this.enrichedCoins();
     const search = this.searchQuery();
+    const rate = this.rate() ?? 1;
 
     if (!allCoins) return [];
 
@@ -152,7 +153,6 @@ export class CoinGridComponent implements OnInit {
         }
 
         if (filters.priceRange) {
-          const rate = this.rate() ?? 1;
           const [min, max] = filters.priceRange;
           if (coin.discountPrice && (rate * coin.discountPrice < min || rate * coin.discountPrice > max)) return false;
         }

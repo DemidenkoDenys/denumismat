@@ -270,91 +270,63 @@
 
   &.active {
     font-weight: 500;
-    border-color: blue;
+    // color and border handled by individual modifiers
   }
 }
 
-.filters__tag--unc {
-  border-color: #9ca3af;
-  color: #6b7280;
+// generate filter tag variants using a map for conciseness
+$filter-tag-map: (
+  my: (color: var(--tag-my),  text: var(--tag-my-text), hover-bg: var(--tag-my-hover)),
+  set: (color: var(--tag-set), text: var(--tag-set-text), hover-bg: var(--tag-set-hover)),
+  unc: (color: var(--tag-unc), text: var(--tag-unc-text), hover-bg: var(--tag-unc-hover), hover-text: var(--tag-unc-text-hover)),
+  aunc: (color: var(--tag-aunc), text: var(--tag-aunc-text), hover-bg: var(--tag-aunc-hover)),
+  euro: (color: var(--tag-euro), text: var(--tag-euro-text), hover-bg: var(--tag-euro-hover)),
+  rare: (color: var(--tag-rare), text: var(--tag-rare-text), hover-bg: var(--tag-rare-hover)),
+  soon: (color: var(--tag-soon), hover-bg: var(--tag-soon-hover)),
+  error: (color: var(--tag-error), hover-bg: var(--tag-error-hover), text: white, padding-left: 8px, important: true),
+  video: (color: var(--tag-video), hover-bg: var(--tag-video-hover), text: white, padding-left: 8px, important: true),
+  booked: (color: var(--tag-booked), hover-bg: var(--tag-booked-hover), text: white, padding-left: 8px, important: true),
+  replica: (color: var(--tag-replica), hover-bg: var(--tag-replica-hover), text: white, padding-left: 8px, important: true),
+  selected: (color: var(--tag-selected), text: var(--tag-selected-text), hover-bg: var(--tag-selected-hover))
+);
 
-  &:hover {
-    border-color: #9ca3af;
-    background: #f3f4f6;
-    color: #4b5563;
-  }
+@each $name, $props in $filter-tag-map {
+  .filters__tag--#{$name} {
+    border-color: map-get($props, color);
+    @if map-has-key($props, text) {
+      color: map-get($props, text);
+    }
+    @if map-has-key($props, padding-left) {
+      padding-left: map-get($props, padding-left);
+    }
 
-  &.active {
-    background: #6b7280;
-    border-color: #6b7280;
-    color: #ffffff;
-  }
-}
+    &:hover {
+      border-color: map-get($props, color);
+      background: map-get($props, hover-bg);
+      @if map-has-key($props, hover-text) {
+        color: map-get($props, hover-text);
+      }
+      @if map-get($props, important) {
+        background: map-get($props, hover-bg) !important;
+        border-color: map-get($props, color) !important;
+      }
+    }
 
-.filters__tag--my,
-.filters__tag--soon {
-  border-color: #f97316;
-  color: #c2410c;
-
-  &:hover {
-    border-color: #f97316;
-    background: #fff7ed;
-    color: #c2410c;
-  }
-
-  &.active {
-    background: #f97316;
-    border-color: #f97316;
-    color: #ffffff;
-  }
-}
-
-.filters__tag--sale {
-  border-color: #22c55e;
-  color: #15803d;
-
-  &:hover {
-    border-color: #22c55e;
-    background: #f0fdf4;
-    color: #15803d;
-  }
-
-  &.active {
-    background: #22c55e;
-    border-color: #22c55e;
-    color: #ffffff;
+    &.active {
+      background: map-get($props, color);
+      border-color: map-get($props, color);
+      color: #ffffff;
+      @if map-get($props, important) {
+        background: map-get($props, color) !important;
+        border-color: map-get($props, color) !important;
+      }
+    }
   }
 }
 
-.filters__tag--video {
-  border-color: #1d4ed8 !important;
-  padding-left: 8px;
-  color: white;
-
-  &.active {
-    background: #1d4ed8 !important;
-  }
-}
-
+// icon rule remains outside loop
 .filters__tag-icon svg {
   stroke-width: 40;
-}
-
-.filters__tag--selected {
-  border-color: #3b82f6;
-  color: #1e40af;
-
-  &:hover {
-    border-color: #3b82f6;
-    background: #eff6ff;
-    color: #1e40af;
-  }
-
-  &.active {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: #ffffff;
-  }
 }
 
 @media (max-width: 900px) {

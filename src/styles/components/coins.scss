@@ -360,7 +360,7 @@ body.theme-dark .coin-card__lupa:hover {
 
 .coin-card__discounted-price {
   color: rgb(255, 176, 6);
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-shadow: 2px 2px 2px rgba(0, 0, 0, 1);
   vertical-align: baseline;
 }
@@ -378,7 +378,7 @@ body.theme-dark .coin-card__lupa:hover {
 }
 
 .coin-card__tag {
-  background: #f97316;
+  background: var(--tag-default);
   color: #ffffff;
   font-size: 0.55rem;
   font-weight: 500;
@@ -389,34 +389,58 @@ body.theme-dark .coin-card__lupa:hover {
   width: fit-content;
 }
 
-.coin-card__tag--unc {
-  background: #6b7280;
+.coin-card__tag--MY {
+  background: var(--tag-my);
 }
 
-.coin-card__tag--rare {
-  background: #f97316;
+.coin-card__tag--AGO {
+  background: var(--tag-ago);
 }
 
-.coin-card__tag--sale {
-  background: #22c55e;
+.coin-card__tag--SET {
+  background: var(--tag-set);
 }
 
-.coin-card__tag--video {
-  background: #1d4ed8 !important;
+.coin-card__tag--UNC {
+  background: var(--tag-unc);
+}
+
+.coin-card__tag--AUNC {
+  background: var(--tag-aunc);
+}
+
+.coin-card__tag--RARE {
+  background: var(--tag-rare);
+}
+
+.coin-card__tag--SALE {
+  background: var(--tag-sale);
+}
+
+.coin-card__tag--ERROR {
+  background: var(--tag-error);
+}
+
+.coin-card__tag--VIDEO {
+  background: var(--tag-video) !important;
 
   path {
     fill: white;
   }
 }
 
-.user-wrapper .coin-card__tag--booked {
+.coin-card__tag--REPLICA {
+  background: var(--tag-replica);
+}
+
+.user-wrapper .coin-card__tag--BOOKED {
   background: rgba(48, 41, 41, 0.4);
   box-shadow: 0 0 4px rgba(255, 255, 255, 0.65);
   margin-left: auto;
   border-radius: 12px;
 }
 
-.user-wrapper .coin-card__tag--soon {
+.user-wrapper .coin-card__tag--SOON {
   margin-left: auto;
   margin-right: auto;
   border-radius: 12px;

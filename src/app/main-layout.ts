@@ -73,11 +73,8 @@ import { Coin } from './components/coins/coin-card';
   ]
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
-  private pingService = inject(PingService);
   private store = inject(Store);
-  private router = inject(Router);
   private toast = inject(ToastService);
-  private translate = inject(TranslateService);
   private authService = inject(AuthService);
 
   // Outputs for modal management

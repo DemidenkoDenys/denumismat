@@ -1,9 +1,12 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, signal, computed, effect, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { CountryDropdownComponent } from '../country-dropdown/country-dropdown.component';
 import { fromEvent } from 'rxjs';
 import { map, pairwise, distinctUntilChanged } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngrx/store';
+import { selectSelectedRate } from '../../state/currency.selectors';
 
 export interface Filters {
   tags: string[];
@@ -116,6 +119,8 @@ export interface Filters {
   imports: [CommonModule, TranslateModule, CountryDropdownComponent],
 })
 export class FiltersComponent implements OnInit {
+  private store = inject(Store);
+
   priceRange = input<[number, number]>([0, 10000]);
   priceBounds = input<[number, number]>([0, 10000]);
   tagsInput = input<string[]>([]);
@@ -190,6 +195,8 @@ export class FiltersComponent implements OnInit {
   rangeLeftPct = computed(() => ((this.priceMin() - this.priceMinBound()) / this.rangeSpan()) * 100);
   rangeWidthPct = computed(() => ((this.priceMax() - this.priceMin()) / this.rangeSpan()) * 100);
 
+  rate = toSignal(this.store.select(selectSelectedRate), { initialValue: null });
+
   // Adjust price range to use discountPrice
   filteredCoins = computed(() => {
     const [min, max] = this.priceRange();
@@ -214,6 +221,11 @@ export class FiltersComponent implements OnInit {
         this.priceMin.set(minBound);
         this.priceMax.set(maxBound);
       }
+    });
+
+    effect(() => {
+      const rate = this.rate();
+      this.emit();
     });
   }
 
