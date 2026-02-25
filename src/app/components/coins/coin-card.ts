@@ -242,7 +242,7 @@ export interface Coin {
               [disabled]="!isServerAvailable() || !isLoggedIn()"
               (click)="$event.stopPropagation()"
               (input)="$event.stopPropagation(); detailsText.set($any($event.target).value)"
-              [attr.placeholder]="isLoggedIn() ? ('coin.askCoin' | translate) : ('coin.authForMessage' | translate)"
+              [attr.placeholder]="isServerAvailable() ? (isLoggedIn() ? ('coin.askCoin' | translate) : ('coin.authForMessage' | translate)) : ('serverUnavailable' | translate)"
             ></textarea>
           </div>
         }

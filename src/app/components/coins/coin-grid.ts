@@ -9,7 +9,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { selectCoins, selectSelectedCoins, selectSelectedCoinIds, selectIsSelectionLimitReached, selectCoinImages } from '../../state/coins.selectors';
 import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
-import { ObserveVisibilityDirective } from '../../directives/in-viewport.directive';
 import { IndexedDbService } from '../../services/indexed-db.service';
 import { selectIsAdmin } from '../../state/auth/auth.selectors';
 import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
@@ -23,7 +22,7 @@ import { filter, isNil, maxBy, minBy } from 'lodash';
 @Component({
   selector: 'app-coin-grid',
   standalone: true,
-  imports: [CommonModule, CoinCardComponent, TranslateModule, ObserveVisibilityDirective],
+  imports: [CommonModule, CoinCardComponent, TranslateModule, ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (images(); as images) {
@@ -31,7 +30,6 @@ import { filter, isNil, maxBy, minBy } from 'lodash';
         <div class="coin-grid__list">
           @for (coin of paginatedCoins(); track coin.id) {
             <app-coin-card
-              appObserveVisibility (visible)="onInViewport(coin)"
               [coin]="coin"
               [images]="images"
               [selected]="selectedIdsSet().has(coin.id)"
@@ -254,12 +252,6 @@ export class CoinGridComponent implements OnInit {
       : currentSelectedIds.filter(selectedId => selectedId !== id);
 
     this.emitSummary(newIds);
-  }
-
-  onInViewport(coin: any) {
-    if (!coin || !coin.id) return;
-    // persist viewed coin id into IndexedDB via service
-    this.indexedDb.markViewed(coin.id).catch(err => console.error('indexedDb.markViewed failed', err));
   }
 
   onCoinMessageSent(event: { coin: Coin, message: string }) {

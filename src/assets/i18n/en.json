@@ -38,7 +38,7 @@
   },
   "pageFooter": {
     "aboutTitle": "About me",
-    "aboutText": " - it's my account name across various selling platforms. I sell coins from my personal collection and more. Since I'm an amateur collector, I might make pricing mistakes - let me know if you see unfair price! I promise honest service and fast responses.",
+    "aboutText": " - it's my account name across various selling platforms. I sell coins from my personal collection and more. Since I'm an amateur coins collector, I might make pricing mistakes - let me know if you see unfair price! I promise honest service and fast responses.",
     "aboutTextAdditional": "I have successfully completed many sales on various sites, and all buyers were happy. You can check it by feedbacks on next platforms:",
     "contactsText": "Send me a message directly:",
     "linkGaleriaSavaria": "Galeria Savaria",
@@ -49,17 +49,23 @@
     "iOffer": "I offer international and domestic shipping.",
     "iOffer2": "You can select shipping method in order modal when click Buy.",
     "packing": "I pack all coins securely and hermetically, not detectable by touch when sent by mail envelope.",
-    "noTraceableGreen": "Mails without tracking number",
-    "noTraceableRest": " are not traceable, but from my experience they usually deliver pretty well even abroad (China, Canada, Europe). As proof of postage, I’m attaching a photo of the envelope and a video of dropping it into the postbox.",
-    "noTraceableAlert": " The buyer takes full responsibility in case of shipment loss",
+    "noTraceableGreen": "Non-registered mails (without tracking number)",
+    "noTraceableRest": " are not traceable and process of returning when it's lost may be impossible. But from my experience this kind of delivery works well even when sent abroad like China, Canada, Europe.",
+    "noTraceableAlert": "By selecting priority mail as shipping method, the buyer understand the risks and will not claim any compensation in case of loss.",
+    "noTraceableProof": "From my side, I provide proof of postage with a photo of the envelope and a video of dropping it into the postbox.",
+    "usaDeliveryShort": "Delivery to USA",
+    "usaDeliveryFull": "Shipping to the USA is only possible via private carriers (FedEx, UPS, GLS), as the Hungarian Post has suspended all parcel and letter services to the USA due to tariff issues.",
+    "shoppingToUsa": "Since coins .",
     "domestic": "Domestic shipping",
     "international": "International shipping",
-    "mapTitle": "Personal pickup available at",
+    "mapTitle": "Personal pickup available at - Budapest, 13 district",
     "termsTitle": "Booking and Purchase Policy",
     "termsBooking": "Booking - means that the coins become inactive on this site for 24 hours but remain available for purchase on other platforms (Vatera, Galeria Savaria, Aukro).",
-    "termsOrder": "After purchase (before payment), the coins are removed from this site’s listings but remain active on other platforms (Vatera, Galeria Savaria, Aukro) until payment is confirmed.",
-    "termsWarning": "Priority is given to listings on other platforms until payment is received. Coins are removed from all platforms only after a successful transaction is confirmed by me."
-
+    "termsOrder": "After purchase (before payment), the coins are removed from this site but remain active on other platforms (Vatera, Galeria Savaria, Aukro) until payment is confirmed.",
+    "termsAlert": "Priority is given to listings on other platforms until payment is received",
+    "termsWarning": " since it's hard to remove and add items on many platforms after any user action.",
+    "termsGreen": "Coins can be withdrawn from sale by personal request and removed automatically by successfull payment transaction.",
+    "termsCondition": "The condition of the coins is exactly as shown in the photos; no claims regarding their condition will be accepted after purchase."
   },
   "shipping": {
     "custom": "Custom shipping",
@@ -98,11 +104,17 @@
     }
   },
   "introduction": {
-    "title": "Hi, I'm Denys, an amateur coin collector from Ukraine",
+    "title": "Hello, I'm Denys, coins collector from Ukraine",
     "subtitle": "On this site, you can find coins from my collection that I am selling",
     "subtitle2": "<span class=\"highlight\">I offer 10% discount</span> to anyone who orders coins on this site",
     "subtitle3_1": "I also sell on ",
-    "subtitle3_2": "Check feedbacks about me there"
+    "subtitle3_2": "Check feedbacks about me",
+    "subtitleAlert": "Be carefull, booking or buying without payment doesn't mean coins are yours. They can be bought on another platform until you paid.\n\nCoins pictures are not in proportion between each other.\n\nThe condition of the coins is exactly as shown in the photos; no claims regarding their condition will be accepted after purchase.",
+    "help": "How to use this page",
+    "step1": "Sign in via Google in 2 clicks or by email with a verification code",
+    "step2": "Click on coins you like or want to buy",
+    "step3": "Click <span class=\"highlight\">reserve</span> to hide coins from others, or <span class=\"highlight\">buy</span> to purchase them",
+    "step4": "After purchase I will send you the bank account number for payment (order is complete and coins removed from other platforms only after payment confirmation)"
   },
   "grid": {
     "ariaLabel": "Coin grid",
@@ -162,7 +174,7 @@
     "submit": "Submit"
   },
   "toast": {
-    "welcome": "Welcome to Denumismat.\n\n I happy to see you here! It's my coins catalog that I ready to sell.\n\nHow it works:\n1. Sign in with Google in 2 clicks or with your email\n2. Click the coins you like or want to buy\n3. Click 'Book' to disable coins for another buyers or 'Buy' to purchase\n4. After buying, I send you bank account number to pay and coins almost yours",
+    "welcome": "Welcome to Denumismat.\n\n I happy to see you here! It's my coins catalog that I ready to sell.\n\nHow it works:\n1. Sign in with Google in 2 clicks or with your email\n2. Select the coins you like or want to buy\n3. Click 'Book' to disable coins for another buyers or 'Buy' to purchase\n4. After buying, I send you bank account number to pay and coins almost yours.\n5. Coins will be removed from other platforms after payment confirmation.",
     "bookInfo": "Coins will be booked for 1 day and restored afterward in case of no payment.",
     "coinAlreadyBooked": "Coin {{param}} is already booked.",
     "authRequired": "Please sign in to book coin",

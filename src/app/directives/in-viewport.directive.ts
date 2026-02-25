@@ -11,6 +11,7 @@ export class ObserveVisibilityDirective implements AfterViewInit {
 
   ngAfterViewInit() {
     const observer = new IntersectionObserver(([entry]) => {
+      console.log("🚀 ~ entry:", entry)
       if (entry.isIntersecting) {
         this.visible.emit();
         observer.disconnect();

@@ -149,6 +149,22 @@
   display: block;
 }
 
+.page-footer__usa {
+  cursor: pointer;
+  position: relative;
+
+  svg {
+    vertical-align: super;
+
+    &:hover + .tooltip {
+      opacity: 1;
+      left: 0;
+      transform: translateX(25px) translateY(0);
+      visibility: visible;
+    }
+  }
+}
+
 @media (max-width: 900px) {
   .page-footer__inner {
     grid-template-columns: 1fr;
