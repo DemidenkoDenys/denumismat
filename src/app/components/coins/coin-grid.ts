@@ -22,7 +22,7 @@ import { filter, isNil, maxBy, minBy } from 'lodash';
 @Component({
   selector: 'app-coin-grid',
   standalone: true,
-  imports: [CommonModule, CoinCardComponent, TranslateModule, ],
+  imports: [CommonModule, CoinCardComponent, TranslateModule,],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (images(); as images) {
@@ -113,6 +113,13 @@ export class CoinGridComponent implements OnInit {
       // Apply search query filter
       if (search && search.trim() !== '') {
         const searchText = search.trim();
+
+        const idMatch = searchText.match(/^[A-Z]{2,3}\d+[A-Z]{2,3}\d{4}$/);
+        const searchId = idMatch ? idMatch[0] : null;
+
+        if (searchId && coin.id === searchId) {
+          return true;
+        }
 
         // Extract year from search query (3-4 digit number starting with 18, 19, or 20)
         const yearMatch = searchText.match(/\b(18|19|20)\d{1,2}\b/);
