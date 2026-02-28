@@ -100,6 +100,7 @@
       "VIDEO": "VIDEO",
       "BOOKED": "BOOKED",
       "REPLICA": "REPLICA",
+      "DELETED": "DELETED",
       "Selected": "Selected"
     }
   },

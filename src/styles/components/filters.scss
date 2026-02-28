@@ -5,6 +5,18 @@
   padding: 1rem 0;
   background: var(--color-background);
   transition: top 0.3s ease, transform 0.3s ease;
+
+  &.short {
+    .filters__group--range {
+      display: none;
+    }
+
+    .filters__group--tags {
+      flex: 1 0 auto;
+      max-width: 80%;
+      margin-left: 0 !important;
+    }
+  }
 }
 
 /* added class when user scrolls downward; mobile behaviour defined below */
@@ -297,35 +309,21 @@ $filter-tag-map: (
   video: (color: var(--tag-video), hover-bg: var(--tag-video-hover), text: white, padding-left: 8px, important: true),
   booked: (color: var(--tag-booked), hover-bg: var(--tag-booked-hover), text: white, padding-left: 8px, important: true),
   replica: (color: var(--tag-replica), hover-bg: var(--tag-replica-hover), text: white, padding-left: 8px, important: true),
+  deleted: (color: var(--tag-deleted)),
   selected: (color: var(--tag-selected), text: var(--tag-selected-text), hover-bg: var(--tag-selected-hover))
 );
 
 @each $name, $props in $filter-tag-map {
   .filters__tag--#{$name} {
+    color: map-get($props, color);
     border-color: map-get($props, color);
-    @if map-has-key($props, text) {
-      color: map-get($props, text);
-    }
-    @if map-has-key($props, padding-left) {
-      padding-left: map-get($props, padding-left);
-    }
 
-    &:hover {
-      border-color: map-get($props, color);
-      background: map-get($props, hover-bg);
-      @if map-has-key($props, hover-text) {
-        color: map-get($props, hover-text);
-      }
-      @if map-get($props, important) {
-        background: map-get($props, hover-bg) !important;
-        border-color: map-get($props, color) !important;
-      }
-    }
-
+    &:hover,
     &.active {
       background: map-get($props, color);
       border-color: map-get($props, color);
       color: #ffffff;
+
       @if map-get($props, important) {
         background: map-get($props, color) !important;
         border-color: map-get($props, color) !important;

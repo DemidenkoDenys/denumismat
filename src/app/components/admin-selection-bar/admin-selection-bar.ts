@@ -62,5 +62,11 @@ export class AdminSelectionBarComponent {
     }
   }
 
-  handleReset() { this.onReset.emit(); }
+  handleReset() {
+    const coins = this.selectedCoins();
+
+    for (const id in coins) {
+      this.store.dispatch(deselectCoin({ coinId: coins[id].id }))
+    }
+  }
 }

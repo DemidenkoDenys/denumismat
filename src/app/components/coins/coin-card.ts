@@ -181,16 +181,16 @@ export interface Coin {
 
       <div class="coin-card__body">
         @if (isAdmin()) {
-          <h3 class="coin-card__title" (click)="onCoinIdClick(coin)">{{ coin.id }}</h3>
+          <h3 class="coin-card__title" (click)="$event.stopPropagation(); onCoinIdClick(coin)">{{ coin.id }}</h3>
         }
 
         @if (coin.soon) {
           <h3 class="coin-card__title">{{ coin.description }}</h3>
         } @else {
-          <h3 class="coin-card__title"><strong>{{ countryFullName() }} - {{ coin.deno }}</strong> - <span class="coin-card__year">{{ coin.year }}</span>
-          @if (coin.description) {
-            <span class="coin-card__description">{{ coin.description }}</span>
-          }</h3>
+          <h3 class="coin-card__title"><strong>{{ countryFullName() }} - {{ coin.deno }}</strong> @if (coin.description) {
+            - <span>{{ coin.description }}</span>
+          } - <span class="coin-card__year">{{ coin.year }}</span>
+          </h3>
         }
 
         @if (isAdmin()) {

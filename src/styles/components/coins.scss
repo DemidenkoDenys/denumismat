@@ -421,6 +421,10 @@ body.theme-dark .coin-card__lupa:hover {
   background: var(--tag-error);
 }
 
+.coin-card__tag--DELETED {
+  background: var(--tag-deleted);
+}
+
 .coin-card__tag--VIDEO {
   background: var(--tag-video) !important;
 

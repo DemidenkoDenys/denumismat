@@ -7,6 +7,7 @@ import { map, pairwise, distinctUntilChanged } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngrx/store';
 import { selectSelectedRate } from '../../state/currency.selectors';
+import { selectIsAdmin } from '../../state/auth/auth.selectors';
 
 export interface Filters {
   tags: string[];
@@ -18,7 +19,7 @@ export interface Filters {
 @Component({
   selector: 'app-filters',
   template: `
-    <aside class="filters" [class.scrolling-down]="scrollingDown()" [attr.aria-label]="'filters.tags' | translate">
+    <aside class="filters" [class.short]="isAdmin()" [class.scrolling-down]="scrollingDown()" [attr.aria-label]="'filters.tags' | translate">
       <div class="filters__inner">
         <div class="filters__group filters__group--country">
           <span class="filters__group--country-description">{{ selectedCountry() ? ('filters.coinsOf' | translate) : ('filters.country' | translate)}} </span>
@@ -196,6 +197,7 @@ export class FiltersComponent implements OnInit {
   rangeWidthPct = computed(() => ((this.priceMax() - this.priceMin()) / this.rangeSpan()) * 100);
 
   rate = toSignal(this.store.select(selectSelectedRate), { initialValue: null });
+  isAdmin = toSignal(this.store.select(selectIsAdmin), { initialValue: false });
 
   // Adjust price range to use discountPrice
   filteredCoins = computed(() => {

@@ -40,7 +40,13 @@ export class CountryDropdownComponent {
     const extinctCountries = this.extinctCountries();
 
     if (!countries || !extinctCountries || !coinCountries) return [];
-    return [...Object.values(countries), ...Object.values(extinctCountries)].filter((country) => !!coinCountries[country.code]);
+    const list = [...Object.values(countries), ...Object.values(extinctCountries)].filter((country) => !!coinCountries[country.code]);
+    // translate each code and sort by the localized name
+    return list.sort((a, b) => {
+      const ta = this.translate.instant('countries.' + a.code);
+      const tb = this.translate.instant('countries.' + b.code);
+      return ta.localeCompare(tb);
+    });
   })
 
   async selectCountry(countryCode: string): Promise<void> {

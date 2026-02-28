@@ -1,32 +1,18 @@
 :root {
   --tag-default: #f4a261;
-  --tag-default-hover: #{lighten(#f4a261,40%)};
   --tag-my: #00d6fc;
-  --tag-my-hover: #{lighten(#00d6fc,40%)};
   --tag-ago: #8338ec;
-  --tag-ago-hover: #{lighten(#8338ec,40%)};
   --tag-set: #6fff0f;
-  --tag-set-hover: #{lighten(#6fff0f,40%)};
   --tag-unc: #6a838e;
-  --tag-unc-hover: #{lighten(#6a838e,40%)};
-  --tag-unc-text-hover: #{darken(#6a838e,20%)};
   --tag-aunc: #6a838e;
-  --tag-aunc-hover: #{lighten(#6a838e,40%)};
   --tag-rare: var(--tag-default);
   --tag-euro: #ffd166;
-  --tag-euro-hover: #{lighten(#ffd166,40%)};
   --tag-sale: #22c55e;
-  --tag-sale-hover: #{lighten(#22c55e,40%)};
-  --tag-sale-text: #{darken(#22c55e,20%)};
   --tag-error: #e63946;
-  --tag-error-hover: #{lighten(#e63946,40%)};
   --tag-video: #1d4ed8;
-  --tag-video-hover: #{lighten(#1d4ed8,40%)};
+  --tag-soon: var(--tag-my); /* reuse my color by default */
   --tag-booked: #4f545d;
   --tag-replica: #f15bb5;
-  --tag-soon: var(--tag-my); /* reuse my color by default */
-  --tag-soon-hover: #{lighten(#00d6fc,40%)}; // match $tag-my value
+  --tag-deleted: red;
   --tag-selected: #3b82f6;
-  --tag-selected-hover: #{lighten(#3b82f6,40%)};
-  --tag-selected-text: #{darken(#3b82f6,20%)};
 }

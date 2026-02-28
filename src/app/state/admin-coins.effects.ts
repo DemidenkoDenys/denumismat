@@ -34,6 +34,9 @@ export class AdminCoinsEffects {
                 if (statuses[coin.id]?.oa) {
                   tags.unshift('ordered: ' + (statuses[coin.id]?.ob ?? '??'));
                 }
+                if (coin.is_deleted) {
+                  tags.unshift('deleted');
+                }
                 return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
               });
             const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
