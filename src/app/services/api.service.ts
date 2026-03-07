@@ -83,9 +83,10 @@ ${sanitizeText(message)}`;
   }
 
   sendVerifyCode(email: string, code: string) {
+    const verifyCode = decrypt(code);
     const text = `
 User: ${email}
 Verification code: ${decrypt(code)}`;
-    return this.http.post(`${environment.apiUrl}/send`, { email, text, subject: 'verification code' });
+    return this.http.post(`${environment.apiUrl}/send`, { email, text, verifyCode });
   }
 }

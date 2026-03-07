@@ -181,6 +181,6 @@
   "POL": { "code": "POL", "name": "Poland", "original": "Polska", "rate": 78, "currency": "PLN" },
   "NLD": { "code": "NLD", "name": "Netherlands", "original": "Nederland", "rate": 86, "currency": "EUR" },
   "VNM": { "code": "VNM", "name": "Vietnam", "original": "Việt Nam", "rate": 72, "currency": "VND" },
-  "BEL": { "code": "BEL", "name": "Belgium", "original": "België", "rate": 84, "currency": "EUR"
-  }
+  "BEL": { "code": "BEL", "name": "Belgium", "original": "België", "rate": 84, "currency": "EUR" },
+  "SMR": { "code": "SMR", "name": "San Marino", "original": "San Marino", "rate": 84, "currency": "EUR" }
 }

@@ -94,7 +94,6 @@
   }
 }
 
-
 .introduction__warning-sticky,
 .introduction__question-sticky {
   top: 80px;
@@ -112,6 +111,16 @@
   opacity: 0.7;
   color: #7c4545;
   top: 110px;
+}
+
+@media (max-width: 768px) {
+  .introduction__warning-sticky {
+    top: 150px !important;
+  }
+
+  .introduction__question-sticky {
+    top: 120px !important;
+  }
 }
 
 .introduction-warning {

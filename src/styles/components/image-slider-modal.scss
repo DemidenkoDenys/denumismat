@@ -51,7 +51,7 @@
   max-width: 90vw;
   max-height: 90vh;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
   background: #fff;
   cursor: pointer;
 }
@@ -65,7 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.01);
+  background: rgba(255, 255, 255, 0.01);
   border: none;
   cursor: pointer;
   z-index: 2;
@@ -80,8 +80,25 @@
   right: 0;
 }
 
+@media (max-width: 600px) {
+  .image-slider-modal__nav {
+    top: calc(50% - 25px);
+    bottom: 0;
+    width: 50px;
+    height: 50px;
+  }
+
+  .image-slider-modal__nav--prev {
+    left: 20px;
+  }
+
+  .image-slider-modal__nav--next {
+    right: 20px;
+  }
+}
+
 .image-slider-modal__nav:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .image-slider-modal__nav svg {
@@ -99,7 +116,7 @@
   top: 16px;
   right: 32px;
   z-index: 5;
-  background: rgba(255,255,255,0.8);
+  background: rgba(255, 255, 255, 0.8);
   border: none;
   border-radius: 50%;
   width: 40px;
@@ -108,12 +125,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: background 0.2s;
 }
 
 .image-slider-modal__close:hover {
-  background: rgba(255,255,255,1);
+  background: rgba(255, 255, 255, 1);
 }
 
 .image-slider-modal__close svg {
@@ -136,7 +153,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   border: none;
   cursor: pointer;
   transition: background 0.2s;
