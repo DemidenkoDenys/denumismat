@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
@@ -36,6 +36,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideStore(reducers),
     provideEffects([CurrencyEffects, CountriesEffects, AuthEffects, OrderEffects, ShippingEffects]),
-    provideStoreDevtools({ maxAge: 25, logOnly: false })
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
   ]
 };
