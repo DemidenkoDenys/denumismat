@@ -29,6 +29,7 @@ function toEmbedUrl(youtubeVideoId: string): string {
               [src]="(imageUrls()[currentIndex()] | slice:6) | safeUrl"
               frameborder="0"
               allowfullscreen
+              allow="autoplay; fullscreen; accelerometer; encrypted-media; gyroscope; picture-in-picture"
               class="image-slider-modal__video">
             </iframe>
           </div>
