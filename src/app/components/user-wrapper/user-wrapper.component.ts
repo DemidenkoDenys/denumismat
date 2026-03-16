@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, signal, inject, OnInit, effect, computed } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  inject,
+  OnInit,
+  effect,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -12,7 +20,11 @@ import { ImageSliderModalComponent } from '../coins/image-slider-modal';
 import { AuthModalComponent } from '../auth-modal/auth-modal';
 import { AuthModalService } from '../../services/auth-modal.service';
 import { OrderModalComponent } from '../order-modal/order-modal';
-import { selectCurrenciesInfo, selectCurrencyRates, selectSelectedCurrency } from '../../state/currency.selectors';
+import {
+  selectCurrenciesInfo,
+  selectCurrencyRates,
+  selectSelectedCurrency,
+} from '../../state/currency.selectors';
 import { selectCountries } from '../../state/countries.selectors';
 import { selectCoinImages, selectSelectedCoins } from '../../state/coins.selectors';
 import { clearSelection, deselectCoin } from '../../state/coins.actions';
@@ -22,11 +34,20 @@ import { defaultIfEmpty, first, forkJoin, switchMap } from 'rxjs';
 import { NotificationService } from '../../services/api.service';
 import { Coin } from '../coins/coin-card';
 import { forEach } from 'lodash';
+import { ShippingMethod } from '../../state/shipping.reducer';
 
 @Component({
   selector: 'user-wrapper',
   standalone: true,
-  imports: [CommonModule, MainLayoutComponent, UserSelectionBarComponent, ImageSliderModalComponent, AuthModalComponent, OrderModalComponent, TranslateModule],
+  imports: [
+    CommonModule,
+    MainLayoutComponent,
+    UserSelectionBarComponent,
+    ImageSliderModalComponent,
+    AuthModalComponent,
+    OrderModalComponent,
+    TranslateModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="user-wrapper">
@@ -49,7 +70,8 @@ import { forEach } from 'lodash';
         [video]="sliderVideo()"
         [coinId]="sliderCoinId()"
         [altText]="sliderAltText()"
-        (close)="closeImageSliderModal()">
+        (close)="closeImageSliderModal()"
+      >
       </app-image-slider-modal>
     }
 
@@ -57,7 +79,8 @@ import { forEach } from 'lodash';
       <app-auth-modal
         (onClose)="closeAuthModal()"
         (onSubmit)="handleAuthSubmit($event)"
-        (onAuthSuccess)="handleAuthSuccess()">
+        (onAuthSuccess)="handleAuthSuccess()"
+      >
       </app-auth-modal>
     }
 
@@ -67,8 +90,8 @@ import { forEach } from 'lodash';
         [conversionRate]="conversionRate()"
         [currencyFormat]="currencyFormat()"
         (onClose)="closeOrderModal()"
-        (onSubmit)="handleOrderSubmit($event)">
-      </app-order-modal>
+        (onSubmit)="handleOrderSubmit($event)"
+      />
     }
   `,
 })
@@ -96,8 +119,12 @@ export class UserWrapperComponent implements OnInit {
   public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
   private selectedCoins = toSignal(this.store.select(selectSelectedCoins), { initialValue: null });
   private currencyRates = toSignal(this.store.select(selectCurrencyRates), { initialValue: null });
-  private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
-  private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), { initialValue: null });
+  private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), {
+    initialValue: null,
+  });
+  private selectedCurrencyKey = toSignal(this.store.select(selectSelectedCurrency), {
+    initialValue: null,
+  });
 
   orderCoins = computed(() => {
     return Object.values(this.selectedCoins() ?? {});
@@ -137,7 +164,7 @@ export class UserWrapperComponent implements OnInit {
     return {
       symbol: info?.symbol || '$',
       short: info?.short || '$',
-      start: info?.start !== false
+      start: info?.start !== false,
     };
   });
 
@@ -156,14 +183,14 @@ export class UserWrapperComponent implements OnInit {
   closeImageSliderModal = () => {
     this.showImageSliderModal.set(false);
     document.body.style.overflow = '';
-  }
+  };
 
   handleAuthRequired() {
     this.authModalService.showAuthModal();
   }
 
   handleAuthSuccess() {
-    this.authSuccessTrigger.update(v => v + 1);
+    this.authSuccessTrigger.update((v) => v + 1);
   }
 
   closeOrderModal() {
@@ -190,57 +217,72 @@ export class UserWrapperComponent implements OnInit {
   handleBooking() {
     const coins = this.selectedCoins() ?? {};
 
-    this.store.select(selectUser).pipe(first()).subscribe(user => {
-      if (user?.email) {
-        const bookingCoinIds = [];
-        const bookingCoins$ = [];
+    this.store
+      .select(selectUser)
+      .pipe(first())
+      .subscribe((user) => {
+        if (user?.email) {
+          const bookingCoinIds = [];
+          const bookingCoins$ = [];
 
-        for (const id in coins) {
-          if (!coins[id].booked_at) {
-            bookingCoins$.push(this.service.bookCoin(coins[id].id, user.email.toLowerCase()));
-            bookingCoinIds.push(id);
-          } else {
-            this.toast.show('toast.coinAlreadyBooked', { params: { coinId: coins[id].id } });
+          for (const id in coins) {
+            if (!coins[id].booked_at) {
+              bookingCoins$.push(this.service.bookCoin(coins[id].id, user.email.toLowerCase()));
+              bookingCoinIds.push(id);
+            } else {
+              this.toast.show('toast.coinAlreadyBooked', { params: { coinId: coins[id].id } });
+            }
           }
+
+          forkJoin(bookingCoins$)
+            .pipe(
+              defaultIfEmpty([]),
+              switchMap(() =>
+                this.apiService.sendBookCoins(Object.values(coins), user.email ?? ''),
+              ),
+            )
+            .subscribe(() => {
+              forEach(coins, (_, id) => this.store.dispatch(deselectCoin({ coinId: id })));
+            });
+
+          this.toast.show('toast.bookInfo');
+        } else {
+          this.toast.show('toast.authRequired');
         }
-
-        forkJoin(bookingCoins$).pipe(
-          defaultIfEmpty([]),
-          switchMap(() => this.apiService.sendBookCoins(Object.values(coins), user.email ?? '')))
-          .subscribe(() => {
-            forEach(coins, (_, id) => this.store.dispatch(deselectCoin({ coinId: id })));
-          });
-
-        this.toast.show('toast.bookInfo');
-      } else {
-        this.toast.show('toast.authRequired');
-      }
-    });
+      });
   }
 
-  handleOrderSubmit(data: { coins: any[]; shippingMethod?: string; message?: string }) {
+  handleOrderSubmit(data: { coins: any[]; shipping: ShippingMethod; message?: string }) {
+    console.log(data);
+
     if (!data.coins || data.coins.length === 0) {
       return;
     }
 
     this.isOrderModalOpen.set(false);
 
-    this.store.select(selectUser).pipe(first()).subscribe(user => {
-      if (user?.email) {
-        for (const coin of data.coins) {
-          this.service.orderCoin(coin.id, user.email).subscribe({
-            next: () => this.store.dispatch(deselectCoin({ coinId: coin.id })),
-            error: () => this.toast.error(`Cannot order coin ${coin.id}`),
-          });
+    this.store
+      .select(selectUser)
+      .pipe(first())
+      .subscribe((user) => {
+        if (user?.email) {
+          this.notificationService
+            .sendOrder(data.coins, data.shipping)
+            .subscribe({
+              next: () => {
+                this.toast.success('order success', 5000);
+
+                for (const coin of data.coins) {
+                  this.service.orderCoin(coin.id, user.email || '').subscribe({
+                    next: () => this.store.dispatch(deselectCoin({ coinId: coin.id })),
+                    error: () => this.toast.error(`Cannot order coin ${coin.id}`),
+                  });
+                }
+              },
+              error: () => this.toast.error('order error', 2000),
+            });
         }
-
-        this.notificationService.sendOrder(data.coins, user.email, data.shippingMethod || '', data.message || '').subscribe({
-          next: () => this.toast.success('order success', 5000),
-          error: () => this.toast.error('order error', 2000),
-        });
-      }
-    });
-
+      });
   }
 
   private clearAuthData() {
@@ -268,7 +310,7 @@ export class UserWrapperComponent implements OnInit {
       displayName: data.name,
       email: data.email,
       photoURL: null,
-      verified: false
+      verified: false,
     };
 
     this.store.dispatch(setAuthUser({ user }));

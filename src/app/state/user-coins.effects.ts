@@ -32,6 +32,7 @@ export class UserCoinsEffects {
             const bookedCoins: Coin[] = [];
             const restoreCoinIds: string[] = [];
             const localStorageCoins: Record<string, boolean> = JSON.parse(localStorage.getItem('denumismat.coins') || '{}');
+            const selectedCoins: Array<Coin> = [];
 
             const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
               .map(coin => ({
@@ -44,9 +45,13 @@ export class UserCoinsEffects {
                 booked_by: statuses[coin.id]?.bb ?? null,
                 ordered_at: statuses[coin.id]?.oa ?? null,
                 ordered_by: statuses[coin.id]?.ob ?? null,
+                discountPrice: Math.round(coin.price * 90) / 100
               }))
               .map((coin) => {
                 const tags = coin.tags;
+                if (localStorageCoins[coin.id]) {
+                  selectedCoins.push(coin);
+                }
 
                 if (tags.includes('ANOUNCE') || tags.includes('SOON')) {
                   return { ...coin, tags: ['SOON'], price: 0, disabled: true, discountPrice: 0, soon: true };
@@ -70,7 +75,7 @@ export class UserCoinsEffects {
                   restoreCoinIds.push(coin.id);
                 }
 
-                return { ...coin, tags, discountPrice: Math.round(coin.price * 90) / 100 };
+                return { ...coin, tags };
               });
 
             const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
@@ -80,6 +85,7 @@ export class UserCoinsEffects {
               CoinsActions.setBookedCoins({ coins: bookedCoins }),
               CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
               CoinsActions.setCoinCountries({ countries: coinCountriesMap }),
+              ...selectedCoins.map(coin => CoinsActions.selectCoin({ coin })),
             ];
           }),
           catchError((error) => {

@@ -403,7 +403,7 @@ export class HeaderComponent {
     if (!map) return [];
     return Object.values(map)
       .filter((country) => country.code in order && order[country.code] >= 100)
-      .sort((a, b) => a.name.localeCompare(b.name))
+      .sort((a, b) => order[a.code] - order[b.code])
       .map((country) => ({
         key: country.code,
         countryCode: country.code,

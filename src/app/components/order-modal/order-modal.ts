@@ -142,7 +142,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     if (!method) {
       return '';
     }
-    const key = `orderModal.shipping.${method.id}`;
+    const key = `shipping.${method.id}`;
     const translated = this.translate.instant(key);
     return translated === key ? (method.label || method.id) : translated;
   }
@@ -184,9 +184,8 @@ export class OrderModalComponent implements OnInit, OnDestroy {
   currencyFormat = input<{ symbol: string; short: string; start: boolean }>({ symbol: '$', short: '$', start: true });
 
   onClose = output<void>();
-  onSubmit = output<{ coins: Coin[]; shippingMethod?: string; message?: string }>();
+  onSubmit = output<{ coins: Coin[]; shipping: ShippingMethod; message?: string }>();
 
-  // shippingMethod left empty by default so user explicitly chooses it (optional)
   shippingMethod = '';
   orderMessage = '';
   isSubmitting = signal(false);
@@ -242,6 +241,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
     }
 
     const finalCoins = this.coins(); // All items must be selected at this point
+    const shippingMethods = this.shippingMethods();
 
     this.isSubmitting.set(true);
 
@@ -250,7 +250,7 @@ export class OrderModalComponent implements OnInit, OnDestroy {
       this.onSubmit.emit({
         coins: finalCoins,
         message: this.orderMessage?.trim() || undefined,
-        shippingMethod: this.shippingMethod,
+        shipping: (this.shippingMethod && shippingMethods?.length ? shippingMethods.find(m => m && m.id === this.shippingMethod) : {} as ShippingMethod) as any,
       });
       this.isSubmitting.set(false);
     }, 500);
