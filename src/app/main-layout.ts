@@ -87,7 +87,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   searchQuery = signal('');
   currentCurrency = signal<Currency>('USD');
-  selectedCount = signal(0);
   selectedPrice = signal(0);
   filters = signal<any>(null);
   priceBounds = signal<[number, number]>([0, 10000]);
@@ -99,6 +98,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private countries = toSignal(this.store.select(selectCountries), { initialValue: null });
   private currenciesInfo = toSignal(this.store.select(selectCurrenciesInfo), { initialValue: null });
   public isLoggedIn = toSignal(this.store.select(selectIsLoggedIn), { initialValue: false });
+  public selectedCount = toSignal(this.store.select(state => Object.keys(state.coins.selected).length), { initialValue: 0 });
 
   conversionRate = computed(() => {
     const rates = this.currencyRates();
@@ -191,7 +191,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   handleSelectionSummary(summary: { ids: string[]; totalWeight: number; totalPrice: number; totalDiscountPrice: number }) {
-    this.selectedCount.set(summary.ids.length);
     this.selectedPrice.set(Number(summary.totalPrice.toFixed(2)));
   }
 

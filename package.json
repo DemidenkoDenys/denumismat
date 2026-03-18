@@ -8,7 +8,8 @@
     "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "s3": "node s3-update.mjs",
-    "test": "ng test"
+    "deploy": "npm run build:prod && firebase deploy",
+    "bundle": "ng build --stats-json && npx webpack-bundle-analyzer dist/denumismat/stats.json"
   },
   "prettier": {
     "printWidth": 100,
@@ -54,6 +55,7 @@
     "dotenv": "^17.3.1",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.8",
+    "webpack-bundle-analyzer": "^5.2.0"
   }
 }

@@ -129,7 +129,7 @@ export class CoinGridComponent implements OnInit {
         const remainingText = searchText.replace(/\b(18|19|20)\d{1,2}\b/g, '').trim().toLowerCase();
 
         // Check year match
-        if (searchYear !== null && coin.year !== searchYear) {
+        if (searchYear !== null && +coin.year !== searchYear) {
           return false;
         }
 

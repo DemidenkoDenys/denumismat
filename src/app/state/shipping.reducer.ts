@@ -9,7 +9,7 @@ export interface ShippingState {
 }
 
 export const initialShippingState: ShippingState = {
-  methods: {}
+  methods: {} as Record<string, ShippingMethod>
 };
 
 export const shippingReducer = createReducer(

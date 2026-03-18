@@ -1,0 +1,7 @@
+.env
+.angular/
+dist/
+node_modules/
+bin/
+.firebase
+environment/*

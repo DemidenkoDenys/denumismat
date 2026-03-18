@@ -37,15 +37,8 @@
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  // color: #111827;
   letter-spacing: 0.1em;
-  //   transition:
-  //     color 0.2s ease,
-  //     text-shadow 0.2s ease,
-  //     background-size 0.4s ease;
-  // }
 
-  // .header__brand-text:hover {
   color: transparent;
   animation: brandShine 1.6s linear infinite;
   background-clip: text;
@@ -56,12 +49,17 @@
   text-shadow:
     0 0 10px rgba(59, 130, 246, 0.45),
     0 0 16px rgba(249, 115, 22, 0.35);
+
+  @media (max-width: 360px) {
+    font-size: 1rem;
+  }
 }
 
 @keyframes brandShine {
   0% {
     background-position: 0 0;
   }
+
   100% {
     background-position: 200% 0;
   }
@@ -119,12 +117,14 @@
 }
 
 @keyframes searchShine {
+
   0%,
   100% {
     box-shadow:
       0 0 8px rgba(59, 130, 246, 0.4),
       0 0 15px rgba(59, 130, 246, 0.2);
   }
+
   50% {
     box-shadow:
       0 0 15px rgba(59, 130, 246, 0.6),
@@ -262,7 +262,12 @@
   border: none;
   box-shadow: none;
   backdrop-filter: blur(6px);
+
+  @media (width < 400px) {
+    right: 0.5rem;
+  }
 }
+
 
 // Global flag icons (fi) adjustments
 .fi {
@@ -308,7 +313,7 @@
 .header__localization {
   position: relative;
 
-  .header__icon-btn:hover + .tooltip {
+  .header__icon-btn:hover+.tooltip {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
     visibility: visible;
