@@ -10,7 +10,7 @@ import { Store } from '@ngrx/store';
 import { selectUser } from './auth/auth.selectors';
 import { getDayDiff } from '../utils/date.utils';
 import { isDefined } from '../utils/value.utils';
-import { filter, orderBy, toUpper } from 'lodash';
+import { filter, forEach, orderBy, toUpper } from 'lodash-es';
 
 @Injectable()
 export class UserCoinsEffects {
@@ -23,38 +23,54 @@ export class UserCoinsEffects {
       ofType(CoinsActions.loadCoins),
       switchMap(() => {
         return combineLatest([
-          this.firestoreService.listenToCollection('coins', [where("is_deleted", "==", null)]),
+          this.firestoreService.listenToCollection('coins', [where('is_deleted', '==', null)]),
           this.firestoreService.listenToDocument('statuses', 'coin_statuses'),
           this.store.select(selectUser),
         ]).pipe(
           // return of(mockCoins as any).pipe(
           concatMap(([coins, statuses, user]: [Coin[], any, any]) => {
             const bookedCoins: Coin[] = [];
-            const restoreCoinIds: string[] = [];
-            const localStorageCoins: Record<string, boolean> = JSON.parse(localStorage.getItem('denumismat.coins') || '{}');
+            const localStorageCoins: Record<string, boolean> = JSON.parse(
+              localStorage.getItem('denumismat.coins') || '{}',
+            );
+
             const selectedCoins: Array<Coin> = [];
+            const unselectCoins: Array<string> = [];
 
             const mappedCoins = orderBy(coins, ['created_at'], ['desc'])
-              .map(coin => ({
+              .map((coin) => ({
                 ...coin,
                 ago: getDayDiff(coin.created_at ?? new Date().toISOString()) * -1,
-                mine: statuses[coin.id]?.bb === user?.email || statuses[coin.id]?.ob === user?.email,
+                mine:
+                  statuses[coin.id]?.bb === user?.email || statuses[coin.id]?.ob === user?.email,
                 tags: filter(coin.tags, isDefined).map<string>(toUpper),
                 price: coin.price ? +coin.price : 0,
                 booked_at: statuses[coin.id]?.ba ?? null,
                 booked_by: statuses[coin.id]?.bb ?? null,
                 ordered_at: statuses[coin.id]?.oa ?? null,
                 ordered_by: statuses[coin.id]?.ob ?? null,
-                discountPrice: Math.round(coin.price * 90) / 100
+                discountPrice: Math.round(coin.price * 90) / 100,
               }))
               .map((coin) => {
                 const tags = coin.tags;
+
                 if (localStorageCoins[coin.id]) {
-                  selectedCoins.push(coin);
+                  if (statuses[coin.id]?.bb && statuses[coin.id]?.bb !== user.email) {
+                    unselectCoins.push(coin.id);
+                  } else {
+                    selectedCoins.push(coin);
+                  }
                 }
 
                 if (tags.includes('ANOUNCE') || tags.includes('SOON')) {
-                  return { ...coin, tags: ['SOON'], price: 0, disabled: true, discountPrice: 0, soon: true };
+                  return {
+                    ...coin,
+                    tags: ['SOON'],
+                    price: 0,
+                    disabled: true,
+                    discountPrice: 0,
+                    soon: true,
+                  };
                 }
 
                 if (coin.youtube) {
@@ -71,38 +87,43 @@ export class UserCoinsEffects {
                   }
                 }
 
-                if (localStorageCoins[coin.id] && (coin.booked_at || coin.ordered_at) && !coin.mine) {
-                  restoreCoinIds.push(coin.id);
-                }
-
                 return { ...coin, tags };
               });
 
-            const coinCountriesMap = mappedCoins.reduce((acc, coin) => ({ ...acc, [coin.country]: true }), {} as Record<string, boolean>);
+              forEach(localStorageCoins, (value, key) => {
+                if (statuses[key]?.ob && statuses[key]?.ob !== user.email) {
+                  unselectCoins.push(key);
+                }
+              });
 
-            return [
-              ...restoreCoinIds.map(id => CoinsActions.deselectCoin({ coinId: id })),
+            const coinCountriesMap = mappedCoins.reduce(
+              (acc, coin) => ({ ...acc, [coin.country]: true }),
+              {} as Record<string, boolean>,
+            );
+
+            const actions = [
               CoinsActions.setBookedCoins({ coins: bookedCoins }),
               CoinsActions.loadCoinsSuccess({ coins: mappedCoins }),
               CoinsActions.setCoinCountries({ countries: coinCountriesMap }),
-              ...selectedCoins.map(coin => CoinsActions.selectCoin({ coin })),
+              ...selectedCoins.map((coin) => CoinsActions.selectCoin({ coin })),
+              ...unselectCoins.map((coinId) => CoinsActions.deselectCoin({ coinId })),
             ];
+            return actions;
           }),
           catchError((error) => {
             console.error('Error fetching coins:', error);
             return of(CoinsActions.loadCoinsFailure({ error }));
-          })
-        )
-      }
-      )
-    )
+          }),
+        );
+      }),
+    ),
   );
 
   selectCoin$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(CoinsActions.selectCoin),
-        map(action => {
+        map((action) => {
           const selectedCoin = action.coin;
           const storageKey = 'denumismat.coins';
           let storedCoinsMap: Record<string, boolean> = {};
@@ -111,21 +132,21 @@ export class UserCoinsEffects {
             if (raw) {
               storedCoinsMap = JSON.parse(raw);
             }
-          } catch { }
+          } catch {}
           if (!storedCoinsMap[selectedCoin.id]) {
             storedCoinsMap[selectedCoin.id] = true;
             localStorage.setItem(storageKey, JSON.stringify(storedCoinsMap));
           }
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   deselectCoin$ = createEffect(
     () =>
       this.actions$.pipe(
         ofType(CoinsActions.deselectCoin),
-        map(action => {
+        map((action) => {
           const deselectedCoinId = action.coinId;
           const storageKey = 'denumismat.coins';
           let storedCoinsMap: Record<string, boolean> = {};
@@ -134,14 +155,14 @@ export class UserCoinsEffects {
             if (raw) {
               storedCoinsMap = JSON.parse(raw);
             }
-          } catch { }
+          } catch {}
           if (storedCoinsMap[deselectedCoinId]) {
             delete storedCoinsMap[deselectedCoinId];
             localStorage.setItem(storageKey, JSON.stringify(storedCoinsMap));
           }
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   clearSelection$ = createEffect(
@@ -151,8 +172,8 @@ export class UserCoinsEffects {
         map(() => {
           const storageKey = 'denumismat.coins';
           localStorage.removeItem(storageKey);
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 }

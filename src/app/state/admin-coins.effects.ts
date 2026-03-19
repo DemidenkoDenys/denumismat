@@ -5,14 +5,11 @@ import { map, catchError, switchMap, concatMap } from 'rxjs/operators';
 import * as CoinsActions from './coins.actions';
 import { FirestoreService } from '../services/firestore.service';
 import { Coin } from '../components/coins/coin-card';
-import { IndexedDbService } from '../services/indexed-db.service';
-import { where } from 'firebase/firestore';
 import { orderBy } from 'lodash-es';
 
 @Injectable()
 export class AdminCoinsEffects {
   private actions$ = inject(Actions);
-  private indexedDb = inject(IndexedDbService);
   private firestoreService = inject(FirestoreService);
 
   loadCoins$ = createEffect(() =>

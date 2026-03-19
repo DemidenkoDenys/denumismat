@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as CoinsActions from './coins.actions';
 import { Coin } from '../components/coins/coin-card';
+import { omit } from 'lodash-es';
 
 export interface CoinsState {
   coins: Coin[] | null;
@@ -57,16 +58,17 @@ export const coinsReducer = createReducer(
     };
   }),
   on(CoinsActions.deselectCoin, (state, { coinId }) => {
-    const { [coinId]: removed, ...remaining } = state.selected;
     return {
       ...state,
-      selected: remaining
+      selected: omit(state.selected, coinId)
     };
   }),
+
   on(CoinsActions.clearSelection, (state) => ({
     ...state,
     selected: {}
   })),
+
   on(CoinsActions.toggleCoinSelection, (state, { coin }) => {
     const isSelected = state.selected[coin.id];
     if (isSelected) {

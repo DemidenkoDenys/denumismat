@@ -33,7 +33,7 @@ import { ToastService } from '../../services/toast.service';
 import { defaultIfEmpty, first, forkJoin, switchMap } from 'rxjs';
 import { NotificationService } from '../../services/api.service';
 import { Coin } from '../coins/coin-card';
-import { forEach } from 'lodash';
+import { forEach } from 'lodash-es';
 import { ShippingMethod } from '../../state/shipping.reducer';
 
 @Component({

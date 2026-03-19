@@ -9,7 +9,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { selectCoins, selectSelectedCoins, selectSelectedCoinIds, selectIsSelectionLimitReached, selectCoinImages } from '../../state/coins.selectors';
 import * as CoinsActions from '../../state/coins.actions';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
-import { IndexedDbService } from '../../services/indexed-db.service';
 import { selectIsAdmin } from '../../state/auth/auth.selectors';
 import { MAX_SELECTED_COINS } from '../../state/coins.reducer';
 import { ToastService } from '../../services/toast.service';
@@ -17,7 +16,7 @@ import { NotificationService } from '../../services/api.service';
 import { sanitizeText } from '../../utils/message.utils';
 import { first } from 'rxjs';
 import { selectCurrencyRates, selectSelectedRate } from '../../state/currency.selectors';
-import { filter, isNil, maxBy, minBy } from 'lodash';
+import { filter, isNil, maxBy, minBy } from 'lodash-es';
 
 @Component({
   selector: 'app-coin-grid',
@@ -57,7 +56,6 @@ export class CoinGridComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
   private store = inject(Store);
   private toast = inject(ToastService);
-  private indexedDb = inject(IndexedDbService);
   private notificationService = inject(NotificationService);
   private selectionRestored = false;
 

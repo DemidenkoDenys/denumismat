@@ -1,6 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { ShippingMethod, ShippingState } from './shipping.reducer';
-import { filter, forEach, orderBy, sortBy } from 'lodash';
+import { filter, forEach, orderBy, sortBy } from 'lodash-es';
 
 export const selectShippingState = createFeatureSelector<ShippingState>('shipping');
 

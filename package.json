@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "s3": "node s3-update.mjs",
     "deploy": "npm run build:prod && firebase deploy",
-    "bundle": "ng build --stats-json && npx webpack-bundle-analyzer dist/denumismat/stats.json"
+    "bundle": "ng build --stats-json && npm exec esbuild-visualizer -- --metadata dist/denumismat/stats.json --open"
   },
   "prettier": {
     "printWidth": 100,

@@ -7,10 +7,10 @@ import { PricePipe } from '../../pipes/price.pipe';
 import { S3Service } from '../../services/s3.service';
 import { selectCountries, selectExtinctCountries } from '../../state/countries.selectors';
 import { selectIsAdmin, selectIsLoggedIn } from '../../state/auth/auth.selectors';
-import { selectIsSelectionLimitReached, selectSelectedCoinsCount } from '../../state/coins.selectors';
+import { selectIsSelectionLimitReached } from '../../state/coins.selectors';
 import { ToastService } from '../../services/toast.service';
 import { selectServerIsAvailable } from '../../state/server.selectors';
-import { map } from 'lodash';
+import { map } from 'lodash-es';
 
 export interface CoinImage {
   obverse: string | null;

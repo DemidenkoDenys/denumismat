@@ -10,7 +10,7 @@ import { PricePipe } from '../pipes/price.pipe';
 import { decrypt } from '../utils/cr.utils';
 import { TranslateService } from '@ngx-translate/core';
 import { ShippingMethod } from '../state/shipping.reducer';
-import { sumBy } from 'lodash';
+import { sumBy } from 'lodash-es';
 
 @Injectable({ providedIn: 'root', })
 export class NotificationService {
@@ -28,7 +28,7 @@ export class NotificationService {
         if (user) {
           const text = `${this.translate.instant('orderMessage')}
 
-${coins.map((coin, i) => `${i + 1}: ${this.translate.instant(`countries.${coin.country}`)} -  ${coin.deno} - ${coin.year} - ${this.price.transform(coin.discountPrice)}`).join('\n')}
+${coins.map((coin, i) => `${i + 1}: [${coin.id}] ${this.translate.instant(`countries.${coin.country}`)} -  ${coin.deno} - ${coin.year} - ${this.price.transform(coin.discountPrice)}`).join('\n')}
 
 ${this.translate.instant('orderModal.shippingMethod')}: ${this.translate.instant(`shipping.${shipping.id}`)} - ${shippingPrice}
 
@@ -50,7 +50,7 @@ return this.http.post(`${environment.apiUrl}/send`, { subject: 'order', email: u
           const text = `
 ${this.translate.instant('bookingMessage')}:
 
-${coins.map((coin, i) => `${i + 1}: ${this.translate.instant(`countries.${coin.country}`)} -  ${coin.deno} - ${coin.year} - ${this.price.transform(coin.discountPrice)}`).join('\n')}
+${coins.map((coin, i) => `${i + 1}: [${coin.id}] ${this.translate.instant(`countries.${coin.country}`)} -  ${coin.deno} - ${coin.year} - ${this.price.transform(coin.discountPrice)}`).join('\n')}
 `;
           return this.http.post(`${environment.apiUrl}/send`, { subject: 'booking', email: user.email, text });
         }
